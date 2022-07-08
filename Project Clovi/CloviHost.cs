@@ -41,7 +41,7 @@ public class CloviHost
 		{
 			//Example command builder. Initialization not necessary.
 			//TODO: Move to a dedicated commands respository.
-			SlashCommandProperties newCmd = new SlashCommandBuilder().WithName("ping").Build();
+			SlashCommandProperties newCmd = new SlashCommandBuilder().WithName("ping").WithDescription("test").Build();
 
 			//Sends the new command for use.
 			//TODO: Move to a for-loop in a dedicated commands repository.
@@ -57,8 +57,10 @@ public class CloviHost
 	}
 
 	//How can it tell which command is being executed?
+	//It can't. Use cmd.CommandName to identify.
 	private async Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
+		Console.WriteLine(cmd.CommandName);
 		await cmd.RespondAsync($"{CloviCore.Latency}ms");
 	}
 }
