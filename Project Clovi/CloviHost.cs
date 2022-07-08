@@ -15,8 +15,8 @@ public class CloviHost
 		//Note: Any Exceptions thrown inside this function will cause the program to crash.
 
 		//How on earth do these work?
-		CloviCore.Log += Log;
-		CloviCore.Ready += ClientReady;
+		CloviCore.Log += Log; //I think it adds this method to an internal list, then executes it.
+		CloviCore.Ready += ClientReady; //Same goes here.
 
 		await CloviCore.LoginAsync(TokenType.Bot, "OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI"); //Hide this before making the repo public
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
