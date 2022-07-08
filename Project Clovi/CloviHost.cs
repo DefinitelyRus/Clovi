@@ -18,7 +18,7 @@ public class CloviHost
 		CloviCore.Log += Log;
 		CloviCore.Ready += ClientReady;
 
-		await CloviCore.LoginAsync(TokenType.Bot, "OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI");
+		await CloviCore.LoginAsync(TokenType.Bot, "OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI"); //Hide this before making the repo public
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
 		while (true) { }
@@ -62,5 +62,6 @@ public class CloviHost
 	{
 		Console.WriteLine(cmd.CommandName);
 		await cmd.RespondAsync($"{CloviCore.Latency}ms");
+		//xD
 	}
 }
