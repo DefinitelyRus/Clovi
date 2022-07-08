@@ -6,7 +6,7 @@ public class CloviHost
 	/// <summary>
 	/// The core socket client responsible for handling all interactions between the front-end and back-end.
 	/// </summary>
-	public readonly DiscordSocketClient CloviCore = new DiscordSocketClient();
+	public readonly DiscordSocketClient CloviCore = new();
 
 	public static Task Main() => new CloviHost().MainAsync();
 
@@ -62,6 +62,6 @@ public class CloviHost
 	{
 		Console.WriteLine(cmd.CommandName);
 		await cmd.RespondAsync($"{CloviCore.Latency}ms");
-		//xD
+		
 	}
 }
