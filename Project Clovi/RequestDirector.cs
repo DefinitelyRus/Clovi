@@ -22,10 +22,7 @@ namespace Project_Clovi
 		/// <returns>The Request Object with a matching Id.</returns>
 		public Request GetRequestItem(String RequestId)
 		{
-			foreach (Request Req in RequestList)
-			{
-				if (Req.Id.Equals(RequestId)) return Req;
-			}
+			foreach (Request Req in RequestList) if (Req.Id.Equals(RequestId)) return Req;
 
 
 			//TODO: Add no-match-found error message.
