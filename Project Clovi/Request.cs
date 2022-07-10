@@ -15,7 +15,7 @@
 		/// <summary>
 		/// The arguments that this Request can receive and process.
 		/// </summary>
-		public Object[] Params { get; set; }
+		public Dictionary<String, Object> Params { get; set; }
 
 		/// <summary>
 		/// The unique identifier for this command.
@@ -28,7 +28,7 @@
 		/// <param name="ParentArg"></param>
 		/// <param name="IdArg"></param>
 		/// <param name="ParamsArg"></param>
-		public Request(RequestDirector ParentArg, String IdArg, Object[] ParamsArg)
+		public Request(RequestDirector ParentArg, String IdArg, Dictionary<String, Object> ParamsArg)
 		{
 			Parent = ParentArg;
 			Id = IdArg;
@@ -37,9 +37,10 @@
 
 		/// <summary>
 		/// Executes the custom request command.
+		/// The Dictionary argument should be retrieved from this Request.Params, then modify its values.
 		/// </summary>
-		/// <param name="Args">Any arguments required to execute the request.</param>
+		/// <param name="Args">Any arguments required to execute the request. Typically this Request.Param with modified values.</param>
 		/// <returns>This Request for method chaining.</returns>
-		public abstract Request Execute(Object[]? Args);
+		public abstract Request Execute(Dictionary<String, Object>? Args);
 	}
 }
