@@ -22,7 +22,16 @@
 		/// </summary>
 		public String Id { get; set; }
 
-		public Boolean IsContextSensitive { get; internal set; }
+		/// <summary>
+		/// <para>Identifies the request as context sensitive or context insensitive.
+		/// Context sensitive requests need information such as the source channel or any direct interactions with Discord API.
+		/// Context insensitive requests are used for internal changes, with feedback that can be generalized.</para>
+		/// 
+		/// <para>For example:</para>
+		/// <para>"/WhoIs @User#0000" - Returns details about User#0000, which needs direct contact with Discord API.</para>
+		/// <para>"/RestartBot" - Only needs to restart the bot, no need to access Discord API.</para>
+		/// </summary>
+		public Boolean IsContextSensitive { get; }
 
 		/// <summary>
 		/// Constructs a Request object.
