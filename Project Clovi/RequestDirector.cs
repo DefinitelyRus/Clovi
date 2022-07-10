@@ -121,12 +121,14 @@ namespace Project_Clovi
 			//Cancels execution if Request is null.
 			if (RequestItem == null) Console.WriteLine($"No Request \"{Cmd.CommandName}\" found."); //TODO: Move to a dedicated logger.
 
-			SocketSlashCommandDataOption[] OptionArray = Cmd.Data.Options.ToArray();
-			Object[] Args = new object[OptionArray.Length];
-			
-			for (int i = 0; i < OptionArray.Length; i++) Args[i] = OptionArray[i].Value;
+			IReadOnlyCollection<SocketSlashCommandDataOption> OptionCollection = Cmd.Data.Options;
+			Dictionary<Object, Object> Args = new();
 
-			RequestItem.Execute(null);
+			//Adds every Option's Name and Value in the Dictionary.
+			foreach (SocketSlashCommandDataOption option in OptionCollection)
+				Args.Add(option.Name, option.Value);
+
+			RequestItem.Execute(Args);
 
 			return this;
 		}
