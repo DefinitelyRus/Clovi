@@ -22,6 +22,8 @@
 		/// </summary>
 		public String Id { get; set; }
 
+		public Boolean IsContextSensitive { get; internal set; }
+
 		/// <summary>
 		/// Constructs a Request object.
 		/// </summary>

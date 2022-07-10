@@ -77,7 +77,7 @@ namespace Project_Clovi
 
 
 		/// <summary>
-		/// Executes the request based on the given RequestId and Args. For use in console or in-text commands. 
+		/// Executes the request based on the given RequestId and Args. For use in console or in-text commands. Only applicable for context insensitive commands.
 		/// </summary>
 		/// <param name="RequestId">The Id of the target Request.</param>
 		/// <param name="Args">The arguments required to execute the Request.</param>
