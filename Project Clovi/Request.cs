@@ -8,6 +8,11 @@
 		public RequestDirector Parent { get; internal set; }
 
 		/// <summary>
+		/// Used as a read-only copy of Params, in case the public Params' keys get modified.
+		/// </summary>
+		private Dictionary<String, Object> InternalParams { get; set; }
+
+		/// <summary>
 		/// The arguments that this Request can receive and process.
 		/// </summary>
 		public Object[] Params { get; set; }
