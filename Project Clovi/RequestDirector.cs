@@ -20,7 +20,7 @@ namespace Project_Clovi
 		/// </summary>
 		/// <param name="RequestId">The Id of the target Request.</param>
 		/// <returns>The Request Object with a matching Id.</returns>
-		public Request? GetRequestItem(String RequestId)
+		public Request GetRequestItem(String RequestId)
 		{
 			foreach (Request Req in RequestList)
 			{
