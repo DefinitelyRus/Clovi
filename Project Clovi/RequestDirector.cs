@@ -86,9 +86,26 @@ namespace Project_Clovi
 		{
 			Request RequestItem = GetRequestItem(RequestId);
 
-			if (RequestItem == null) Console.WriteLine($"No Request \"{RequestId}\" found."); //TODO: Move to a dedicated logger.
+			if (RequestItem == null)
+			{
+				Console.WriteLine($"No Request \"{RequestId}\" found."); //TODO: Move to a dedicated logger.
 
-			RequestItem.Execute(Args);
+				return this;
+			}
+
+			if (RequestItem.IsContextSensitive == true)
+			{
+				Console.WriteLine($"Request \"{RequestId}\" is context sensitive and can only be executed in Discord as a slash command.");
+			}
+
+			//Loops through the dictionary, gets all the values, then sets the values in order.
+			//NOTE: Might cause an error. The array might be of length 0.
+			for (int i = 0; i < Args.Length; i++)
+			{
+				RequestItem.Params.Values.ToArray()[i] = Args[i];
+			}
+
+			RequestItem.Execute(null);
 
 			return this;
 		}
@@ -111,7 +128,7 @@ namespace Project_Clovi
 			
 			for (int i = 0; i < OptionArray.Length; i++) Args[i] = OptionArray[i].Value;
 
-			RequestItem.Execute(Args);
+			RequestItem.Execute(null);
 
 			return this;
 		}
