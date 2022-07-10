@@ -64,11 +64,11 @@ namespace Project_Clovi
 		/// <returns>The sorted ArrayList.</returns>
 		internal List<Request> Sort(ArrayList ListToSort)
 		{
-			List<Request> NewList = ListToSort.Cast<Request>().ToList();
+			List<Request> OrderedList = ListToSort.Cast<Request>().ToList();
 
 			//TODO: Implement quicksort here
 
-			return NewList;
+			return OrderedList;
 		}
 
 
