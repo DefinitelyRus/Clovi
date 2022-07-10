@@ -79,7 +79,7 @@ namespace Project_Clovi
 		/// <param name="RequestId">The Id of the target Request.</param>
 		/// <param name="Args">The arguments required to execute the Request.</param>
 		/// <returns>This RequestDirector for method chaining.</returns>
-		public RequestDirector ExecuteRequest(String RequestId, String[] Args)
+		public RequestDirector ExecuteRequest(String RequestId, String[] Args, SocketSlashCommand? Cmd = null)
 		{
 			Request RequestItem = GetRequestItem(RequestId);
 
@@ -90,7 +90,7 @@ namespace Project_Clovi
 				return this;
 			}
 
-			if (RequestItem.IsContextSensitive == true)
+			if (RequestItem.IsContextSensitive == true || Cmd is null)
 			{
 				Console.WriteLine($"Request \"{RequestId}\" is context sensitive and can only be executed in Discord as a slash command.");
 			}
@@ -110,7 +110,7 @@ namespace Project_Clovi
 
 
 		/// <summary>
-		/// Executes the request based on the SocketSlashCommand's attributes. For use in Discord /commands only.
+		/// Executes the request based on the SocketSlashCommand's attributes. For use in-Discord /commands only.
 		/// </summary>
 		/// <param name="Cmd"></param>
 		/// <returns></returns>
@@ -118,6 +118,7 @@ namespace Project_Clovi
 		{
 			Request RequestItem = GetRequestItem(Cmd.CommandName);
 
+			//Cancels execution if Request is null.
 			if (RequestItem == null) Console.WriteLine($"No Request \"{Cmd.CommandName}\" found."); //TODO: Move to a dedicated logger.
 
 			SocketSlashCommandDataOption[] OptionArray = Cmd.Data.Options.ToArray();
