@@ -44,6 +44,13 @@
 			Parent = ParentArg;
 			Id = IdArg;
 			Params = ParamsArg;
+			IsContextSensitive = IsContextSensitiveArg;
+			InternalParams = new();
+
+			foreach (Object key in ParamsArg)
+			{
+				InternalParams.Add(key, null);
+			}
 		}
 
 		/// <summary>
