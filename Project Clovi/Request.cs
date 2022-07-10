@@ -10,12 +10,12 @@
 		/// <summary>
 		/// Used as a read-only copy of Params, in case the public Params' keys get modified.
 		/// </summary>
-		private Dictionary<String, Object> InternalParams { get; set; }
+		private Dictionary<Object, Object?> InternalParams { get; set; }
 
 		/// <summary>
 		/// The arguments that this Request can receive and process.
 		/// </summary>
-		public Dictionary<String, Object> Params { get; set; }
+		public Dictionary<Object, Object?> Params { get; set; }
 
 		/// <summary>
 		/// The unique identifier for this command.
@@ -30,7 +30,7 @@
 		/// <param name="ParentArg"></param>
 		/// <param name="IdArg"></param>
 		/// <param name="ParamsArg"></param>
-		public Request(RequestDirector ParentArg, String IdArg, Dictionary<String, Object> ParamsArg)
+		public Request(RequestDirector ParentArg, String IdArg, Dictionary<Object, Object?> ParamsArg, Boolean IsContextSensitiveArg = true)
 		{
 			Parent = ParentArg;
 			Id = IdArg;
@@ -43,6 +43,6 @@
 		/// </summary>
 		/// <param name="Args">Any arguments required to execute the request. Typically this Request.Param with modified values.</param>
 		/// <returns>This Request for method chaining.</returns>
-		public abstract Request Execute(Dictionary<String, Object>? Args);
+		public abstract Request Execute(Dictionary<Object, Object>? Args);
 	}
 }
