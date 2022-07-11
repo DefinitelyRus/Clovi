@@ -1,4 +1,6 @@
-﻿using Discord; //TODO: I don't want to import the whole Discord.Net API. Find an alternative.
+﻿namespace Project_Clovi;
+
+using Discord; //TODO: I don't want to import the whole Discord.Net API. Find an alternative.
 using Discord.WebSocket;
 
 public class CloviHost
