@@ -20,7 +20,7 @@ namespace Project_Clovi
 		/// </summary>
 		/// <param name="RequestId">The Id of the target Request.</param>
 		/// <returns>The Request Object with a matching Id.</returns>
-		public Request GetRequestItem(String RequestId)
+		public Request GetRequest(String RequestId)
 		{
 			foreach (Request Req in RequestList) if (Req.Id.Equals(RequestId)) return Req;
 
@@ -81,7 +81,7 @@ namespace Project_Clovi
 		/// <returns>This RequestDirector for method chaining.</returns>
 		public RequestDirector ExecuteRequest(String RequestId, String[] Args, SocketSlashCommand? Cmd = null)
 		{
-			Request RequestItem = GetRequestItem(RequestId);
+			Request RequestItem = GetRequest(RequestId);
 
 			if (RequestItem == null)
 			{
@@ -116,7 +116,7 @@ namespace Project_Clovi
 		/// <returns></returns>
 		public RequestDirector ExecuteRequest(SocketSlashCommand Cmd)
 		{
-			Request RequestItem = GetRequestItem(Cmd.CommandName);
+			Request RequestItem = GetRequest(Cmd.CommandName);
 
 			//Cancels execution if Request is null.
 			if (RequestItem == null) Console.WriteLine($"No Request \"{Cmd.CommandName}\" found."); //TODO: Move to a dedicated logger.
