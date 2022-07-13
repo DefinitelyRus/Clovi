@@ -5,12 +5,14 @@ using Discord.WebSocket;
 
 public class CloviHost
 {
+	#region Init
 	/// <summary>
 	/// The core socket client responsible for handling all interactions between the front-end and back-end.
 	/// </summary>
 	public readonly DiscordSocketClient CloviCore = new();
 
 	public static Task Main() => new CloviHost().MainAsync();
+	#endregion
 
 	public async Task MainAsync()
 	{
@@ -60,6 +62,7 @@ public class CloviHost
 		}
 	}
 
+	#region Fluff
 	//How can it tell which command is being executed?
 	//It can't. Use cmd.CommandName to identify.
 	private async Task SlashCommandHandler(SocketSlashCommand cmd)
@@ -68,4 +71,5 @@ public class CloviHost
 		await cmd.RespondAsync($"{CloviCore.Latency}ms");
 		
 	}
+	#endregion
 }
