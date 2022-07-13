@@ -9,6 +9,6 @@ public class RequestHandler
 		Console.WriteLine($"Running request \"{Command.CommandName}\"...");
 		await Command.RespondAsync($"Running request \"{Command.CommandName}\"...");
 		await Command.RespondAsync($"Latency:"); //CloviCore is unaccessible from outside of CloviHost. How do I fix that? Getter method?
-
+		
 	}
 }
