@@ -11,7 +11,7 @@ public class RequestDirector
 	/// A list of available requests.
 	/// Sorted alphabetically based on Request Ids.
 	/// </summary>
-	public ArrayList RequestList { get; internal set; }
+	public List<Request> RequestList { get; internal set; }
 
 
 
@@ -35,7 +35,7 @@ public class RequestDirector
 	/// The function used to declare this RequestDirector.
 	/// </summary>
 	/// <param name="RequestListArg">An ArrayList of Requests.</param>
-	public RequestDirector(ArrayList RequestListArg)
+	public RequestDirector(List<Request> RequestListArg)
 	{
 		RequestList = RequestListArg; //Sort alphabetically.
 	}
