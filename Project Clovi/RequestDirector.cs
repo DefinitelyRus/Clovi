@@ -51,7 +51,8 @@ namespace Project_Clovi
 		public RequestDirector AddRequestItem(Request NewRequest)
 		{
 			RequestList.Add(NewRequest);
-			//Sort alphabetically.
+
+			//Sort alphabetically based on Request.Id attribute.
 			return this;
 		}
 
@@ -81,29 +82,7 @@ namespace Project_Clovi
 		/// <returns>This RequestDirector for method chaining.</returns>
 		public RequestDirector ExecuteRequest(String RequestId, String[] Args, SocketSlashCommand? Cmd = null)
 		{
-			Request RequestItem = GetRequest(RequestId);
-
-			if (RequestItem == null)
-			{
-				Console.WriteLine($"No Request \"{RequestId}\" found."); //TODO: Move to a dedicated logger.
-
-				return this;
-			}
-
-			if (RequestItem.IsContextSensitive == true || Cmd is null)
-			{
-				Console.WriteLine($"Request \"{RequestId}\" is context sensitive and can only be executed in Discord as a slash command.");
-			}
-
-			//Loops through the dictionary, gets all the values, then sets the values in order.
-			//NOTE: Might cause an error. The array might be of length 0.
-			for (int i = 0; i < Args.Length; i++)
-			{
-				RequestItem.Params.Values.ToArray()[i] = Args[i];
-			}
-
-			RequestItem.Execute(null);
-
+			//TODO: Work on this. Finish the /commands one first.
 			return this;
 		}
 
@@ -121,14 +100,8 @@ namespace Project_Clovi
 			//Cancels execution if Request is null.
 			if (RequestItem == null) Console.WriteLine($"No Request \"{Cmd.CommandName}\" found."); //TODO: Move to a dedicated logger.
 
-			IReadOnlyCollection<SocketSlashCommandDataOption> OptionCollection = Cmd.Data.Options;
-			Dictionary<Object, Object> Args = new();
-
-			//Adds every Option's Name and Value in the Dictionary.
-			foreach (SocketSlashCommandDataOption option in OptionCollection)
-				Args.Add(option.Name, option.Value);
-
-			RequestItem.Execute(Args);
+			//Finally executes the request.
+			RequestItem.Execute(Cmd);
 
 			return this;
 		}
