@@ -49,6 +49,8 @@ public class CloviHost
 			//TODO: Move to a for-loop in a dedicated commands repository.
 			await Guild.CreateApplicationCommandAsync(newCmd);
 
+
+
 			CloviCore.SlashCommandExecuted += SlashCommandHandler; //Activated when a command is received.
 		}
 		catch (Exception ex)
