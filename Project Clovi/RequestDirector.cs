@@ -50,6 +50,7 @@ namespace Project_Clovi
 		/// <returns></returns>
 		public RequestDirector AddRequestItem(Request NewRequest)
 		{
+			NewRequest.Parent = this;
 			RequestList.Add(NewRequest);
 
 			//Sort alphabetically based on Request.Id attribute.
