@@ -1,5 +1,8 @@
 ﻿namespace Project_Clovi
 {
+	/// <summary>
+	/// An inheritable abstract Request used as a template to create new Requests.
+	/// </summary>
 	public abstract class Request
 	{
 		/// <summary>
@@ -23,15 +26,14 @@
 		public String Id { get; set; }
 
 		/// <summary>
-		/// <para>Identifies the request as context sensitive or context insensitive.
-		/// Context sensitive requests need information such as the source channel or any direct interactions with Discord API.
-		/// Context insensitive requests are used for internal changes, with feedback that can be generalized.</para>
-		/// 
-		/// <para>For example:</para>
-		/// <para>"/WhoIs @User#0000" - Returns details about User#0000, which needs direct contact with Discord API.</para>
-		/// <para>"/RestartBot" - Only needs to restart the bot, no need to access Discord API.</para>
+		/// Constructs a Request object along with a SlashCommandProperties object.
 		/// </summary>
-		public Boolean IsContextSensitive { get; }
+		/// <param name="IdArg">The unique identifier for this command.</param>
+		/// <param name="DescriptionArg">A description of what this command does.</param>
+		/// <param name="ParamsArg">Any parameters needed to run this command.</param>
+		/// <param name="HasDefaultPermission">Sets the default permission of this command.</param>
+		/// <param name="HasDMPermission">Whether this command can be used in DMs.</param>
+		/// <param name="Perms">Sets the default member permissions to allow use of this command.</param>
 
 		/// <summary>
 		/// Constructs a Request object.
