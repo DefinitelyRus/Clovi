@@ -22,13 +22,12 @@ public class CloviHost
 		CloviCore.Log += Log; //I think it adds this method to an internal list, then executes it.
 		CloviCore.Ready += ClientReady; //Same goes here.
 
-		await CloviCore.LoginAsync(TokenType.Bot, "OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI"); //Hide this before making the repo public
+		await CloviCore.LoginAsync(TokenType.Bot, "OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI"); //!!! Hide this before making the repo public
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
 		while (true) { }
 	}
 
-	//Logging method.
 	private Task Log(LogMessage msg)
 	{
 		//TODO: Direct to ConsoleDirector
@@ -38,18 +37,17 @@ public class CloviHost
 
 	public async Task ClientReady()
 	{
-		ulong GuildId = 262784778690887680; //Temporary; must be saved on a case-by-case basis.
+		ulong GuildId = 262784778690887680; //!!! TEMPORARY; must be saved on a case-by-case basis.
 		SocketGuild Guild = CloviCore.GetGuild(GuildId);
 
 		try
 		{
-			//Example command builder. Initialization not necessary.
-			//TODO: Move to a dedicated commands respository.
 			SlashCommandProperties newCmd = new SlashCommandBuilder().WithName("ping").WithDescription("test").Build();
+		//TODO: Retrieve all standard Request library Requests. (i.e. The premade requests.)
 
-			//Sends the new command for use.
-			//TODO: Move to a for-loop in a dedicated commands repository.
 			await Guild.CreateApplicationCommandAsync(newCmd);
+		//TODO: Retrieve the array from a JSON file. This contains any custom commands.
+		//NOTE: Do not store Arrays directly in JSONs. A good option is to store an Array as a value in a Dictionary.
 
 
 
