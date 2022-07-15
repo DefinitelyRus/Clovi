@@ -41,27 +41,27 @@ public class CloviHost
 	{
 		ulong GuildId = 262784778690887680; //!!! TEMPORARY; must be saved on a case-by-case basis.
 		SocketGuild Guild = CloviCore.GetGuild(GuildId);
-		Request[] RequestList = Array.Empty<Request>(); //TEMP
+		LinkedList<Request> RequestList = new();
 
-		//TODO: Retrieve all standard Request library Requests. (i.e. The premade requests.)
+		#region Standard Request Library
+		//Retrieves all standard Request library Requests. (i.e. The premade requests.)
 
+		RequestList.AddLast(new Requests._RequestTemplate());
+		#endregion
+
+		#region Addon Requests
 		//TODO: Retrieve the array from a JSON file. This contains any custom commands.
 		//NOTE: Do not store Arrays directly in JSONs. A good option is to store an Array as a value in a Dictionary.
+		#endregion
 
-		foreach (Request r in RequestList) Director.AddRequestItem(r); //Adds custom commands to RequestDirector.
+		//Adds custom commands to RequestDirector.
+		foreach (Request r in RequestList) Director.AddRequestItem(r);
 
-		foreach (Request r in Director.RequestList)  //Adds all commands to Discord's listener.
-			await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
+		//Adds all commands to Discord's listener.
+		foreach (Request r in Director.RequestList) await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
 
-		try
-		{
-			CloviCore.SlashCommandExecuted += SlashCommandHandler; //Activated when a command is received.
-		}
-		catch (Exception ex)
-		{
-			//TODO: Write a better exception handler.
-			Console.WriteLine(ex.ToString());
-		}
+		//Activated when a command is received.
+		CloviCore.SlashCommandExecuted += SlashCommandHandler;
 	}
 
 	#region Fluff
@@ -69,8 +69,8 @@ public class CloviHost
 	//It can't. Use cmd.CommandName to identify.
 	private async Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
-		Console.WriteLine(cmd.CommandName);
-		await cmd.RespondAsync($"{CloviCore.Latency}ms");
+		Director.GetRequest(cmd.CommandName).Execute(cmd);
+		
 		
 	}
 	#endregion
