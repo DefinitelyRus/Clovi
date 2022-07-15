@@ -32,8 +32,7 @@ public abstract class Request
 	public Request
 		(
 			String IdArg,
-			String? DescriptionArg = null,
-			SlashCommandOptionBuilder[]? ParamsArg = null,
+			String DescriptionArg = "Placeholder description; please replace me.",
 			SlashCommandOptionBuilder[]? OptionsArray = null,
 			Boolean HasDefaultPermission = true,
 			Boolean HasDMPermission = true,
@@ -43,14 +42,17 @@ public abstract class Request
 		Id = IdArg;
 
 		//Builds the slash command with the given attributes and assigns it to DiscordCommand.
-		DiscordCommand = new SlashCommandBuilder()
+		SlashCommandBuilder CommandBuilder = new();
+		CommandBuilder
 			.WithName(IdArg)
 			.WithDescription(DescriptionArg)
-			.AddOptions(ParamsArg)
-			.WithDefaultPermission(true)
-			.WithDMPermission(true)
-			.WithDefaultMemberPermissions(null)
-			.Build();
+			.WithDefaultPermission(HasDefaultPermission)
+			.WithDMPermission(HasDMPermission)
+			.WithDefaultMemberPermissions(Perms);
+
+		if (OptionsArray is not null) CommandBuilder.AddOptions(OptionsArray);
+
+		DiscordCommand = CommandBuilder.Build();
 	}
 
 	/// <summary>
@@ -69,5 +71,5 @@ public abstract class Request
 	/// </summary>
 	/// <param name="Args">Any arguments required to execute the request. Typically this Request.Param with modified values.</param>
 	/// <returns>This Request for method chaining.</returns>
-	public abstract Request Execute(SocketSlashCommand Cmd);
+	public abstract Request Execute(SocketSlashCommand Cmd, DiscordSocketClient Core);
 }
