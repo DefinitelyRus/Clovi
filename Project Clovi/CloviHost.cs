@@ -47,6 +47,7 @@ public class CloviHost
 		//Retrieves all standard Request library Requests. (i.e. The premade requests.)
 
 		RequestList.AddLast(new Requests._RequestTemplate());
+		RequestList.AddLast(new Requests.GetLatency());
 		#endregion
 
 		#region Addon Requests
@@ -69,9 +70,7 @@ public class CloviHost
 	//It can't. Use cmd.CommandName to identify.
 	private async Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
-		Director.GetRequest(cmd.CommandName).Execute(cmd);
-		
-		
+		Director.ExecuteRequest(cmd, CloviCore);
 	}
 	#endregion
 }
