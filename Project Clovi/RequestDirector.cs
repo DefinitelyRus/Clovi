@@ -22,7 +22,8 @@ public class RequestDirector
 	/// <returns>The Request Object with a matching Id.</returns>
 	public Request GetRequest(String RequestId)
 	{
-		foreach (Request Req in RequestList) if (Req.Id.Equals(RequestId)) return Req;
+		foreach (Request Req in RequestList)
+			if (Req.Id.Equals(RequestId)) return Req;
 
 
 		//TODO: Add no-match-found error message.
@@ -76,33 +77,19 @@ public class RequestDirector
 
 
 	/// <summary>
-	/// Executes the request based on the given RequestId and Args. For use in console or in-text commands. Only applicable for context insensitive commands.
-	/// </summary>
-	/// <param name="RequestId">The Id of the target Request.</param>
-	/// <param name="Args">The arguments required to execute the Request.</param>
-	/// <returns>This RequestDirector for method chaining.</returns>
-	public RequestDirector ExecuteRequest(String RequestId, String[] Args, SocketSlashCommand? Cmd = null)
-	{
-		//TODO: Work on this. Finish the /commands one first.
-		return this;
-	}
-
-
-
-	/// <summary>
 	/// Executes the request based on the SocketSlashCommand's attributes. For use in-Discord /commands only.
 	/// </summary>
-	/// <param name="Cmd"></param>
+	/// <param name="Command"></param>
 	/// <returns></returns>
-	public RequestDirector ExecuteRequest(SocketSlashCommand Cmd)
+	public RequestDirector ExecuteRequest(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		Request RequestItem = GetRequest(Cmd.CommandName);
+		Request RequestItem = GetRequest(Command.CommandName);
 
 		//Cancels execution if Request is null.
-		if (RequestItem == null) Console.WriteLine($"No Request \"{Cmd.CommandName}\" found."); //TODO: Move to a dedicated logger.
+		if (RequestItem is null) Console.WriteLine($"No Request \"{Command.CommandName}\" found."); //TODO: Move to a dedicated logger.
 
 		//Finally executes the request.
-		RequestItem.Execute(Cmd);
+		_ = RequestItem.Execute(Command, Core);
 
 		return this;
 	}
