@@ -25,7 +25,7 @@ public abstract class Request
 	/// </summary>
 	/// <param name="IdArg">The unique identifier for this command.</param>
 	/// <param name="DescriptionArg">A description of what this command does.</param>
-	/// <param name="ParamsArg">Any parameters needed to run this command.</param>
+	/// <param name="OptionsArray">Any parameters needed to run this command.</param>
 	/// <param name="HasDefaultPermission">Sets the default permission of this command.</param>
 	/// <param name="HasDMPermission">Whether this command can be used in DMs.</param>
 	/// <param name="Perms">Sets the default member permissions to allow use of this command.</param>
@@ -34,6 +34,7 @@ public abstract class Request
 			String IdArg,
 			String? DescriptionArg = null,
 			SlashCommandOptionBuilder[]? ParamsArg = null,
+			SlashCommandOptionBuilder[]? OptionsArray = null,
 			Boolean HasDefaultPermission = true,
 			Boolean HasDMPermission = true,
 			GuildPermission? Perms = null
