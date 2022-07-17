@@ -64,6 +64,9 @@ public class CloviHost
 
 		//Removes all commands made by this bot in the past.
 		//Not the most efficient way to do this, but it'll do for now.
+		List<SocketApplicationCommand> c = Guild.GetApplicationCommandsAsync().Result.ToList();
+		foreach (SocketApplicationCommand cmd in c) await cmd.DeleteAsync();
+
 		//Adds custom commands to RequestDirector.
 		foreach (Request r in RequestList) ReqDirector.AddRequestItem(r);
 
