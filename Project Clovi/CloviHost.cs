@@ -75,9 +75,11 @@ public class CloviHost
 	}
 
 	#region Fluff
-	private async Task SlashCommandHandler(SocketSlashCommand cmd)
+	private Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
-		Director.ExecuteRequest(cmd, CloviCore);
+		ReqDirector.ExecuteRequest(cmd, CloviCore);
+
+		return Task.CompletedTask;
 	}
 	#endregion
 }
