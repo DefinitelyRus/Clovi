@@ -86,6 +86,7 @@ public class RequestDirector
 	{
 		#pragma warning disable CS8602
 		#pragma warning disable CS8600
+
 		Request RequestItem = GetRequest(Command.CommandName);
 
 		//Cancels execution if Request is null.
@@ -95,6 +96,7 @@ public class RequestDirector
 		RequestItem.Execute(Command, Core);
 
 		return RequestItem;
+
 		#pragma warning restore CS8602
 		#pragma warning restore CS8600
 	}
