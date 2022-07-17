@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿namespace Project_Clovi;
+
+using System.Collections;
 using Discord.WebSocket;
-namespace Project_Clovi;
 
 /// <summary>
 /// Directs all Request reads and changes.

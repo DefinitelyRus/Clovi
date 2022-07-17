@@ -1,7 +1,7 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿namespace Project_Clovi;
 
-namespace Project_Clovi;
+using Discord;
+using Discord.WebSocket;
 
 /// <summary>
 /// An inheritable abstract Request used as a template to create new Requests.

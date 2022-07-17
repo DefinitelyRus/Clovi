@@ -1,7 +1,7 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿namespace Project_Clovi.Requests;
 
-namespace Project_Clovi.Requests;
+using Discord;
+using Discord.WebSocket;
 
 public class GetLatency : Request
 {
