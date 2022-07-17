@@ -19,6 +19,7 @@ public class CloviHost
 	/// <summary>
 	/// Handles the input and output of information to and from the console within this host.
 	/// </summary>
+	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
 
 	public static Task Main() => new CloviHost().MainAsync();
 	#endregion
@@ -39,8 +40,8 @@ public class CloviHost
 
 	private Task Log(LogMessage msg)
 	{
-		//TODO: Direct to ConsoleDirector
-		Console.WriteLine(msg.ToString());
+		String Message = msg.Message;
+		ConDirector.Print(Message);
 		return Task.CompletedTask;
 	}
 
