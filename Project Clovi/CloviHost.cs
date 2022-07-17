@@ -1,6 +1,6 @@
 ﻿namespace Project_Clovi;
 
-using Discord; //TODO: I don't want to import the whole Discord.Net API. Find an alternative.
+using Discord;
 using Discord.WebSocket;
 
 public class CloviHost
@@ -12,6 +12,13 @@ public class CloviHost
 	public readonly DiscordSocketClient CloviCore = new();
 
 	public RequestDirector Director = new(new List<Request>());
+	/// <summary>
+	/// Directs all Request reads and changes within this host.
+	/// </summary>
+
+	/// <summary>
+	/// Handles the input and output of information to and from the console within this host.
+	/// </summary>
 
 	public static Task Main() => new CloviHost().MainAsync();
 	#endregion
@@ -55,6 +62,8 @@ public class CloviHost
 		//NOTE: Do not store Arrays directly in JSONs. A good option is to store an Array as a value in a Dictionary.
 		#endregion
 
+		//Removes all commands made by this bot in the past.
+		//Not the most efficient way to do this, but it'll do for now.
 		//Adds custom commands to RequestDirector.
 		foreach (Request r in RequestList) Director.AddRequestItem(r);
 
@@ -66,8 +75,6 @@ public class CloviHost
 	}
 
 	#region Fluff
-	//How can it tell which command is being executed?
-	//It can't. Use cmd.CommandName to identify.
 	private async Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
 		Director.ExecuteRequest(cmd, CloviCore);

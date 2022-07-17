@@ -17,11 +17,13 @@ public class _RequestTemplate : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient? Core = null)
 	{
+		//Optional prerequisites. Delete or modify only if necessary.
+
 		//Code goes here.
 
-		//Do not modify unless necessary.
-		//TODO: Add logger call here and have it send a success message.
+		//---------------
 
+		//Optional post-fixed instructions. Delete or modify only if necessary.
 		return this;
 	}
 }
