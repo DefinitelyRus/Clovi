@@ -21,7 +21,7 @@ public class RequestDirector
 	/// </summary>
 	/// <param name="RequestId">The Id of the target Request.</param>
 	/// <returns>The Request Object with a matching Id.</returns>
-	public Request GetRequest(String RequestId)
+	public Request? GetRequest(String RequestId)
 	{
 		foreach (Request Req in RequestList)
 			if (Req.Id.Equals(RequestId)) return Req;
@@ -66,7 +66,7 @@ public class RequestDirector
 	/// </summary>
 	/// <param name="ListToSort">The ArrayList to be sorted.</param>
 	/// <returns>The sorted ArrayList.</returns>
-	internal List<Request> Sort(ArrayList ListToSort)
+	static internal List<Request> Sort(ArrayList ListToSort)
 	{
 		List<Request> OrderedList = ListToSort.Cast<Request>().ToList();
 
@@ -82,16 +82,20 @@ public class RequestDirector
 	/// </summary>
 	/// <param name="Command"></param>
 	/// <returns></returns>
-	public RequestDirector ExecuteRequest(SocketSlashCommand Command, DiscordSocketClient Core)
+	public Request ExecuteRequest(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
+		#pragma warning disable CS8602
+		#pragma warning disable CS8600
 		Request RequestItem = GetRequest(Command.CommandName);
 
 		//Cancels execution if Request is null.
 		if (RequestItem is null) Console.WriteLine($"No Request \"{Command.CommandName}\" found."); //TODO: Move to a dedicated logger.
 
 		//Finally executes the request.
-		_ = RequestItem.Execute(Command, Core);
+		RequestItem.Execute(Command, Core);
 
-		return this;
+		return RequestItem;
+		#pragma warning restore CS8602
+		#pragma warning restore CS8600
 	}
 }

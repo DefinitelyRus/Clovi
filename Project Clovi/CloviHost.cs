@@ -9,12 +9,12 @@ public class CloviHost
 	/// <summary>
 	/// The core socket client responsible for handling all interactions between the front-end and back-end.
 	/// </summary>
-	public readonly DiscordSocketClient CloviCore = new();
+	public static readonly DiscordSocketClient CloviCore = new();
 
-	public RequestDirector Director = new(new List<Request>());
 	/// <summary>
 	/// Directs all Request reads and changes within this host.
 	/// </summary>
+	internal static RequestDirector ReqDirector = new(new List<Request>());
 
 	/// <summary>
 	/// Handles the input and output of information to and from the console within this host.
@@ -53,7 +53,6 @@ public class CloviHost
 		#region Standard Request Library
 		//Retrieves all standard Request library Requests. (i.e. The premade requests.)
 
-		RequestList.AddLast(new Requests._RequestTemplate());
 		RequestList.AddLast(new Requests.GetLatency());
 		#endregion
 
@@ -65,10 +64,10 @@ public class CloviHost
 		//Removes all commands made by this bot in the past.
 		//Not the most efficient way to do this, but it'll do for now.
 		//Adds custom commands to RequestDirector.
-		foreach (Request r in RequestList) Director.AddRequestItem(r);
+		foreach (Request r in RequestList) ReqDirector.AddRequestItem(r);
 
 		//Adds all commands to Discord's listener.
-		foreach (Request r in Director.RequestList) await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
+		foreach (Request r in ReqDirector.RequestList) await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
 
 		//Activated when a command is received.
 		CloviCore.SlashCommandExecuted += SlashCommandHandler;
