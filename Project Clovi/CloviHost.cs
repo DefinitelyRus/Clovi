@@ -22,6 +22,9 @@ public class CloviHost
 	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
 
 	internal static String? Token = "secret";
+
+	internal static Dictionary<ulong, Object> GuildsData = new();
+
 	public static Task Main() => new CloviHost().MainAsync();
 	#endregion
 
@@ -40,8 +43,9 @@ public class CloviHost
 		await CloviCore.LoginAsync(TokenType.Bot, Token); //!!! Hide this before making the repo public: OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
-		while (true) { }
 		Token = null;
+
+		while (true);
 	}
 	#endregion
 
