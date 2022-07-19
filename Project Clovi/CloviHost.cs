@@ -21,6 +21,8 @@ public class CloviHost
 	/// </summary>
 	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
 
+	internal static FileIODirector FIODirector = new();
+
 	internal static String? Token = "secret";
 
 	internal static Dictionary<ulong, Object> GuildsData = new();
@@ -34,11 +36,10 @@ public class CloviHost
 	/// </summary>
 	public async Task MainAsync()
 	{
-		//Note: Any Exceptions thrown inside this function will cause the program to crash.
+		if (!FIODirector.CheckRequiredFiles()) return;
 
-		//How on earth do these work?
-		CloviCore.Log += Log; //I think it adds this method to an internal list, then executes it.
-		CloviCore.Ready += ClientReady; //Same goes here.
+		CloviCore.Log += Log;
+		CloviCore.Ready += ClientReady;
 
 		await CloviCore.LoginAsync(TokenType.Bot, Token); //!!! Hide this before making the repo public: OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
