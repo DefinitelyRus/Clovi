@@ -21,6 +21,7 @@ public class CloviHost
 	/// </summary>
 	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
 
+	internal static String? Token = "secret";
 	public static Task Main() => new CloviHost().MainAsync();
 	#endregion
 
@@ -36,10 +37,11 @@ public class CloviHost
 		CloviCore.Log += Log; //I think it adds this method to an internal list, then executes it.
 		CloviCore.Ready += ClientReady; //Same goes here.
 
-		await CloviCore.LoginAsync(TokenType.Bot, "OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI"); //!!! Hide this before making the repo public
+		await CloviCore.LoginAsync(TokenType.Bot, Token); //!!! Hide this before making the repo public: OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
 		while (true) { }
+		Token = null;
 	}
 	#endregion
 
