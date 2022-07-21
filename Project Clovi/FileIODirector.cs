@@ -16,7 +16,7 @@ public class FileIODirector
 		};
 	}
 
-	private ConsoleDirector CD = CloviHost.ConDirector;
+	private readonly ConsoleDirector CD = CloviHost.ConDirector;
 
 	public String[] Directories { get; internal set; }
 
@@ -107,9 +107,11 @@ public class FileIODirector
 				CD.W("Instance data not found. Creating new files...");
 
 				//Creates a new empty-ish Dictionary.
-				Dictionary<String, Object> NewJson = new();
-				NewJson.Add("BotToken", "secret");
-				NewJson.Add("GuildsData", new Dictionary<ulong, Object>());
+				Dictionary<String, Object> NewJson = new()
+				{
+					{ "BotToken", "secret" },
+					{ "GuildsData", new Dictionary<ulong, Object>() }
+				};
 
 				//Serializes into a JSON String.
 				String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewJson);
