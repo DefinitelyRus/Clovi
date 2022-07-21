@@ -12,11 +12,12 @@ public class FileIODirector
 		{
 			Environment.GetFolderPath(Environment.SpecialFolder.Desktop),				//Desktop
 			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + app,		//My Documents
-			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + app		//Program Files
+			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + app	//Program Files
 		};
 	}
 
 	private ConsoleDirector CD = CloviHost.ConDirector;
+
 	public String[] Directories { get; internal set; }
 
 	//TODO: Create a string Directory overload.
@@ -58,9 +59,11 @@ public class FileIODirector
 
 		return ParsedJson;
 	}
+
 	public void UpdateInstanceData(Dictionary<String, Object> NewDictionary)
 	{
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewDictionary);
+
 		WriteFile("instancedata.json", 2, NewJsonString);
 	}
 
@@ -80,6 +83,7 @@ public class FileIODirector
 
 		WriteFile("instancedata.json", 2, NewJsonString);
 	}
+
 	/// <summary>
 	/// Checks all required files to run the bot.
 	/// In the event that certain files are corrupted or missing, this function will replace/create new files in its place.

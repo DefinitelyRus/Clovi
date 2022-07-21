@@ -79,6 +79,7 @@ public class CloviHost
 		#endregion
 
 		#region Removal & addition of requests.
+		//Do this for every guild listed in GuildData.
 		//Removes all commands made by this bot in the past.
 		//Not the most efficient way to do this, but it'll do for now.
 		List<SocketApplicationCommand> c = Guild.GetApplicationCommandsAsync().Result.ToList();
