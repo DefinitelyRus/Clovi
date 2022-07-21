@@ -20,6 +20,7 @@ public class CloviHost
 	/// Handles the input and output of information to and from the console within this host.
 	/// </summary>
 	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
+	private static  readonly ConsoleDirector CD = ConDirector;
 
 	internal static FileIODirector FIODirector = new();
 
@@ -98,7 +99,7 @@ public class CloviHost
 	private Task Log(LogMessage msg)
 	{
 		String Message = msg.Message;
-		ConDirector.Print(Message);
+		CD.W(Message);
 		return Task.CompletedTask;
 	}
 	#endregion

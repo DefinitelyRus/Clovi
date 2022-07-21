@@ -16,6 +16,7 @@ public class FileIODirector
 		};
 	}
 
+	private ConsoleDirector CD = CloviHost.ConDirector;
 	public String[] Directories { get; internal set; }
 
 	//TODO: Create a string Directory overload.
@@ -32,7 +33,7 @@ public class FileIODirector
 
 	public FileIODirector CreateFile(String FileName, byte Directory)
 	{
-		CloviHost.ConDirector.W(Directories[Directory] + $@"\{FileName}");
+		CD.W(Directories[Directory] + $@"\{FileName}");
 		System.IO.Directory.CreateDirectory(Directories[Directory]);
 		File.CreateText(Directories[Directory] + $@"\{FileName}");
 		return this;
