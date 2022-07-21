@@ -67,7 +67,7 @@ public class CloviHost
 		CD.W("Client started. Preparing...");
 		FIODirector.UpdateInstanceData("BotToken", Token);
 		Token = "secret";
-		File.Delete(FIODirector.Directories[0] + @"\BotToken.txt");
+		File.Delete(FIODirector.Directory[0] + @"\BotToken.txt");
 		ulong GuildId = 262784778690887680; //!!! TEMPORARY; must be saved on a case-by-case basis.
 		SocketGuild Guild = CloviCore.GetGuild(GuildId);
 		LinkedList<Request> RequestList = new();

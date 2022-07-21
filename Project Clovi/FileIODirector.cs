@@ -8,7 +8,7 @@ public class FileIODirector
 	public FileIODirector()
 	{
 		String app = @"\Project Clovi";
-		Directories = new string[]
+		Directory = new string[]
 		{
 			Environment.GetFolderPath(Environment.SpecialFolder.Desktop),				//Desktop
 			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + app,		//My Documents
@@ -18,31 +18,31 @@ public class FileIODirector
 
 	private readonly ConsoleDirector CD = CloviHost.ConDirector;
 
-	public String[] Directories { get; internal set; }
+	public String[] Directory { get; internal set; }
 
 	//TODO: Create a string Directory overload.
 	public StreamReader GetFile(String FileName, byte Directory)
 	{
-		return File.OpenText(Directories[Directory] + @$"\{FileName}");
+		return File.OpenText(Directory[Index] + @$"\{FileName}");
 	}
 
-	public FileIODirector WriteFile(String FileName, byte Directory, String Text)
+	public FileIODirector WriteFile(String FileName, byte Index, String Text)
 	{
-		File.WriteAllText(Directories[Directory] + $@"\{FileName}", Text);
+		File.WriteAllText(Directory[Index] + $@"\{FileName}", Text);
 		return this;
 	}
 
-	public FileIODirector CreateFile(String FileName, byte Directory)
+	public FileIODirector CreateFile(String FileName, byte Index)
 	{
-		CD.W(Directories[Directory] + $@"\{FileName}");
-		System.IO.Directory.CreateDirectory(Directories[Directory]);
-		File.CreateText(Directories[Directory] + $@"\{FileName}");
+		CD.W(Directory[Index] + $@"\{FileName}");
+		System.IO.Directory.CreateDirectory(Directory[Index]);
+		File.CreateText(Directory[Index] + $@"\{FileName}");
 		return this;
 	}
 
-	public FileIODirector DeleteFile(String FileName, byte Directory)
+	public FileIODirector DeleteFile(String FileName, byte Index)
 	{
-		File.Delete(Directories[Directory] + $@"{FileName}");
+		File.Delete(Directory[Index] + $@"{FileName}");
 		return this;
 	}
 
@@ -54,7 +54,6 @@ public class FileIODirector
 		String InstanceDataString = InstanceDataFile.ReadToEnd();
 		InstanceDataFile.Close();
 
-		Dictionary<String, JsonElement>? ParsedJson;
 		ParsedJson = JsonSerializer.Deserialize<Dictionary<String, JsonElement>>(InstanceDataString);
 
 		return ParsedJson;
@@ -117,7 +116,7 @@ public class FileIODirector
 				String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewJson);
 
 				//Creates the default directory if it doesn't already exist.
-				Directory.CreateDirectory(Directories[2]);
+				System.IO.Directory.CreateDirectory(Directory[2]);
 
 				//Sets the default text for the bot token prompt.
 				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
