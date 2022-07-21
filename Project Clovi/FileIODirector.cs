@@ -86,80 +86,113 @@ public class FileIODirector
 	/// </summary>
 	public bool CheckRequiredFiles()
 	{
-		ConsoleDirector CD = CloviHost.ConDirector;
+		Dictionary<String, Object>? ParsedJson;
+		StreamReader InstanceDataFile;
 
 		try
 		{
-			//Opens the file.
-			StreamReader OpenFile = GetFile("instancedata.json", 2);
-
-			//Parses the file into JSON String and assigns it to a Dictionary.
-			Dictionary<String, Object>? ParsedJson = null;
-
-			String Token = "secret";
-			try
-			{
-				ParsedJson = JsonSerializer.Deserialize<Dictionary<String, Object>>(OpenFile.ReadToEnd());
-
-				//Assign the BotToken from the ParsedJson to a String.
-				Token = (String)ParsedJson["BotToken"];
-			}
-			catch (JsonException e) { CD.W(e.ToString()); ParsedJson = null;  }
-
-			//Closes the file.
-			OpenFile.Close();
-
-			//If ParsedJson returns null, throw an exception. (Cancels this whole TRY block.)
-			//if (ParsedJson is null) throw new NullReferenceException("\"instancedata.json\" returned null and cannot be parsed back to Dictionary<String, Object?>.");
-
-			//If the Token is "secret"... (Default value; invalid.)
-			if (Token.Equals("secret"))
-			{
-				CD.W(Token);
-				CD.W(CloviHost.Token);
-				//Find a file called "BotToken.txt" on the user's Desktop, then assigns the first line to the Token String.
-				StreamReader TokenFile = GetFile("BotToken.txt", 0);
-				Token = TokenFile.ReadToEnd();
-				TokenFile.Close();
-
-				DeleteFile("BotToken.txt", 0);
-				ParsedJson["BotToken"] = Token;
-			}
-
-			CloviHost.Token = Token;
-			CloviHost.GuildsData = (Dictionary<ulong, Object>) ParsedJson["GuildsData"];
-
-			String NewJson = JsonSerializer.Serialize<Dictionary<String, Object>>(ParsedJson);
-
-			WriteFile("instancedata.json", 2, NewJson);
-			return true;
+			//Attempts to check for existing instance data.
+			CD.W("Attempting to check for existing instance data...");
+			InstanceDataFile = GetFile("instancedata.json", 2);
 		}
 		catch (Exception e)
 		{
-			CD.W(e.Message);
-			CD.W(e.StackTrace);
-
-			if (e is FileNotFoundException || e is DirectoryNotFoundException || e is NullReferenceException)
+			//If File or Directory is missing...
+			if (e is FileNotFoundException || e is DirectoryNotFoundException)
 			{
-				CD.W($"{e.Message}\n\nStack Trace:\n{e.StackTrace}");
+				CD.W("Instance data not found. Creating new files...");
 
-				#region Replacing the missing/corrupt JSON file.
-				CD.W("Creating new \"instancedata.json\"...");
-				CreateFile("instancedata.json", 2);
+				//Creates a new empty-ish Dictionary.
+				Dictionary<String, Object> NewJson = new();
+				NewJson.Add("BotToken", "secret");
+				NewJson.Add("GuildsData", new Dictionary<ulong, Object>());
 
-				Dictionary<String, Object> newJson = new()
-				{
-					{"BotToken", "secret"},
-					{"GuildsData", new Dictionary<ulong, Object>()} //Move to database. This isn't good for large-scale deployment.
-				};
-				#endregion
+				//Serializes into a JSON String.
+				String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewJson);
 
-				CD.W("Creating new \"BotToken.txt\" in the current user's Desktop.");
-				CD.W("[!!!] ALERT: Please paste your bot token in BotToken.txt in your Desktop, then restart this program.");
-				CreateFile("BotToken.txt", 0);
+				//Creates the default directory if it doesn't already exist.
+				Directory.CreateDirectory(Directories[2]);
+
+				//Sets the default text for the bot token prompt.
+				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
+
+				//Creates the new files needed to start the bot upon next bootup.
+				WriteFile("instancedata.json", 2, NewJsonString);
+				WriteFile("BotToken.txt", 0, BotTokenFileString);
+
+				CD.W("[ALERT] No bot token. Paste your bot token in \"BotToken.txt\" in your Desktop.");
+				return false;
+			}
+			else
+			{
+				CD.W("[FATAL] An unexpected error has occured.");
+				CD.W(e.ToString());
+				return false;
+			}
+		}
+
+		//Reads the instance data JSON file.
+		String InstanceDataString = InstanceDataFile.ReadToEnd();
+		InstanceDataFile.Close();
+
+		//Parses the file back into a Dictionary.
+		ParsedJson = JsonSerializer.Deserialize<Dictionary<String, Object>>(InstanceDataString);
+
+		//Cast BotToken into JsonElement, then into String.
+		#pragma warning disable CS8602
+		#pragma warning disable CS8601
+		JsonElement BotTokenJson = (JsonElement) ParsedJson["BotToken"];
+		ParsedJson["BotToken"] = BotTokenJson.GetString();
+		#pragma warning restore CS8601
+		#pragma warning restore CS8602
+
+		//If for some reason, ParsedJson is null, this cancels the program.
+		if (ParsedJson is null) { CD.W("ParsedJson returned null."); return false; }
+
+		//If BotToken is "secret"... (default value)
+		if (ParsedJson["BotToken"].Equals("secret"))
+		{
+			CD.W("Parsed BotToken returned \"secret\", reading BotToken.txt...");
+
+			StreamReader BotTokenFile;
+
+			//Gets the bot token from BotToken.txt, this file is deleted upon successful login.
+			try { BotTokenFile = GetFile("BotToken.txt", 0); }
+			catch (FileNotFoundException)
+			{
+				CD.W("[FATAL] BotToken.txt not found. Creating replacement...");
+				//Sets the default text for the bot token prompt.
+				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
+
+				//Creates a replacement BotToken.txt.
+				WriteFile("BotToken.txt", 0, BotTokenFileString);
+
+				CD.W("Replacement created. Exiting...");
+
+				return false;
 			}
 
-			return false;
+			String? BotTokenString = BotTokenFile.ReadLine();
+			BotTokenFile.Close();
+
+			//If for some reason, BotTokenString is null, this cancels the program.
+			if (BotTokenString is null) { CD.W("BotTokenString returned null."); return false; }
+			
+			//Assigns the new BotToken to the Dictionary.
+			CD.W(BotTokenString);
+			ParsedJson["BotToken"] = BotTokenString;
+
+			CD.W("Attempting to rewrite instance data...");
+
+			//Serializes back into a JSON String, then writes to instancedata.json.
+			String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(ParsedJson);
+			WriteFile("instancedata.json", 2, NewJsonString);
 		}
+
+		CloviHost.Token = (String) ParsedJson["BotToken"];
+		//CloviHost.GuildsData = (Dictionary<ulong, Object>) ParsedJson["GuildsData"];
+
+		CD.W("Instance data retrieved.");
+		return true;
 	}
 }
