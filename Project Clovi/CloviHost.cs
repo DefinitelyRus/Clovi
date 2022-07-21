@@ -37,11 +37,16 @@ public class CloviHost
 	/// </summary>
 	public async Task MainAsync()
 	{
+		CD.W("Checking for existing instance data...");
 		if (!FIODirector.CheckRequiredFiles()) return;
 
+		CD.W("Initalizing logger...");
 		CloviCore.Log += Log;
+
+		CD.W("Initializing client...");
 		CloviCore.Ready += ClientReady;
 
+		CD.W("Attempting to start...");
 		await CloviCore.LoginAsync(TokenType.Bot, Token);
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
@@ -59,6 +64,7 @@ public class CloviHost
 	public async Task ClientReady()
 	{
 		#region Initialization
+		CD.W("Client started. Preparing...");
 		FIODirector.UpdateInstanceData("BotToken", Token);
 		Token = "secret";
 		File.Delete(FIODirector.Directories[0] + @"\BotToken.txt");
@@ -69,6 +75,7 @@ public class CloviHost
 
 		#region Standard Request Library
 		//Retrieves all standard Request library Requests. (i.e. The premade requests.)
+		CD.W("Initializing requests...");
 
 		RequestList.AddLast(new Requests.GetLatency());
 		#endregion
@@ -76,9 +83,11 @@ public class CloviHost
 		#region Addon Requests
 		//TODO: Retrieve the array from a JSON file. This contains any custom commands.
 		//NOTE: Do not store Arrays directly in JSONs. A good option is to store an Array as a value in a Dictionary.
+		CD.W("Initializing additional requests...");
 		#endregion
 
 		#region Removal & addition of requests.
+		CD.W("Removing any duplicate requests...");
 		//Do this for every guild listed in GuildData.
 		//Removes all commands made by this bot in the past.
 		//Not the most efficient way to do this, but it'll do for now.
@@ -86,12 +95,13 @@ public class CloviHost
 		foreach (SocketApplicationCommand cmd in c) await cmd.DeleteAsync();
 
 		//Adds custom commands to RequestDirector.
-		foreach (Request r in RequestList) ReqDirector.AddRequestItem(r);
+		foreach (Request r in RequestList) { ReqDirector.AddRequestItem(r); CD.W($"Added Request \"{r.Id}\" to the RequestList."); }
 
 		//Adds all commands to Discord's listener.
-		foreach (Request r in ReqDirector.RequestList) await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
+		foreach (Request r in ReqDirector.RequestList) { await Guild.CreateApplicationCommandAsync(r.DiscordCommand); CD.W($"Added Request\"{r.Id}\" to the Listener."); }
 		#endregion
 
+		CD.W("Enabling commands handler...");
 		CloviCore.SlashCommandExecuted += SlashCommandHandler;
 	}
 	#endregion
@@ -103,8 +113,7 @@ public class CloviHost
 	/// </summary>
 	private Task Log(LogMessage msg)
 	{
-		String Message = msg.Message;
-		CD.W(Message);
+		CD.W(msg.Message);
 		return Task.CompletedTask;
 	}
 	#endregion
@@ -115,6 +124,7 @@ public class CloviHost
 	/// </summary>
 	private Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
+		CD.W($"Executing request \"{cmd.CommandName}\"...");
 		ReqDirector.ExecuteRequest(cmd, CloviCore);
 
 		return Task.CompletedTask;
