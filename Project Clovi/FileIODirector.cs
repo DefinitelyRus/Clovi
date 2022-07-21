@@ -3,8 +3,15 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+/// <summary>
+/// Handles all file reads and writes stored locally on the host device.
+/// </summary>
 public class FileIODirector
 {
+	/// <summary>
+	/// Constructor for FileIODirector.
+	/// </summary>
 	public FileIODirector()
 	{
 		String app = @"\Project Clovi";
@@ -16,22 +23,49 @@ public class FileIODirector
 		};
 	}
 
+	#region Attributes
+	/// <summary>
+	/// A lazy shortcut for lazy people... like me.
+	/// </summary>
 	private readonly ConsoleDirector CD = CloviHost.ConDirector;
 
+	/// <summary>
+	/// An array of pre-set Directory Strings.
+	/// </summary>
 	public String[] Directory { get; internal set; }
+	#endregion
 
-	//TODO: Create a string Directory overload.
-	public StreamReader GetFile(String FileName, byte Directory)
+	#region File Management
+	/// <summary>
+	/// Gets the target file from the target directory.
+	/// </summary>
+	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
+	/// <param name="Index">A preset directory where local files are stored.</param>
+	/// <returns>The target file.</returns>
+	public StreamReader GetFile(String FileName, byte Index)
 	{
 		return File.OpenText(Directory[Index] + @$"\{FileName}");
 	}
 
+	/// <summary>
+	/// Creates or overwrites the target file.
+	/// </summary>
+	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
+	/// <param name="Index">A preset directory where local files are stored.</param>
+	/// <param name="Text">The String to be written on the file.</param>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector WriteFile(String FileName, byte Index, String Text)
 	{
 		File.WriteAllText(Directory[Index] + $@"\{FileName}", Text);
 		return this;
 	}
 
+	/// <summary>
+	/// Creates or empties the target file.
+	/// </summary>
+	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
+	/// <param name="Index">A preset directory where local files are stored.</param>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector CreateFile(String FileName, byte Index)
 	{
 		CD.W(Directory[Index] + $@"\{FileName}");
@@ -40,52 +74,88 @@ public class FileIODirector
 		return this;
 	}
 
+	/// <summary>
+	/// Deletes the target file.
+	/// </summary>
+	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
+	/// <param name="Index">A preset directory where local files are stored.</param>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector DeleteFile(String FileName, byte Index)
 	{
 		File.Delete(Directory[Index] + $@"{FileName}");
 		return this;
 	}
+	#endregion
 
+	/// <summary>
+	/// Gets the locally-saved instance data of any pre-existing instance of this bot on the host device.
+	/// If the bot alraedy successfully booted up from the same device in the past,
+	/// this function will return any data stored from the previous session.
+	/// </summary>
+	/// <returns>A Dictionary parsed from a JSON file containing JsonElement objects.</returns>
 	public Dictionary<String, JsonElement>? GetInstanceData()
 	{
-
+		//Gets the JSON file then parses into a JSON String.
 		CD.W("Attempting to retrieve instance data...");
 		StreamReader InstanceDataFile = GetFile("instancedata.json", 2);
 		String InstanceDataString = InstanceDataFile.ReadToEnd();
 		InstanceDataFile.Close();
 
-		ParsedJson = JsonSerializer.Deserialize<Dictionary<String, JsonElement>>(InstanceDataString);
+		//Parses JSON String into a Dictionary.
+		Dictionary<String, JsonElement>? ParsedJson = JsonSerializer.Deserialize<Dictionary<String, JsonElement>>(InstanceDataString);
 
 		return ParsedJson;
 	}
 
-	public void UpdateInstanceData(Dictionary<String, Object> NewDictionary)
+	/// <summary>
+	/// Replaces the locally-saved instance data on the host device.
+	/// </summary>
+	/// <param name="NewDictionary">The replacement Dictionary object.</param>
+	/// <returns>This FileIODirector object.</returns>
+	public FileIODirector UpdateInstanceData(Dictionary<String, Object> NewDictionary)
 	{
+		//Serializes a Dictionary into a JSON String.
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewDictionary);
 
+		//Writes the JSON String into a file.
 		WriteFile("instancedata.json", 2, NewJsonString);
+
+		return this;
 	}
 
-	public void UpdateInstanceData(String Key, Object Value)
+	/// <summary>
+	/// Replaces one element from the locally-saved instance data on the host device.
+	/// </summary>
+	/// <param name="Key">The key of the target element to be updated.</param>
+	/// <param name="Value">The value to be set.</param>
+	/// <returns>This FileIODirector object.</returns>
+	public FileIODirector UpdateInstanceData(String Key, Object Value)
 	{
 		Dictionary<String, JsonElement>? InstanceData = GetInstanceData();
 		
+		//Cancels if InstanceData is null.
 		if (InstanceData is null)
 		{
 			CD.W("InstanceData is null at FileIODirector.UpdateInstanceData().");
-			return;
+			return this;
 		}
 
+		//Updates the value in the Dictionary.
 		InstanceData[Key] = JsonSerializer.SerializeToElement(Value);
 
+		//Serializes the Dictionary into a JSON String.
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, JsonElement>>(InstanceData);
 
+		//Writes the JSON Sting into a file.
 		WriteFile("instancedata.json", 2, NewJsonString);
+
+		return this;
 	}
 
 	/// <summary>
 	/// Checks all required files to run the bot.
-	/// In the event that certain files are corrupted or missing, this function will replace/create new files in its place.
+	/// In the event that certain files are corrupted or missing,
+	/// this function will replace/create new files in its place.
 	/// </summary>
 	public bool CheckRequiredFiles()
 	{
@@ -100,6 +170,7 @@ public class FileIODirector
 		}
 		catch (Exception e)
 		{
+			#region Replacement of instancedata file.
 			//If File or Directory is missing...
 			if (e is FileNotFoundException || e is DirectoryNotFoundException)
 			{
@@ -128,12 +199,16 @@ public class FileIODirector
 				CD.W("[ALERT] No bot token. Paste your bot token in \"BotToken.txt\" in your Desktop.");
 				return false;
 			}
+			#endregion
+
+			#region Other unexpected exceptions.
 			else
 			{
 				CD.W("[FATAL] An unexpected error has occured.");
 				CD.W(e.ToString());
 				return false;
 			}
+			#endregion
 		}
 
 		//Reads the instance data JSON file.
@@ -151,9 +226,10 @@ public class FileIODirector
 		#pragma warning restore CS8601
 		#pragma warning restore CS8602
 
-		//If for some reason, ParsedJson is null, this cancels the program.
+		//If for some reason ParsedJson is null, this cancels the program.
 		if (ParsedJson is null) { CD.W("ParsedJson returned null."); return false; }
 
+		#region Retrieval of new bot token.
 		//If BotToken is "secret"... (default value)
 		if (ParsedJson["BotToken"].Equals("secret"))
 		{
@@ -193,9 +269,9 @@ public class FileIODirector
 			String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(ParsedJson);
 			WriteFile("instancedata.json", 2, NewJsonString);
 		}
+		#endregion
 
 		CloviHost.Token = (String) ParsedJson["BotToken"];
-		//CloviHost.GuildsData = (Dictionary<ulong, Object>) ParsedJson["GuildsData"];
 
 		CD.W("Instance data retrieved.");
 		return true;
