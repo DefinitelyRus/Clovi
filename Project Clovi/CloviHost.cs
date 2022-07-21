@@ -42,9 +42,11 @@ public class CloviHost
 		CloviCore.Log += Log;
 		CloviCore.Ready += ClientReady;
 
-		await CloviCore.LoginAsync(TokenType.Bot, Token); //!!! Hide this before making the repo public: OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI
+		await CloviCore.LoginAsync(TokenType.Bot, Token);
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
+		//Temporarily edits the bot's token which will remain as is if the bot fails to login.
+		FIODirector.UpdateInstanceData("BotToken", "secret");
 
 		while (true);
 	}
@@ -57,7 +59,9 @@ public class CloviHost
 	public async Task ClientReady()
 	{
 		#region Initialization
+		FIODirector.UpdateInstanceData("BotToken", Token);
 		Token = "secret";
+		File.Delete(FIODirector.Directories[0] + @"\BotToken.txt");
 		ulong GuildId = 262784778690887680; //!!! TEMPORARY; must be saved on a case-by-case basis.
 		SocketGuild Guild = CloviCore.GetGuild(GuildId);
 		LinkedList<Request> RequestList = new();
