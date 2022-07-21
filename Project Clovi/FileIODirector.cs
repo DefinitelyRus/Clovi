@@ -58,6 +58,28 @@ public class FileIODirector
 
 		return ParsedJson;
 	}
+	public void UpdateInstanceData(Dictionary<String, Object> NewDictionary)
+	{
+		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewDictionary);
+		WriteFile("instancedata.json", 2, NewJsonString);
+	}
+
+	public void UpdateInstanceData(String Key, Object Value)
+	{
+		Dictionary<String, JsonElement>? InstanceData = GetInstanceData();
+		
+		if (InstanceData is null)
+		{
+			CD.W("InstanceData is null at FileIODirector.UpdateInstanceData().");
+			return;
+		}
+
+		InstanceData[Key] = JsonSerializer.SerializeToElement(Value);
+
+		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, JsonElement>>(InstanceData);
+
+		WriteFile("instancedata.json", 2, NewJsonString);
+	}
 	/// <summary>
 	/// Checks all required files to run the bot.
 	/// In the event that certain files are corrupted or missing, this function will replace/create new files in its place.
