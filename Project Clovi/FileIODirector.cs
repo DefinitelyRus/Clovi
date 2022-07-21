@@ -45,6 +45,19 @@ public class FileIODirector
 		return this;
 	}
 
+	public Dictionary<String, JsonElement>? GetInstanceData()
+	{
+
+		CD.W("Attempting to retrieve instance data...");
+		StreamReader InstanceDataFile = GetFile("instancedata.json", 2);
+		String InstanceDataString = InstanceDataFile.ReadToEnd();
+		InstanceDataFile.Close();
+
+		Dictionary<String, JsonElement>? ParsedJson;
+		ParsedJson = JsonSerializer.Deserialize<Dictionary<String, JsonElement>>(InstanceDataString);
+
+		return ParsedJson;
+	}
 	/// <summary>
 	/// Checks all required files to run the bot.
 	/// In the event that certain files are corrupted or missing, this function will replace/create new files in its place.
