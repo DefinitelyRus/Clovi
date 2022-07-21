@@ -23,7 +23,7 @@ public class CloviHost
 
 	internal static FileIODirector FIODirector = new();
 
-	internal static String? Token = "secret";
+	internal static String Token = "secret";
 
 	internal static Dictionary<ulong, Object> GuildsData = new();
 
@@ -44,7 +44,6 @@ public class CloviHost
 		await CloviCore.LoginAsync(TokenType.Bot, Token); //!!! Hide this before making the repo public: OTkzMzU3NTI4ODQwODAyMzU0.GFY2sX.Oa6btULKbnk9GYQgPzTtZA7T0_q7sghJxN7MSI
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
-		Token = null;
 
 		while (true);
 	}
@@ -57,6 +56,7 @@ public class CloviHost
 	public async Task ClientReady()
 	{
 		#region Initialization
+		Token = "secret";
 		ulong GuildId = 262784778690887680; //!!! TEMPORARY; must be saved on a case-by-case basis.
 		SocketGuild Guild = CloviCore.GetGuild(GuildId);
 		LinkedList<Request> RequestList = new();
