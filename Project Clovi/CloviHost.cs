@@ -22,10 +22,24 @@ public class CloviHost
 	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
 	private static  readonly ConsoleDirector CD = ConDirector;
 
+	/// <summary>
+	/// Handles all file reads and writes stored locally on the host device.
+	/// </summary>
 	internal static FileIODirector FIODirector = new();
 
+	/// <summary>
+	/// Handles all Database reads and writes.
+	/// </summary>
+	internal static Database SQLDirector = new();
+
+	/// <summary>
+	/// The bot's secret token. Its default value is "secret".
+	/// </summary>
 	internal static String Token = "secret";
 
+	/// <summary>
+	/// A Dictionary of guilds containing all guild-specific data about the bot.
+	/// </summary>
 	internal static Dictionary<ulong, Object> GuildsData = new();
 
 	public static Task Main() => new CloviHost().MainAsync();
