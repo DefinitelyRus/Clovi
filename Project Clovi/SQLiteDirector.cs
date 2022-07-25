@@ -1,8 +1,10 @@
 ﻿namespace Project_Clovi;
 
+using Microsoft.Data.Sqlite;
+
 public class SQLiteDirector : DatabaseDirector
 {
-	SQLiteDirector() : base()
+	SQLiteDirector() : base(SQLDialect: "SQLite")
 	{
 
 	}
