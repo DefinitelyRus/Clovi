@@ -24,4 +24,15 @@ public abstract class DatabaseDirector
 	}
 
 	public String Dialect { get; private set; }
+
+	private LinkedList<String> SQLQueue = new();
+
+	public Database SelectedDatabase { get; private set; }
+
+	public Object? GetByPrimaryKey(String TableName, String ColumnName, String Key)
+	{
+
+		return null;
+	}
+
 }
