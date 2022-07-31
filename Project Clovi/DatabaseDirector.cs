@@ -46,5 +46,7 @@ public abstract class DatabaseDirector
 		return Row;
 	}
 
-	public abstract void ExecuteQuery(String SQLCommand);
+	public abstract Object? Execute(String SQLCommand);
+
+	public abstract Object? Query(String SQLCommand);
 }
