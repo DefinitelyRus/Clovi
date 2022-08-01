@@ -30,7 +30,7 @@ public class CloviHost
 	/// <summary>
 	/// Handles all Database reads and writes.
 	/// </summary>
-	internal static Database SQLDirector = new();
+	internal static SQLiteDirector SQLDirector = new();
 
 	/// <summary>
 	/// The bot's secret token. Its default value is "secret".
