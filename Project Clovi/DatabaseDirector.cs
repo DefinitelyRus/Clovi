@@ -10,9 +10,6 @@ public abstract class DatabaseDirector
 
 	private LinkedList<String> SQLQueue = new();
 
-	public Object? GetRecord(String Key, String ColumnName, String TableName)
-	{
-	}
 	public abstract Object? GetRecord(String Key, String ColumnName, String TableName, String DatabaseName);
 
 	public Dictionary<String, Object> GetRow(String PrimaryKey, String TableName)
