@@ -11,6 +11,7 @@ public class SQLiteDirector : DatabaseDirector
 	{
 		Connection = new($@"Data Source={CloviHost.FIODirector.Directory[0]}\GuildsData.s3db");
 		DatabaseName = Name;
+		DatabaseList = new();
 	}
 
 	/*
@@ -21,6 +22,7 @@ public class SQLiteDirector : DatabaseDirector
 	 * but allow them to be called from this director.
 	 * !!!!!
 	 */
+	public List<SQLiteDatabase> DatabaseList { get; internal set; }
 
 	/// <summary>
 	/// The connection to the SQLite database. Close this connection before exiting the parent program.
@@ -31,6 +33,10 @@ public class SQLiteDirector : DatabaseDirector
 	/// The name of this database. Used to identify between databases for logging and debugging purposes.
 	/// </summary>
 	public string DatabaseName { get; private set; }
+	public override Object? GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)
+	{
+		throw new NotImplementedException();
+	}
 
 	/// <summary>
 	/// Looks for the target database then executes the SQL command.
