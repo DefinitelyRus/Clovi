@@ -33,10 +33,12 @@ public class SQLiteDirector : DatabaseDirector
 	public string DatabaseName { get; private set; }
 
 	/// <summary>
-	/// Sends the command to the database and applies any changes.
+	/// Looks for the target database then executes the SQL command.
 	/// </summary>
-	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
-	/// <returns>(Integer) The number of rows affected by the command.</returns>
+	/// <param name="DatabaseName">The name of the database.</param>
+	/// <param name="SQLCommand">The SQL command to be executed.</param>
+	/// <returns>(Integer) The number of rows affected.</returns>
+	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
 	public override Object Execute(String DatabaseName, String SQLCommand)
 	{
 		foreach (SQLiteDatabase db in DatabaseList)
@@ -47,10 +49,12 @@ public class SQLiteDirector : DatabaseDirector
 	}
 
 	/// <summary>
-	/// Returns the results of an SQL query. Needs to be closed after use.
+	/// Looks for the target database then returns the result of the query.
 	/// </summary>
-	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
-	/// <returns>Results of the query.</returns>
+	/// <param name="DatabaseName">The name of the database.</param>
+	/// <param name="SQLCommand">The SQL query (typically a SELECT command).</param>
+	/// <returns>The results of this query.</returns>
+	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
 	public override SqliteDataReader? Query(string DatabaseName, string SQLCommand)
 	{
 		foreach (SQLiteDatabase db in DatabaseList)
