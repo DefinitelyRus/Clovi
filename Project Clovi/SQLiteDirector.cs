@@ -7,32 +7,13 @@ using Microsoft.Data.Sqlite;
 /// </summary>
 public class SQLiteDirector : DatabaseDirector
 {
-	SQLiteDirector(String Name) : base(SQLDialect: "SQLite")
+	public SQLiteDirector() : base(SQLDialect: "SQLite")
 	{
-		Connection = new($@"Data Source={CloviHost.FIODirector.Directory[0]}\GuildsData.s3db");
-		DatabaseName = Name;
 		DatabaseList = new();
 	}
 
-	/*
-	 * !!!!!
-	 * It seems I mistakenly combined the director and the database object itself.
-	 * The SqliteConnection object is to be stored in individual SQLiteDatabase objects.
-	 * The execute/query functions are to be stored there too,
-	 * but allow them to be called from this director.
-	 * !!!!!
-	 */
 	public List<SQLiteDatabase> DatabaseList { get; internal set; }
 
-	/// <summary>
-	/// The connection to the SQLite database. Close this connection before exiting the parent program.
-	/// </summary>
-	public SqliteConnection Connection { get; private set; }
-
-	/// <summary>
-	/// The name of this database. Used to identify between databases for logging and debugging purposes.
-	/// </summary>
-	public string DatabaseName { get; private set; }
 	public override Object? GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)
 	{
 		throw new NotImplementedException();
