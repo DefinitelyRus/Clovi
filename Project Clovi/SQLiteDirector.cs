@@ -37,9 +37,13 @@ public class SQLiteDirector : DatabaseDirector
 	/// </summary>
 	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
 	/// <returns>(Integer) The number of rows affected by the command.</returns>
-	public override Object Execute(String SQLCommand)
+	public override Object Execute(String DatabaseName, String SQLCommand)
 	{
-		return new SqliteCommand(SQLCommand, Connection).ExecuteNonQuery();
+		foreach (SQLiteDatabase db in DatabaseList)
+		{
+			if (DatabaseName.Equals(db.Name)) return db.Execute(SQLCommand);
+		}
+		throw new FileNotFoundException($"Database \"{DatabaseName}\" does not exist.");
 	}
 
 	/// <summary>
@@ -47,8 +51,12 @@ public class SQLiteDirector : DatabaseDirector
 	/// </summary>
 	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
 	/// <returns>Results of the query.</returns>
-	public override SqliteDataReader Query(String SQLCommand)
+	public override SqliteDataReader? Query(string DatabaseName, string SQLCommand)
 	{
-		return new SqliteCommand(SQLCommand, Connection).ExecuteReader();
+		foreach (SQLiteDatabase db in DatabaseList)
+		{
+			if (DatabaseName.Equals(db.Name)) return db.Query(SQLCommand);
+		}
+		throw new FileNotFoundException($"Database \"{DatabaseName}\" does not exist.");
 	}
 }
