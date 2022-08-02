@@ -54,6 +54,9 @@ public class CloviHost
 		CD.W("Checking for existing instance data...");
 		if (!FIODirector.CheckRequiredFiles()) return;
 
+		CD.W("Adding all core databases...");
+		SQLDirector.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
+
 		CD.W("Initalizing logger...");
 		CloviCore.Log += Log;
 
