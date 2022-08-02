@@ -13,7 +13,9 @@ public class SQLiteDatabase : Database
 	/// <param name="Name">The name of this database.</param>
 	public SQLiteDatabase(String Name) : base(Name)
 	{
-		Connection = new($@"Data Source={CloviHost.FIODirector.Directory[0]}\{Name}.s3db");
+		Connection = new($@"Data Source={CloviHost.FIODirector.Directory[0]}\{Name}.db");
+		Connection.Open();
+		Connection.Close();
 	}
 
 	/// <summary>
@@ -38,7 +40,10 @@ public class SQLiteDatabase : Database
 	/// <returns>(Integer) The number of rows affected by the command.</returns>
 	public override Object Execute(String SQLCommand)
 	{
-		return new SqliteCommand(SQLCommand, Connection).ExecuteNonQuery();
+		Connection.Open();
+		int Result = new SqliteCommand(SQLCommand, Connection).ExecuteNonQuery();
+		Connection.Close();
+		return Result;
 	}
 
 	/// <summary>
@@ -48,6 +53,9 @@ public class SQLiteDatabase : Database
 	/// <returns>Results of the query.</returns>
 	public override SqliteDataReader Query(String SQLCommand)
 	{
-		return new SqliteCommand(SQLCommand, Connection).ExecuteReader();
+		Connection.Open();
+		SqliteDataReader Reader = new SqliteCommand(SQLCommand, Connection).ExecuteReader();
+		Connection.Close();
+		return Reader;
 	}
 }
