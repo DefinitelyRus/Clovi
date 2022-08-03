@@ -50,4 +50,17 @@ public class SQLiteDirector : DatabaseDirector
 		}
 		throw new FileNotFoundException($"Database \"{DatabaseName}\" does not exist.");
 	}
+
+	public void CheckDatabase(string DatabaseName)
+	{
+		try
+		{
+			SqliteDataReader? reader = Query(DatabaseName, "SELECT * FROM guilds_settings LIMIT 1");
+			if (!reader.HasRows) throw new SqliteException("0 rows found in guild_settings.", 0);
+		}
+		catch (Exception)
+		{
+			//Build database auto-builder.
+		}
+	}
 }
