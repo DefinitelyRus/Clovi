@@ -42,7 +42,7 @@ public class SQLiteDirector : DatabaseDirector
 	/// <param name="SQLCommand">The SQL query (typically a SELECT command).</param>
 	/// <returns>The results of this query.</returns>
 	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
-	public override SqliteDataReader? Query(string DatabaseName, string SQLCommand)
+	public override SqliteDataReader Query(string DatabaseName, string SQLCommand)
 	{
 		foreach (SQLiteDatabase db in DatabaseList)
 		{
@@ -55,12 +55,16 @@ public class SQLiteDirector : DatabaseDirector
 	{
 		try
 		{
-			SqliteDataReader? reader = Query(DatabaseName, "SELECT * FROM guilds_settings LIMIT 1");
-			if (!reader.HasRows) throw new SqliteException("0 rows found in guild_settings.", 0);
+			SqliteDataReader reader = Query(DatabaseName, "SELECT * FROM guilds_settings LIMIT 1");
+			if (reader.GetString(2).Equals("testname") && reader.GetString(3).Equals("testvalue"))
+			{
+				
+			}
 		}
 		catch (Exception)
 		{
-			//Build database auto-builder.
+			//TODO: Catch only the known exception.
 		}
 	}
+
 }
