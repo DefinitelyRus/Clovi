@@ -67,4 +67,31 @@ public class SQLiteDirector : DatabaseDirector
 		}
 	}
 
+	private void ResetDatabase()
+	{
+		String[] SQLCommandArray =
+		{
+			"CREATE TABLE [IF NOT EXISTS] guilds_settings (" +
+				"rowid INTEGER PRIMARY KEY AUTOINCREMENT," +
+				"guild_id TEXT NOT NULL," +
+				"setting_name TEXT NOT NULL," +
+				"setting_value TEXT" +
+			");",
+			"CREATE TABLE [IF NOT EXISTS] guilds_users_data (" +
+				"rowid INTEGER PRIMARY KEY AUTOINCREMENT," +
+				"guild_id TEXT NOT NULL," +
+				"user_id TEXT NOT NULL," +
+				"data_name TEXT NOT NULL," +
+				"data_value TEXT" +
+			");",
+		};
+
+		//TODO: Check CloviCore for any joined servers, then add each server to guilds_settings with default values.
+
+		//TODO: Figure out what those default values are.
+
+		//TODO: Set the first row of guilds settings as: guild_id = 0, setting_name = testname, setting_value = testvalue
+		//TODO: By extension, this also means an exception block will need to be added anytime a function checks
+		//		the whole table. A guild_id of 0 will always fail and may crash the program.
+	}
 }
