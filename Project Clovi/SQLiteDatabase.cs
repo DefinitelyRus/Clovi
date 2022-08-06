@@ -47,7 +47,7 @@ public class SQLiteDatabase : Database
 	}
 
 	/// <summary>
-	/// Returns the results of an SQL query. Needs to be closed after use.
+	/// Returns the results of an SQL query. Needs to be closed after use. This Reader must be closed after use.
 	/// </summary>
 	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
 	/// <returns>Results of the query.</returns>
