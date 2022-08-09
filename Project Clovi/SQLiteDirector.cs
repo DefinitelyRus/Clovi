@@ -1,6 +1,7 @@
 ﻿namespace Project_Clovi;
 
 using Microsoft.Data.Sqlite;
+using Discord.WebSocket;
 
 /// <summary>
 /// Handles all transactions between the bot and the database.
@@ -85,8 +86,12 @@ public class SQLiteDirector : DatabaseDirector
 				"data_value TEXT" +
 			");",
 		};
-
 		//TODO: Check CloviCore for any joined servers, then add each server to guilds_settings with default values.
+		List<SocketGuild> Guilds = (List<SocketGuild>) CloviHost.CloviCore.Guilds;
+		foreach (SocketGuild g in Guilds) {
+			//SELECT * FROM guilds_settings WHERE guild_id = {g.Id.ToString()} && setting_name = "______________";
+			//if ^ is null or something, add row.
+		}
 
 		//TODO: Figure out what those default values are.
 
