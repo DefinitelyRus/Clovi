@@ -20,6 +20,15 @@ public class SQLiteDirector : DatabaseDirector
 		throw new NotImplementedException();
 	}
 
+	public override SQLiteDatabase GetDatabase(string DatabaseName)
+	{
+		foreach (SQLiteDatabase db in DatabaseList)
+		{
+			if (db.Name.Equals(DatabaseName)) return db;
+		}
+		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
+	}
+
 	/// <summary>
 	/// Looks for the target database then executes the SQL command.
 	/// </summary>

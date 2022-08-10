@@ -20,6 +20,7 @@ public abstract class DatabaseDirector
 		return Row;
 	}
 
+	public abstract Object GetDatabase(String DatabaseName);
 
 	public abstract Object Execute(String DatabaseName, String SQLCommand);
 
