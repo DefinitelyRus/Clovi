@@ -115,11 +115,18 @@ public class CloviHost
 		foreach (Request r in RequestList) { ReqDirector.AddRequestItem(r); CD.W($"Added Request \"{r.Id}\" to the RequestList."); }
 
 		//Adds all commands to Discord's listener.
-		foreach (Request r in ReqDirector.RequestList) { await Guild.CreateApplicationCommandAsync(r.DiscordCommand); CD.W($"Added Request\"{r.Id}\" to the Listener."); }
+		foreach (Request r in ReqDirector.RequestList) { await Guild.CreateApplicationCommandAsync(r.DiscordCommand); CD.W($"Added Request \"{r.Id}\" to the Listener."); }
 		#endregion
 
 		CD.W("Enabling commands handler...");
 		CloviCore.SlashCommandExecuted += SlashCommandHandler;
+
+
+		try { SQLDirector.ResetDatabase(); } //TEST ONLY -----------------------------------------------------------------!!!
+		catch (Exception e)
+		{
+			CD.W(e.ToString());
+		}
 	}
 	#endregion
 
