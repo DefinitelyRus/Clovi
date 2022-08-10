@@ -32,8 +32,8 @@ public class GetLatency : Request
 		//Optional post-fixed instructions. Delete or modify only if necessary.
 		CD.W($"SUCCESS: \"{this.Id}\" request by {Command.User.Username}: {Ping}ms");
 
-		//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-		CloviHost.SQLDirector.Execute("GuildsData", "INSERT INTO guilds_settings (guild_id, setting_name, setting_value) values (999, \"testname\", \"testvalue\")");
+		//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
+		//CloviHost.SQLDirector.ResetDatabase();
 		return this;
 	}
 }
