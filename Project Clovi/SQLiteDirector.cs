@@ -2,6 +2,7 @@
 
 using Microsoft.Data.Sqlite;
 using Discord.WebSocket;
+using System.Data;
 
 /// <summary>
 /// Handles all transactions between the bot and the database.
@@ -110,14 +111,32 @@ public class SQLiteDirector : DatabaseDirector
 
 		GetDatabase("GuildsData").Connection.Open();
 		foreach (SocketGuild g in Guilds) {
-			String SQLQuery, SQLCommand;
+			CD.W($"Guild: {g.Name} ({g.Id})");
+			String DiscordGuildId, DatabaseGuildId, SettingName, SQLQuery, SQLCommand;
+			DiscordGuildId = g.Id.ToString();
 			
 			foreach (KeyValuePair<String, String> pair in DefaultSettings)
 			{
-				SQLQuery = $"SELECT * FROM guilds_settings WHERE guild_id = \"{g.Id.ToString()}\" AND setting_name = \"{pair.Key}\"";
+				CD.W($"Searching Key: {pair.Key}...");
+				SQLQuery = $"SELECT * FROM guilds_settings WHERE guild_id = \"{DiscordGuildId}\" AND setting_name = \"{pair.Key}\"";
 				SQLCommand = $"INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES (\"{g.Id.ToString()}\", \"{pair.Key}\", \"{pair.Value}\")";
-				try { Query("GuildsData", SQLQuery).GetValue(3); }
-				catch { Execute("GuildsData", SQLCommand); } //throw new SqliteException("Failed to insert to default values into GuildsData.", 0); 
+
+				try
+				{
+					SqliteDataReader Result = Query("GuildsData", SQLQuery);
+
+					CD.W($"{Result.GetString("setting_name")}");
+					//help
+
+					//DatabaseGuildId = Result.GetString(1);
+					//SettingName = Result.GetString(2);
+					//if (DatabaseGuildId.Equals(DiscordGuildId) && pair.Key.Equals(SettingName)) { continue; }
+				}
+				catch (Exception e)
+				{
+					Execute("GuildsData", SQLCommand);
+					CD.W(e.ToString());
+				} //throw new SqliteException("Failed to insert to default values into GuildsData.", 0); 
 			}
 		}
 		GetDatabase("GuildsData").Connection.Close();
