@@ -11,11 +11,15 @@ public class SQLiteDirector : DatabaseDirector
 	public SQLiteDirector() : base(SQLDialect: "SQLite")
 	{
 		DatabaseList = new();
+		CD = CloviHost.ConDirector;
 	}
 
 	public List<SQLiteDatabase> DatabaseList { get; internal set; }
 
-	public override Object? GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)
+	private ConsoleDirector CD { get; }
+
+	
+	public override Object GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)
 	{
 		throw new NotImplementedException();
 	}
@@ -42,7 +46,7 @@ public class SQLiteDirector : DatabaseDirector
 		{
 			if (DatabaseName.Equals(db.Name)) return db.Execute(SQLCommand);
 		}
-		throw new FileNotFoundException($"Database \"{DatabaseName}\" does not exist.");
+		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
 	}
 
 	/// <summary>
@@ -58,7 +62,7 @@ public class SQLiteDirector : DatabaseDirector
 		{
 			if (DatabaseName.Equals(db.Name)) return db.Query(SQLCommand);
 		}
-		throw new FileNotFoundException($"Database \"{DatabaseName}\" does not exist.");
+		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
 	}
 
 	public void CheckDatabase(string DatabaseName)
@@ -66,18 +70,19 @@ public class SQLiteDirector : DatabaseDirector
 		try
 		{
 			SqliteDataReader reader = Query(DatabaseName, "SELECT * FROM guilds_settings LIMIT 1");
-			if (reader.GetString(2).Equals("testname") && reader.GetString(3).Equals("testvalue"))
+			if (reader.GetString(2).Equals("testname"))
 			{
-				
+				Execute("GuildsData", "INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES {{ \"0\", \"testname\", \"testvalue\"}}");
 			}
 		}
-		catch (Exception)
+		catch (Exception e)
 		{
 			//TODO: Catch only the known exception.
+			CD.W(e.ToString());
 		}
 	}
 
-	private void ResetDatabase()
+	public void ResetDatabase()
 	{
 		String[] SQLCommandArray =
 		{
@@ -96,13 +101,29 @@ public class SQLiteDirector : DatabaseDirector
 			");",
 		};
 		//TODO: Check CloviCore for any joined servers, then add each server to guilds_settings with default values.
-		List<SocketGuild> Guilds = (List<SocketGuild>) CloviHost.CloviCore.Guilds;
+		List<SocketGuild> Guilds = CloviHost.CloviCore.Guilds.ToList();
+		Dictionary<String, String> DefaultSettings = new()
+		{
+			{ "IsBotEnabled", "true" }
+		};
+
+		GetDatabase("GuildsData").Connection.Open();
 		foreach (SocketGuild g in Guilds) {
 			//SELECT * FROM guilds_settings WHERE guild_id = {g.Id.ToString()} && setting_name = "______________";
 			//if ^ is null or something, add row.
+			String SQLQuery, SQLCommand;
+			
+			foreach (KeyValuePair<String, String> pair in DefaultSettings)
+			{
+				SQLQuery = $"SELECT * FROM guilds_settings WHERE guild_id = \"{g.Id.ToString()}\" AND setting_name = \"{pair.Key}\"";
+				SQLCommand = $"INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES (\"{g.Id.ToString()}\", \"{pair.Key}\", \"{pair.Value}\")";
+				try { Query("GuildsData", SQLQuery).GetValue(3); }
+				catch { Execute("GuildsData", SQLCommand); } //throw new SqliteException("Failed to insert to default values into GuildsData.", 0); 
+			}
 		}
 
 		//TODO: Figure out what those default values are.
+		GetDatabase("GuildsData").Connection.Close();
 
 		//TODO: Set the first row of guilds settings as: guild_id = 0, setting_name = testname, setting_value = testvalue
 		//TODO: By extension, this also means an exception block will need to be added anytime a function checks

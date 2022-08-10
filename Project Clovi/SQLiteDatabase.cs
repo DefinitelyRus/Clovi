@@ -14,8 +14,9 @@ public class SQLiteDatabase : Database
 	public SQLiteDatabase(String Name) : base(Name)
 	{
 		Connection = new($@"Data Source={CloviHost.FIODirector.Directory[0]}\{Name}.db");
-		Connection.Open();
-		Connection.Close();
+		Connection.Open(); Connection.Close();
+
+		CD = CloviHost.ConDirector;
 	}
 
 	/// <summary>
@@ -26,12 +27,17 @@ public class SQLiteDatabase : Database
 	public SQLiteDatabase(String Name, String Directory) : base(Name)
 	{
 		Connection = new($@"Data Source ={Directory}\{Name}.s3db");
+		Connection.Open(); Connection.Close();
+
+		CD = CloviHost.ConDirector;
 	}
 
 	/// <summary>
 	/// The connection to the SQLite database. Close this connection before exiting the parent program.
 	/// </summary>
 	public SqliteConnection Connection { get; private set; }
+
+	private ConsoleDirector CD { get; }
 
 	/// <summary>
 	/// Sends the command to the database and applies any changes.
@@ -40,9 +46,15 @@ public class SQLiteDatabase : Database
 	/// <returns>(Integer) The number of rows affected by the command.</returns>
 	public override Object Execute(String SQLCommand)
 	{
+		int Result = new SqliteCommand(SQLCommand, Connection).ExecuteNonQuery();
+		return Result;
+	}
+
+	public Object Execute(String SQLCommand, bool AutoCloseConnection)
+	{
 		Connection.Open();
 		int Result = new SqliteCommand(SQLCommand, Connection).ExecuteNonQuery();
-		Connection.Close();
+		if (AutoCloseConnection) Connection.Close();
 		return Result;
 	}
 
@@ -53,9 +65,14 @@ public class SQLiteDatabase : Database
 	/// <returns>Results of the query.</returns>
 	public override SqliteDataReader Query(String SQLCommand)
 	{
+		SqliteDataReader Reader = new SqliteCommand(SQLCommand, Connection).ExecuteReader();
+		return Reader;
+	}
+
+	{
 		Connection.Open();
 		SqliteDataReader Reader = new SqliteCommand(SQLCommand, Connection).ExecuteReader();
-		Connection.Close();
+		if (AutoCloseConnection) Connection.Close();
 		return Reader;
 	}
 }
