@@ -72,16 +72,17 @@ public class SQLiteDirector : DatabaseDirector
 			SqliteDataReader reader = Query(DatabaseName, "SELECT * FROM guilds_settings LIMIT 1");
 			if (reader.GetString(2).Equals("testname"))
 			{
+				//Inserts a dummy record for testing purposes.
 				Execute("GuildsData", "INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES {{ \"0\", \"testname\", \"testvalue\"}}");
 			}
 		}
 		catch (Exception e)
 		{
-			//TODO: Catch only the known exception.
 			CD.W(e.ToString());
 		}
 	}
 
+	//Consults CheckDatabase() if a reset is necessary.
 	public void ResetDatabase()
 	{
 		String[] SQLCommandArray =
@@ -109,8 +110,6 @@ public class SQLiteDirector : DatabaseDirector
 
 		GetDatabase("GuildsData").Connection.Open();
 		foreach (SocketGuild g in Guilds) {
-			//SELECT * FROM guilds_settings WHERE guild_id = {g.Id.ToString()} && setting_name = "______________";
-			//if ^ is null or something, add row.
 			String SQLQuery, SQLCommand;
 			
 			foreach (KeyValuePair<String, String> pair in DefaultSettings)
@@ -121,8 +120,6 @@ public class SQLiteDirector : DatabaseDirector
 				catch { Execute("GuildsData", SQLCommand); } //throw new SqliteException("Failed to insert to default values into GuildsData.", 0); 
 			}
 		}
-
-		//TODO: Figure out what those default values are.
 		GetDatabase("GuildsData").Connection.Close();
 
 		//TODO: Set the first row of guilds settings as: guild_id = 0, setting_name = testname, setting_value = testvalue

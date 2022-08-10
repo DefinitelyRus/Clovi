@@ -40,7 +40,7 @@ public class SQLiteDatabase : Database
 	private ConsoleDirector CD { get; }
 
 	/// <summary>
-	/// Sends the command to the database and applies any changes.
+	/// Sends the command to the database and applies any changes. Connection must be opened before using this method.
 	/// </summary>
 	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
 	/// <returns>(Integer) The number of rows affected by the command.</returns>
@@ -50,6 +50,12 @@ public class SQLiteDatabase : Database
 		return Result;
 	}
 
+	/// <summary>
+	/// Sends the command to the database and applies any changes. Connection is opened automatically and optionally closed manually. 
+	/// </summary>
+	/// <param name="SQLCommand"></param>
+	/// <param name="AutoCloseConnection"></param>
+	/// <returns></returns>
 	public Object Execute(String SQLCommand, bool AutoCloseConnection)
 	{
 		Connection.Open();
@@ -59,7 +65,7 @@ public class SQLiteDatabase : Database
 	}
 
 	/// <summary>
-	/// Returns the results of an SQL query. Needs to be closed after use. This Reader must be closed after use.
+	/// Returns the results of an SQL query. Connection must be opened before using this method.
 	/// </summary>
 	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
 	/// <returns>Results of the query.</returns>
@@ -69,6 +75,13 @@ public class SQLiteDatabase : Database
 		return Reader;
 	}
 
+	/// <summary>
+	/// Returns the results of an SQL query. Connection is opened automatically and optionally closed manually.
+	/// </summary>
+	/// <param name="SQLCommand"></param>
+	/// <param name="AutoCloseConnection"></param>
+	/// <returns></returns>
+	public SqliteDataReader Query(String SQLCommand, bool AutoCloseConnection)
 	{
 		Connection.Open();
 		SqliteDataReader Reader = new SqliteCommand(SQLCommand, Connection).ExecuteReader();
