@@ -46,7 +46,29 @@ public class ConsoleDirector : IODirector
 	public override void Print(String Text)
 	{
 		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
-		Console.WriteLine($"{TimeNow} >> {Text}\n");
+		String Output = $"{TimeNow} >> {Text}";
+		Console.WriteLine($"{Output}\n");
+
+		//Prints the log to the target channel.
+		//TODO: Accumulate all failed prints, then send in one go.
+		//Identify where to finally send the logs.
+		if (IsOnline)
+		{
+			//TODO: Guild and Channel IDs are to be stored in a DB.
+			SocketTextChannel Channel = CloviHost.CloviCore.GetGuild(262784778690887680).GetTextChannel(857171496254308372);
+
+
+			if (PendingLog.Length == 0) Channel.SendMessageAsync($"```{Output}```");
+			else
+			{
+				Channel.SendMessageAsync($"```{PendingLog}{Output}```");
+				PendingLog.Clear();
+			}
+		}
+		else
+		{
+			PendingLog.AppendLine(Output);
+		}
 	}
 
 	/// <summary>
