@@ -66,6 +66,7 @@ public class SQLiteDatabase : Database
 
 	/// <summary>
 	/// Returns the results of an SQL query. Connection must be opened before using this method.
+	/// Use SqliteDataReader.Read() in a WHILE loop to iterate through results!
 	/// </summary>
 	/// <param name="SQLCommand">The SQL command to be sent to the database.</param>
 	/// <returns>Results of the query.</returns>
@@ -77,6 +78,7 @@ public class SQLiteDatabase : Database
 
 	/// <summary>
 	/// Returns the results of an SQL query. Connection is opened automatically and optionally closed manually.
+	/// Use SqliteDataReader.Read() in a WHILE loop to iterate through results!
 	/// </summary>
 	/// <param name="SQLCommand"></param>
 	/// <param name="AutoCloseConnection"></param>
