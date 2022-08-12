@@ -13,19 +13,31 @@ public class ConsoleDirector : IODirector
 	/// <param name="CoreArg"></param>
 	/// <param name="ReqDirArg"></param>
 	/// <param name="Id"></param>
-	public ConsoleDirector(DiscordSocketClient CoreArg, RequestDirector ReqDirArg, String Id) : base(CoreArg, ReqDirArg, Id) { }
+	public ConsoleDirector(DiscordSocketClient CoreArg, RequestDirector ReqDirArg, String Id) : base(CoreArg, ReqDirArg, Id)
+	{
+		IsOnline = false;
+		PendingLog = new();
+	}
 
 	/// <summary>
 	/// An overload of the default ConsoleDirector constructor which takes an existing IODirector implementation and uses it as reference.
 	/// </summary>
 	/// <param name="CDA">An abstracted ConsoleDirector object.</param>
-	public ConsoleDirector(IODirector CDA) : base(CDA.Core, CDA.ReqDirector, CDA.Id) { }
+	public ConsoleDirector(IODirector CDA) : base(CDA.Core, CDA.ReqDirector, CDA.Id)
+	{
+		IsOnline = false;
+		PendingLog = new();
+	}
 
 	/// <summary>
 	/// A static variable used to hold the time string.
 	/// Its default value is always replaced with the current time under normal circumstances.
 	/// </summary>
 	private static String TimeNow = "CriticalTimeError";
+
+	internal bool IsOnline { get; set; }
+
+	private StringBuilder PendingLog { get; }
 
 	/// <summary>
 	/// Prints the input string to the console along with a timestamp.
