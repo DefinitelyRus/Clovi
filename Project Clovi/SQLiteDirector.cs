@@ -125,8 +125,11 @@ public class SQLiteDirector : DatabaseDirector
 				{
 					SqliteDataReader Result = Query("GuildsData", SQLQuery);
 
-					CD.W($"{Result.GetString("setting_name")}");
-					//help
+					CD.W($"Looping through results... (Has rows:  {Result.HasRows})");
+					while (Result.Read())
+					{
+						CD.W($"{Result.GetString("setting_name")}");
+					}
 
 					//DatabaseGuildId = Result.GetString(1);
 					//SettingName = Result.GetString(2);
