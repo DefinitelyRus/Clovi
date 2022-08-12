@@ -108,6 +108,7 @@ public class CloviHost
 
 			#region Removal & addition of requests.
 			CD.W("Removing any duplicate requests...");
+
 			//Do this for every guild listed in GuildData.
 			//Removes all commands made by this bot in the past.
 			//Not the most efficient way to do this, but it'll do for now.
@@ -123,6 +124,8 @@ public class CloviHost
 
 			CD.W("Enabling commands handler...");
 			CloviCore.SlashCommandExecuted += SlashCommandHandler;
+
+			CD.IsOnline = true;
 		}
 		catch (Exception e) { CD.W(e.ToString()); }
 	}
