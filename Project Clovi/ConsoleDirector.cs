@@ -1,6 +1,7 @@
 ﻿namespace Project_Clovi;
 
 using Discord.WebSocket;
+using System.Text;
 
 /// <summary>
 /// Handles the input and output of information to and from the console.
