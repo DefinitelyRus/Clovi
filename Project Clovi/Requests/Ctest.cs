@@ -27,19 +27,18 @@ public class Ctest : Request
 		try
 		{
 			CloviHost.SQLDirector.ResetDatabase();
-			Command.RespondAsync("Resetting database...");
+			Command.RespondAsync("Checking database...");
 		}
 		catch (Exception e)
 		{
 			CD.W(e.ToString());
-			Command.RespondAsync($"```{e.ToString()}```");
 			return this;
 		}
-		CD.W("Finished resetting database.");
+		CD.W("Finished database checkup.");
 		//---------------
 
 		//Optional post-fixed instructions. Delete or modify only if necessary.
-		CD.W($"SUCCESS: \"{this.Id}\" request by {Command.User.Username}");
+		CD.W($"SUCCESS: \"{this.Id}\" request by {Command.User.Username}", true);
 		return this;
 	}
 }
