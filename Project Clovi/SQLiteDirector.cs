@@ -79,7 +79,7 @@ public class SQLiteDirector : DatabaseDirector
 		}
 		catch (Exception e)
 		{
-			CD.W(e.ToString());
+			CD.W(e.ToString(), true);
 		}
 	}
 
@@ -102,19 +102,26 @@ public class SQLiteDirector : DatabaseDirector
 				"data_value TEXT" +
 			");",
 		};
+
 		//TODO: Check CloviCore for any joined servers, then add each server to guilds_settings with default values.
 		List<SocketGuild> Guilds = CloviHost.CloviCore.Guilds.ToList();
 		Dictionary<String, String> DefaultSettings = new()
 		{
-			{ "IsBotEnabled", "true" }
+			{ "IsBotEnabled", "true" },
+			{ "LoggerChannelId", "0" }
 		};
 
+		//Opens the GuildsData database.
 		GetDatabase("GuildsData").Connection.Open();
+
+		//For each guild the bot is in...
 		foreach (SocketGuild g in Guilds) {
 			CD.W($"Guild: {g.Name} ({g.Id})");
-			String DiscordGuildId, DatabaseGuildId, SettingName, SQLQuery, SQLCommand;
+			String DiscordGuildId, SQLQuery, SQLCommand;
+			bool IsMissing;
 			DiscordGuildId = g.Id.ToString();
 			
+			//For each item in DefaultSettings...
 			foreach (KeyValuePair<String, String> pair in DefaultSettings)
 			{
 				CD.W($"Searching Key: {pair.Key}...");
@@ -125,21 +132,28 @@ public class SQLiteDirector : DatabaseDirector
 				{
 					SqliteDataReader Result = Query("GuildsData", SQLQuery);
 
-					CD.W($"Looping through results... (Has rows:  {Result.HasRows})");
-					while (Result.Read())
-					{
-						CD.W($"{Result.GetString("setting_name")}");
-					}
+					IsMissing = !Result.HasRows;
+					CD.W($"Is {pair.Key} missing: {IsMissing}");
 
-					//DatabaseGuildId = Result.GetString(1);
-					//SettingName = Result.GetString(2);
-					//if (DatabaseGuildId.Equals(DiscordGuildId) && pair.Key.Equals(SettingName)) { continue; }
+					if (!IsMissing)
+					{
+						while (Result.Read())
+						{
+							CD.W($"{Result.GetString("setting_name")} -> {Result.GetString("guild_id")}");
+						}
+						CD.SendLog();
+					}
+					else
+					{
+						CD.W("Resetting database...", true);
+						Execute("GuildsData", SQLCommand);
+					}
 				}
 				catch (Exception e)
 				{
 					Execute("GuildsData", SQLCommand);
-					CD.W(e.ToString());
-				} //throw new SqliteException("Failed to insert to default values into GuildsData.", 0); 
+					CD.W(e.ToString(), true);
+				}
 			}
 		}
 		GetDatabase("GuildsData").Connection.Close();
