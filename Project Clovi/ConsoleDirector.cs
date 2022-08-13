@@ -6,25 +6,12 @@ using System.Text;
 /// <summary>
 /// Handles the input and output of information to and from the console.
 /// </summary>
-public class ConsoleDirector : IODirector
+public class ConsoleDirector
 {
 	/// <summary>
 	/// Creates a new instance of ConsoleDirector.
 	/// </summary>
-	/// <param name="CoreArg"></param>
-	/// <param name="ReqDirArg"></param>
-	/// <param name="Id"></param>
-	public ConsoleDirector(DiscordSocketClient CoreArg, RequestDirector ReqDirArg, String Id) : base(CoreArg, ReqDirArg, Id)
-	{
-		IsOnline = false;
-		PendingLog = new();
-	}
-
-	/// <summary>
-	/// An overload of the default ConsoleDirector constructor which takes an existing IODirector implementation and uses it as reference.
-	/// </summary>
-	/// <param name="CDA">An abstracted ConsoleDirector object.</param>
-	public ConsoleDirector(IODirector CDA) : base(CDA.Core, CDA.ReqDirector, CDA.Id)
+	public ConsoleDirector()
 	{
 		IsOnline = false;
 		PendingLog = new();
@@ -44,7 +31,8 @@ public class ConsoleDirector : IODirector
 	/// Prints the input string to the console along with a timestamp.
 	/// </summary>
 	/// <param name="Text"></param>
-	public override void Print(String Text)
+	[Obsolete("This method is for redundancy only. Use ConsoleDirector.W() instead.", false)]
+	public void Print(String Text)
 	{
 		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
 		String Output = $"{TimeNow} >> {Text}";
@@ -78,7 +66,7 @@ public class ConsoleDirector : IODirector
 	/// This method will remain unimplemented for this version.
 	/// </summary>
 	/// <exception cref="NotImplementedException"></exception>
-	public override void Input(string Text)
+	public void Input(string Text)
 	{
 		throw new NotImplementedException();
 	}
