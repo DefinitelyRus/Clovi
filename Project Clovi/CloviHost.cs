@@ -2,6 +2,7 @@
 
 using Discord;
 using Discord.WebSocket;
+using Microsoft.Data.Sqlite;
 
 public class CloviHost
 {
@@ -12,15 +13,15 @@ public class CloviHost
 	public static readonly DiscordSocketClient CloviCore = new();
 
 	/// <summary>
-	/// Directs all Request reads and changes within this host.
-	/// </summary>
-	internal static RequestDirector ReqDirector = new(new List<Request>());
-
-	/// <summary>
 	/// Handles the input and output of information to and from the console within this host.
 	/// </summary>
-	internal static ConsoleDirector ConDirector = new(CloviCore, ReqDirector, "ConsoleApp");
-	private static  readonly ConsoleDirector CD = ConDirector;
+	internal static ConsoleDirector ConDirector = new();
+	private static readonly ConsoleDirector CD = ConDirector;
+
+	/// <summary>
+	/// Handles all Database reads and writes.
+	/// </summary>
+	internal static SQLiteDirector SQLDirector = new();
 
 	/// <summary>
 	/// Handles all file reads and writes stored locally on the host device.
@@ -28,9 +29,9 @@ public class CloviHost
 	internal static FileIODirector FIODirector = new();
 
 	/// <summary>
-	/// Handles all Database reads and writes.
+	/// Directs all Request reads and changes within this host.
 	/// </summary>
-	internal static SQLiteDirector SQLDirector = new();
+	internal static RequestDirector ReqDirector = new(new List<Request>());
 
 	/// <summary>
 	/// The bot's secret token. Its default value is "secret".
@@ -58,7 +59,7 @@ public class CloviHost
 		SQLDirector.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
 
 		CD.W("Initalizing logger...");
-		CloviCore.Log += Log;
+		CloviCore.Log += LoggerTask;
 
 		CD.W("Initializing client...");
 		CloviCore.Ready += ClientReady;
@@ -87,8 +88,6 @@ public class CloviHost
 			FIODirector.UpdateInstanceData("BotToken", Token);
 			Token = "secret";
 			File.Delete(FIODirector.Directory[0] + @"\BotToken.txt");
-			ulong GuildId = 262784778690887680; //!!! TEMPORARY; must be saved on a case-by-case basis.
-			SocketGuild Guild = CloviCore.GetGuild(GuildId);
 			LinkedList<Request> RequestList = new();
 			#endregion
 
@@ -107,19 +106,50 @@ public class CloviHost
 			#endregion
 
 			#region Removal & addition of requests.
-			CD.W("Removing any duplicate requests...");
+			//For each Guild the bot is in...
+			foreach (SocketGuild Guild in CloviCore.Guilds)
+			{
+				CD.W($"Setting up guild \"{Guild.Name} ({Guild.Id})\"...");
 
-			//Do this for every guild listed in GuildData.
-			//Removes all commands made by this bot in the past.
-			//Not the most efficient way to do this, but it'll do for now.
-			List<SocketApplicationCommand> c = Guild.GetApplicationCommandsAsync().Result.ToList();
-			foreach (SocketApplicationCommand cmd in c) await cmd.DeleteAsync();
+				//Removes all commands made by this bot in the past.
+				List<SocketApplicationCommand> CommandList = Guild.GetApplicationCommandsAsync().Result.ToList();
+				foreach (SocketApplicationCommand cmd in CommandList)
+				{
+					await cmd.DeleteAsync();
+					CD.W($"Removed Command \"{cmd.Name}\" from the list.");
+				}
 
-			//Adds custom commands to RequestDirector.
-			foreach (Request r in RequestList) { ReqDirector.AddRequestItem(r); CD.W($"Added Request \"{r.Id}\" to the RequestList."); }
+				//Adds custom commands to RequestDirector.
+				foreach (Request r in RequestList)
+				{
+					ReqDirector.AddRequestItem(r);
+					CD.W($"Added Request \"{r.Id}\" to the RequestList.");
+				}
 
-			//Adds all commands to Discord's listener.
-			foreach (Request r in ReqDirector.RequestList) { await Guild.CreateApplicationCommandAsync(r.DiscordCommand); CD.W($"Added Request \"{r.Id}\" to the Listener."); }
+				//Adds all commands to Discord's listener.
+				foreach (Request r in ReqDirector.RequestList)
+				{
+					await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
+					CD.W($"Added Request \"{r.Id}\" to the Listener.");
+				}
+			}
+			#endregion
+
+			#region Logging on guilds.
+			SQLiteDatabase GuildsData = SQLDirector.GetDatabase("GuildsData");
+			GuildsData.Connection.Open();
+			SqliteDataReader Reader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
+			ulong ChannelId;
+
+			while (Reader.Read())
+			{
+				ChannelId = Reader.GetFieldValue<ulong>(0);
+				CD.W($"ID: {ChannelId}");
+				CD.ChannelIdList.Add(ChannelId);
+				CD.W($"Logs now directs to {CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
+			}
+
+			GuildsData.Connection.Close();
 			#endregion
 
 			CD.W("Enabling commands handler...");
@@ -136,7 +166,7 @@ public class CloviHost
 	/// A logging task that's executed by the API everytime it needs to log something to the console.
 	/// It forwards any logging task to a ConsoleDirector.
 	/// </summary>
-	private Task Log(LogMessage msg)
+	private Task LoggerTask(LogMessage msg)
 	{
 		CD.W(msg.Message);
 		return Task.CompletedTask;
