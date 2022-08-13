@@ -25,6 +25,8 @@ public class ConsoleDirector
 
 	internal bool IsOnline { get; set; }
 
+	private bool WaitingForQueue { get; set; }
+
 	private StringBuilder PendingLog { get; }
 
 	/// <summary>
@@ -41,20 +43,55 @@ public class ConsoleDirector
 		//Prints the log to the target channel.
 		//TODO: Accumulate all failed prints, then send in one go.
 		//Identify where to finally send the logs.
-		if (IsOnline)
+		if (!IsOnline)
 		{
-			//TODO: Guild and Channel IDs are to be stored in a DB.
-			SocketTextChannel Channel = CloviHost.CloviCore.GetGuild(262784778690887680).GetTextChannel(857171496254308372);
+			PendingLog.AppendLine(Output);
+		}
+		else
+		{
+			foreach (ulong id in ChannelIdList)
+			{
+				SocketTextChannel Channel = (SocketTextChannel)CloviHost.CloviCore.GetChannel(id);
+
+				//If PendingLog is empty, send Output only.
+				if (PendingLog.Length == 0) Channel.SendMessageAsync($"```{Output}```");
+				else //else, append Output to PendingLog, then clear PendingLog.
+				{
+					Channel.SendMessageAsync($"```{PendingLog}{Output}```");
+					PendingLog.Clear();
+				}
+			}
+		}
+		if (!IsOnline) { Print(Text); return; }
 
 
 			if (PendingLog.Length == 0) Channel.SendMessageAsync($"```{Output}```");
+			if (WaitingForQueue) PendingLog.AppendLine(Output);
 			else
 			{
-				Channel.SendMessageAsync($"```{PendingLog}{Output}```");
-				PendingLog.Clear();
+				Console.WriteLine($"Count {ChannelIdList.Count.ToString()}"); //TEMP
+
+				foreach (ulong id in ChannelIdList)
+				{
+					if (id == 0) continue;
+
+					Console.WriteLine($"ID: {id.ToString()}"); //TEMP
+
+					SocketTextChannel Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
+
+					//If PendingLog is empty...
+					if (PendingLog.Length == 0) Channel.SendMessageAsync($"```{Output}```");
+					else
+					{
+						Channel.SendMessageAsync($"```{PendingLog}{Output}```");
+						PendingLog.Clear();
+					}
+				}
+				WaitingForQueue = true;
 			}
 		}
 		else
+		WaitingForQueue = true;
 		{
 			PendingLog.AppendLine(Output);
 		}
