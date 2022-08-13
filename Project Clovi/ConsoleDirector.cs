@@ -2,6 +2,7 @@
 
 using Discord.WebSocket;
 using System.Text;
+using System.Diagnostics;
 
 /// <summary>
 /// Handles the input and output of information to and from the console.
@@ -23,6 +24,8 @@ public class ConsoleDirector
 	/// </summary>
 	private static String TimeNow = "CriticalTimeError";
 
+	internal List<ulong> ChannelIdList = new();
+
 	internal bool IsOnline { get; set; }
 
 	private bool WaitingForQueue { get; set; }
@@ -36,8 +39,11 @@ public class ConsoleDirector
 	[Obsolete("This method is for redundancy only. Use ConsoleDirector.W() instead.", false)]
 	public void Print(String Text)
 	{
+		StackTrace Source = new();
 		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
-		String Output = $"{TimeNow} >> {Text}";
+		#pragma warning disable CS8602
+		String Output = $"{TimeNow} {Source.GetFrame(3).GetMethod().Name}() >> {Text}";
+		#pragma warning restore CS8602
 		Console.WriteLine($"{Output}\n");
 
 		//Prints the log to the target channel.
@@ -62,10 +68,33 @@ public class ConsoleDirector
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Logs the inserted text to the console, target Discord channel(s), and console log files.
+	/// </summary>
+	/// <param name="Text"></param>
+	/// <param name="IsFinal"></param>
+	[Obsolete("This method is for redundancy only. Use ConsoleDirector.W() instead.", false)]
+	public void Log(String Text, bool IsFinal = false)
+	{
 		if (!IsOnline) { Print(Text); return; }
 
+		if (IsFinal) WaitingForQueue = false;
 
-			if (PendingLog.Length == 0) Channel.SendMessageAsync($"```{Output}```");
+		StackTrace Src = new();
+		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
+		#pragma warning disable CS8602
+		String Output = $"{TimeNow} {Src.GetFrame(2).GetMethod().Name}() >> {Text}";
+		#pragma warning restore CS8602
+
+		//Prints to console.
+		Console.WriteLine($"{Output}\n");
+
+		try
+		{
+			//If WaitingForQueue, add to PendingLog.
+			//Else, send the whole PendingLog and the current Output to the target channel(s).
 			if (WaitingForQueue) PendingLog.AppendLine(Output);
 			else
 			{
@@ -90,11 +119,22 @@ public class ConsoleDirector
 				WaitingForQueue = true;
 			}
 		}
-		else
+		catch (Exception e) { Console.WriteLine(e.ToString()); }
+	}
+
+	public void SendLog()
+	{
 		WaitingForQueue = true;
+		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
+
+		SocketTextChannel Channel;
+		foreach (ulong id in ChannelIdList)
 		{
-			PendingLog.AppendLine(Output);
+			Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
+			Channel.SendMessageAsync($"```{PendingLog}```");
 		}
+
+		PendingLog.Clear();
 	}
 
 	/// <summary>
@@ -109,8 +149,10 @@ public class ConsoleDirector
 	}
 
 	/// <summary>
-	/// An alias for ConsoleDirector.Print(). It simply logs the input string to the console, along with the timestamp.
+	/// An alias for ConsoleDirector.Log(). It simply logs the input string to the console, along with the timestamp and parent method.
 	/// </summary>
 	/// <param name="Text"></param>
-	public void W(String Text) { Print(Text); }
+	#pragma warning disable CS0618
+	public void W(String Text, bool IsFinal = false) => Log(Text, IsFinal);
+	#pragma warning restore CS0618
 }
