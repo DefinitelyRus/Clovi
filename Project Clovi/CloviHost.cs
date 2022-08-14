@@ -95,6 +95,8 @@ public class CloviHost
 			Token = "secret";
 			File.Delete(FIODirector.Directory[0] + @"\BotToken.txt");
 			LinkedList<Request> RequestList = new();
+			SqliteDataReader Reader;
+			bool IsBotEnabled = true;
 			#endregion
 
 			#region Standard Request Library
@@ -117,26 +119,37 @@ public class CloviHost
 			{
 				CD.W($"Setting up guild \"{Guild.Name}\" ({Guild.Id})...");
 
-				//Removes all commands made by this bot in the past.
-				List<SocketApplicationCommand> CommandList = Guild.GetApplicationCommandsAsync().Result.ToList();
-				foreach (SocketApplicationCommand cmd in CommandList)
-				{
-					await cmd.DeleteAsync();
-					CD.W($"Removed Command \"{cmd.Name}\" from the list.");
-				}
+				SQLDirector.GetDatabase("GuildsData").Connection.Open();
+				Reader = SQLDirector.Query("GuildsData", "SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\"");
+				if (Reader.Read()) IsBotEnabled = bool.Parse(Reader.GetFieldValue<String>(0));
 
-				//Adds custom commands to RequestDirector.
-				foreach (Request r in RequestList)
-				{
-					ReqDirector.AddRequestItem(r);
-					CD.W($"Added Request \"{r.Id}\" to the RequestList.");
-				}
 
-				//Adds all commands to Discord's listener.
-				foreach (Request r in ReqDirector.RequestList)
+				if (IsBotEnabled)
 				{
-					await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
-					CD.W($"Added Request \"{r.Id}\" to the Listener.");
+					//Removes all commands made by this bot in the past.
+					List<SocketApplicationCommand> CommandList = Guild.GetApplicationCommandsAsync().Result.ToList();
+					CD.W("Removing all commands...");
+					foreach (SocketApplicationCommand cmd in CommandList)
+					{
+						await cmd.DeleteAsync();
+						CD.W($"Removed Command \"{cmd.Name}\" from the list.");
+					}
+
+					//Adds custom commands to RequestDirector.
+					CD.W("Adding Requests to the RequestList...");
+					foreach (Request r in RequestList)
+					{
+						ReqDirector.AddRequestItem(r);
+						CD.W($"Added Request \"{r.Name}\".");
+					}
+
+					//Adds all commands to Discord's listener.
+					CD.W("Adding Requests to the Listener...");
+					foreach (Request r in ReqDirector.RequestList)
+					{
+						await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
+						CD.W($"Added Request \"{r.Name}\".");
+					}
 				}
 			}
 			#endregion
