@@ -57,6 +57,7 @@ public class CloviHost
 	/// </summary>
 	public async Task MainAsync()
 	{
+		CD.W($"Starting Clovi {BOT_VERSION}...");
 		CD.W("Checking for existing instance data...");
 		if (!FIODirector.CheckRequiredFiles()) return;
 
@@ -98,7 +99,7 @@ public class CloviHost
 
 			#region Standard Request Library
 			//Retrieves all standard Request library Requests. (i.e. The premade requests.)
-			CD.W("Initializing requests...");
+			CD.W("Initializing standard requests...");
 
 			RequestList.AddLast(new Requests.GetLatency());
 			RequestList.AddLast(new Requests.Ctest());
@@ -114,7 +115,7 @@ public class CloviHost
 			//For each Guild the bot is in...
 			foreach (SocketGuild Guild in CloviCore.Guilds)
 			{
-				CD.W($"Setting up guild \"{Guild.Name} ({Guild.Id})\"...");
+				CD.W($"Setting up guild \"{Guild.Name}\" ({Guild.Id})...");
 
 				//Removes all commands made by this bot in the past.
 				List<SocketApplicationCommand> CommandList = Guild.GetApplicationCommandsAsync().Result.ToList();
@@ -146,6 +147,7 @@ public class CloviHost
 			SqliteDataReader Reader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
 			ulong ChannelId;
 
+			CD.W("Adding channels for logging...");
 			while (Reader.Read())
 			{
 				ChannelId = Reader.GetFieldValue<ulong>(0);
