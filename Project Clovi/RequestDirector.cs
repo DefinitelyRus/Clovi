@@ -8,14 +8,31 @@ using Discord.WebSocket;
 /// </summary>
 public class RequestDirector
 {
+	#region Constructor
+	/// <summary>
+	/// The function used to declare this RequestDirector.
+	/// </summary>
+	/// <param name="RequestListArg">An ArrayList of Requests.</param>
+	public RequestDirector(List<Request> RequestListArg)
+	{
+		RequestList = RequestListArg; //Sort alphabetically.
+	}
+	#endregion
+
+	#region Attributes
+	/// <summary>
+	/// Shortcut to CloviHost.ConDirector;
+	/// </summary>
+	private static readonly ConsoleDirector CD = CloviHost.ConDirector;
+
 	/// <summary>
 	/// A list of available requests.
 	/// Sorted alphabetically based on Request Ids.
 	/// </summary>
 	public List<Request> RequestList { get; internal set; }
+	#endregion
 
-
-
+	#region Methods
 	/// <summary>
 	/// Searches for and returns the first Request Object that matches the Request Id argument.
 	/// </summary>
@@ -31,19 +48,6 @@ public class RequestDirector
 		return null;
 	}
 
-
-
-	/// <summary>
-	/// The function used to declare this RequestDirector.
-	/// </summary>
-	/// <param name="RequestListArg">An ArrayList of Requests.</param>
-	public RequestDirector(List<Request> RequestListArg)
-	{
-		RequestList = RequestListArg; //Sort alphabetically.
-	}
-
-
-
 	/// <summary>
 	/// Adds the inputted Request Object to the RequestList.
 	/// Also auto-sorts the list alphabetically.
@@ -52,14 +56,12 @@ public class RequestDirector
 	/// <returns></returns>
 	public RequestDirector AddRequestItem(Request NewRequest)
 	{
-		NewRequest.Parent = this;
+		NewRequest.Director = this;
 		RequestList.Add(NewRequest);
 
 		//Sort alphabetically based on Request.Id attribute.
 		return this;
 	}
-
-
 
 	/// <summary>
 	/// Sorts the list alphabnumerically based on its IDs.
@@ -75,29 +77,24 @@ public class RequestDirector
 		return OrderedList;
 	}
 
-
-
 	/// <summary>
 	/// Executes the request based on the SocketSlashCommand's attributes. For use in-Discord /commands only.
 	/// </summary>
 	/// <param name="Command"></param>
 	/// <returns></returns>
-	public Request ExecuteRequest(SocketSlashCommand Command, DiscordSocketClient Core)
+	public void ExecuteRequest(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		#pragma warning disable CS8602
-		#pragma warning disable CS8600
-
-		Request RequestItem = GetRequest(Command.CommandName);
+		Request? RequestItem = GetRequest(Command.CommandName);
 
 		//Cancels execution if Request is null.
-		if (RequestItem is null) Console.WriteLine($"No Request \"{Command.CommandName}\" found."); //TODO: Move to a dedicated logger.
+		if (RequestItem is null)
+		{
+			CD.W($"No Request \"{Command.CommandName}\" found.");
+			return;
+		}
 
 		//Finally executes the request.
 		RequestItem.Execute(Command, Core);
-
-		return RequestItem;
-
-		#pragma warning restore CS8602
-		#pragma warning restore CS8600
 	}
+	#endregion
 }

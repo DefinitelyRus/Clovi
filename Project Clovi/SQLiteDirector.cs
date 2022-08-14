@@ -86,8 +86,14 @@ public class SQLiteDirector : DatabaseDirector
 	//Consults CheckDatabase() if a reset is necessary.
 	public void ResetDatabase()
 	{
-		String[] SQLCommandArray =
+		GetDatabase("GuildsData").Connection.Open();
+
+		try
 		{
+			#region Initialization of premade values.
+			//Commands to execute
+			String[] SQLCommandArray =
+			{
 			"CREATE TABLE [IF NOT EXISTS] guilds_settings (" +
 				"rowid INTEGER PRIMARY KEY AUTOINCREMENT," +
 				"guild_id TEXT NOT NULL," +
@@ -103,45 +109,44 @@ public class SQLiteDirector : DatabaseDirector
 			");",
 		};
 
-		//TODO: Check CloviCore for any joined servers, then add each server to guilds_settings with default values.
-		List<SocketGuild> Guilds = CloviHost.CloviCore.Guilds.ToList();
-		Dictionary<String, String> DefaultSettings = new()
+			//Values for setting_name and setting_value columns
+			Dictionary<String, String> DefaultSettings = new()
 		{
 			{ "IsBotEnabled", "true" },
 			{ "LoggerChannelId", "0" }
 		};
+			#endregion
 
-		//Opens the GuildsData database.
-		GetDatabase("GuildsData").Connection.Open();
-
-		//For each guild the bot is in...
-		foreach (SocketGuild g in Guilds) {
-			CD.W($"Guild: {g.Name} ({g.Id})");
-			String DiscordGuildId, SQLQuery, SQLCommand;
-			bool IsMissing;
-			DiscordGuildId = g.Id.ToString();
-			
-			//For each item in DefaultSettings...
-			foreach (KeyValuePair<String, String> pair in DefaultSettings)
+			//For each guild the bot is in...
+			foreach (SocketGuild g in CloviHost.CloviCore.Guilds.ToList())
 			{
-				CD.W($"Searching Key: {pair.Key}...");
-				SQLQuery = $"SELECT * FROM guilds_settings WHERE guild_id = \"{DiscordGuildId}\" AND setting_name = \"{pair.Key}\"";
-				SQLCommand = $"INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES (\"{g.Id.ToString()}\", \"{pair.Key}\", \"{pair.Value}\")";
+				CD.W($"Checking Guild \"{g.Name}\" ({g.Id})...");
 
-				try
+				String DiscordGuildId, SQLQuery, SQLCommand;
+				bool IsResultEmpty;
+				DiscordGuildId = g.Id.ToString();
+
+				//For each item in DefaultSettings...
+				foreach (KeyValuePair<String, String> pair in DefaultSettings)
 				{
+					CD.W($"Searching Key: {pair.Key}...");
+
+					#region SQL Entries
+					//Get all setting_name and guild_id 
+					SQLQuery = $"SELECT guild_id, setting_name, setting_value FROM guilds_settings WHERE guild_id = \"{DiscordGuildId}\" AND setting_name = \"{pair.Key}\"";
+					SQLCommand = $"INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES (\"{g.Id.ToString()}\", \"{pair.Key}\", \"{pair.Value}\")";
+					#endregion
+
 					SqliteDataReader Result = Query("GuildsData", SQLQuery);
 
-					IsMissing = !Result.HasRows;
-					CD.W($"Is {pair.Key} missing: {IsMissing}");
+					IsResultEmpty = !Result.HasRows;
 
-					if (!IsMissing)
+					if (!IsResultEmpty)
 					{
 						while (Result.Read())
 						{
-							CD.W($"{Result.GetString("setting_name")} -> {Result.GetString("guild_id")}");
+							CD.W($"Found setting \"{Result.GetString("setting_name")}\" with value \"{Result.GetString("setting_value")}\" for server \"{g.Name}\" (ID: {Result.GetString("guild_id")}).");
 						}
-						CD.SendLog();
 					}
 					else
 					{
@@ -149,12 +154,15 @@ public class SQLiteDirector : DatabaseDirector
 						Execute("GuildsData", SQLCommand);
 					}
 				}
-				catch (Exception e)
-				{
-					Execute("GuildsData", SQLCommand);
-					CD.W(e.ToString(), true);
-				}
 			}
+			CD.SendLog();
+		}
+		catch (Exception e)
+		{
+			CD.W(e.ToString(), true);
+			//Drop all tables, then logout and self-exit.
+			CloviHost.CloviCore.LogoutAsync();
+			Environment.Exit(0);
 		}
 		GetDatabase("GuildsData").Connection.Close();
 

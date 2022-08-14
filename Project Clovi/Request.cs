@@ -8,14 +8,7 @@ using Discord.WebSocket;
 /// </summary>
 public abstract class Request
 {
-	/// <summary>
-	/// This is used to chain back to the parent RequestDirector. It is set automatically when added to a RequestList.
-	/// </summary>
-	public RequestDirector? Parent { get; internal set; }
-
-	public SlashCommandProperties DiscordCommand { get; internal set; }
-
-
+	#region Constructors
 	/// <summary>
 	/// Constructs a Request object along with a SlashCommandProperties object.
 	/// </summary>
@@ -60,11 +53,28 @@ public abstract class Request
 		Name = (String) CommandArg.Name;
 		DiscordCommand = CommandArg;
 	}
+	#endregion
+
+	#region Attributes
+	/// <summary>
+	/// This is used to chain back to the parent RequestDirector. It is set automatically when added to a RequestList.
+	/// </summary>
+	public RequestDirector? Director { get; internal set; }
+
+	/// <summary>
+	/// Shortcut to CloviHost.ConDirector;
+	/// </summary>
+	protected static readonly ConsoleDirector CD = CloviHost.ConDirector;
+
 	/// <summary>
 	/// The unique identifier for this command.
 	/// </summary>
 	public String Name { get; set; }
 
+	public SlashCommandProperties DiscordCommand { get; internal set; }
+	#endregion
+
+	#region Methods
 	/// <summary>
 	/// Executes the custom request command.
 	/// The Dictionary argument should be retrieved from this Request.Params, then modify its values.
@@ -72,4 +82,5 @@ public abstract class Request
 	/// <param name="Args">Any arguments required to execute the request. Typically this Request.Param with modified values.</param>
 	/// <returns>This Request for method chaining.</returns>
 	public abstract Request Execute(SocketSlashCommand Cmd, DiscordSocketClient Core);
+	#endregion
 }

@@ -9,6 +9,7 @@ using System.Diagnostics;
 /// </summary>
 public class ConsoleDirector
 {
+	#region Constructor
 	/// <summary>
 	/// Creates a new instance of ConsoleDirector.
 	/// </summary>
@@ -17,7 +18,9 @@ public class ConsoleDirector
 		IsOnline = false;
 		PendingLog = new();
 	}
+	#endregion
 
+	#region Attributes
 	/// <summary>
 	/// A static variable used to hold the time string.
 	/// Its default value is always replaced with the current time under normal circumstances.
@@ -31,7 +34,9 @@ public class ConsoleDirector
 	private bool WaitingForQueue { get; set; }
 
 	private StringBuilder PendingLog { get; }
+	#endregion
 
+	#region Methods
 	/// <summary>
 	/// Prints the input string to the console along with a timestamp.
 	/// </summary>
@@ -98,13 +103,9 @@ public class ConsoleDirector
 			if (WaitingForQueue) PendingLog.AppendLine(Output);
 			else
 			{
-				Console.WriteLine($"Count {ChannelIdList.Count.ToString()}"); //TEMP
-
-				foreach (ulong id in ChannelIdList)
+				foreach (ulong id in LogChannelIdList)
 				{
 					if (id == 0) continue;
-
-					Console.WriteLine($"ID: {id.ToString()}"); //TEMP
 
 					SocketTextChannel Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
 
@@ -124,11 +125,13 @@ public class ConsoleDirector
 
 	public void SendLog()
 	{
+		if (PendingLog.Length == 0) return;
+
 		WaitingForQueue = true;
 		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
 
 		SocketTextChannel Channel;
-		foreach (ulong id in ChannelIdList)
+		foreach (ulong id in LogChannelIdList)
 		{
 			Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
 			Channel.SendMessageAsync($"```{PendingLog}```");
@@ -148,6 +151,7 @@ public class ConsoleDirector
 		throw new NotImplementedException();
 	}
 
+	#region Aliases
 	/// <summary>
 	/// An alias for ConsoleDirector.Log(). It simply logs the input string to the console, along with the timestamp and parent method.
 	/// </summary>
@@ -155,4 +159,6 @@ public class ConsoleDirector
 	#pragma warning disable CS0618
 	public void W(String Text, bool IsFinal = false) => Log(Text, IsFinal);
 	#pragma warning restore CS0618
+	#endregion
+	#endregion
 }

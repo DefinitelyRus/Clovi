@@ -35,7 +35,6 @@ public class Ctest : Request
 			return this;
 		}
 		CD.W("Finished database checkup.");
-		//---------------
 
 		//Optional post-fixed instructions. Delete or modify only if necessary.
 		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}", true);

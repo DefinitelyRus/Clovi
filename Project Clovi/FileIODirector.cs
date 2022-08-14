@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 /// </summary>
 public class FileIODirector
 {
+	#region Constructor
 	/// <summary>
 	/// Constructor for FileIODirector.
 	/// </summary>
@@ -22,6 +23,7 @@ public class FileIODirector
 			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + app	//Program Files
 		};
 	}
+	#endregion
 
 	#region Attributes
 	/// <summary>
@@ -35,6 +37,7 @@ public class FileIODirector
 	public String[] Directory { get; internal set; }
 	#endregion
 
+	#region Methods
 	#region File Management
 	/// <summary>
 	/// Gets the target file from the target directory.
@@ -87,6 +90,7 @@ public class FileIODirector
 	}
 	#endregion
 
+	#region JSON Handling
 	/// <summary>
 	/// Gets the locally-saved instance data of any pre-existing instance of this bot on the host device.
 	/// If the bot alraedy successfully booted up from the same device in the past,
@@ -276,4 +280,6 @@ public class FileIODirector
 		CD.W("Instance data retrieved.");
 		return true;
 	}
+	#endregion
+	#endregion
 }
