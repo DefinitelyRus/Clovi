@@ -40,7 +40,7 @@ public class ConsoleDirector
 	/// <summary>
 	/// Decides if the PendingLog should be sent (false) or not (true).
 	/// </summary>
-	private bool WaitingForQueue { get; set; }
+	internal bool WaitingForQueue { get; set; }
 
 	/// <summary>
 	/// A collection of log messages combined into one string.
@@ -76,7 +76,11 @@ public class ConsoleDirector
 	[Obsolete("This method is for clarity only. Use ConsoleDirector.W() instead.", false)]
 	public void Log(String Text, bool IsFinal = false)
 	{
-		if (!IsOnline) { Print(Text); return; }
+		if (Text.Length + PendingLog.Length > 2000)
+		{
+			//TODO: Cut off the message and send separate subsequent messages per 2000 characters accumulated.
+		}
+		if (!IsOnline) { Print(Text, true); return; }
 
 		if (IsFinal) WaitingForQueue = false;
 
