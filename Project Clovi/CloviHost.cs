@@ -75,8 +75,9 @@ public class CloviHost
 
 		CD.W("Attempting to start...");
 		await CloviCore.LoginAsync(TokenType.Bot, Token);
-		await CloviCore.StartAsync(); //Returns immediately after finishing.
+		await CloviCore.StartAsync(); //Returns immediately after called.
 		await CloviCore.SetActivityAsync(new Game("you wank.", ActivityType.Watching, ActivityProperties.Join));
+
 		//Creates a new thread to run an interruptible infinite loop.
 		new System.Threading.Thread(() =>
 		{
@@ -97,7 +98,7 @@ public class CloviHost
 	}
 	#endregion
 
-	#region Client is Ready Task
+	#region Ready Client Task
 	/// <summary>
 	/// Runs when the Core is ready for use.
 	/// </summary>
@@ -138,7 +139,7 @@ public class CloviHost
 				Reader = SQLDirector.Query("GuildsData", "SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\"");
 				if (Reader.Read()) IsBotEnabled = bool.Parse(Reader.GetFieldValue<String>(0));
 
-				CD.W($"IsBotEnabled? {IsBotEnabled}");
+				CD.W($"IsBotEnabled for \"{Guild.Name}\"? {IsBotEnabled}");
 
 				if (IsBotEnabled)
 				{
@@ -181,7 +182,7 @@ public class CloviHost
 			{
 				ChannelId = Reader.GetFieldValue<ulong>(0);
 				CD.LogChannelIdList.Add(ChannelId);
-				CD.W($"Logs now directs to #{CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
+				CD.W($"Directing logs to #{CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
 			}
 
 			GuildsData.Connection.Close();
@@ -190,7 +191,11 @@ public class CloviHost
 			CD.W("Enabling commands handler...");
 			CloviCore.SlashCommandExecuted += SlashCommandHandler;
 
+			CD.W("Ready"); //MAX 2000 CHARS.
+
+			CD.WaitingForQueue = false;
 			CD.IsOnline = true;
+			CD.SendLog();
 		}
 		catch (Exception e) { CD.W(e.ToString()); }
 	}
@@ -203,7 +208,7 @@ public class CloviHost
 	/// </summary>
 	private Task LoggerTask(LogMessage msg)
 	{
-		CD.W(msg.Message);
+		CD.W(msg.Message, CD.IsOnline);
 		return Task.CompletedTask;
 	}
 	#endregion
