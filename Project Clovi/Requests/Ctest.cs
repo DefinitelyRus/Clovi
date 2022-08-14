@@ -23,18 +23,8 @@ public class Ctest : Request
 		ConsoleDirector CD = CloviHost.ConDirector; //Use CD.W(_) for logging.
 
 		//Code goes here.
-		CD.W("Resetting database...");
-		try
-		{
-			CloviHost.SQLDirector.ResetDatabase();
-			Command.RespondAsync("Checking database...");
-		}
-		catch (Exception e)
-		{
-			CD.W(e.ToString());
-			return this;
-		}
-		CD.W("Finished database checkup.");
+
+		//--------------
 
 		//Optional post-fixed instructions. Delete or modify only if necessary.
 		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}", true);
