@@ -66,23 +66,6 @@ public class SQLiteDirector : DatabaseDirector
 		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
 	}
 
-	public void CheckDatabase(string DatabaseName)
-	{
-		try
-		{
-			SqliteDataReader reader = Query(DatabaseName, "SELECT * FROM guilds_settings LIMIT 1");
-			if (reader.GetString(2).Equals("testname"))
-			{
-				//Inserts a dummy record for testing purposes.
-				Execute("GuildsData", "INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES {{ \"0\", \"testname\", \"testvalue\"}}");
-			}
-		}
-		catch (Exception e)
-		{
-			CD.W(e.ToString(), true);
-		}
-	}
-
 	//Consults CheckDatabase() if a reset is necessary.
 	public void ResetDatabase()
 	{
