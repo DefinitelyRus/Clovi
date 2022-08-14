@@ -22,10 +22,9 @@ public class ConsoleDirector
 
 	#region Attributes
 	/// <summary>
-	/// A static variable used to hold the time string.
-	/// Its default value is always replaced with the current time under normal circumstances.
+	/// Holds a string with the time format HH:MM:SS
 	/// </summary>
-	private static String TimeNow = "CriticalTimeError";
+	private static String? TimeNow = null;
 
 	/// <summary>
 	/// A list of channel IDs belonging to SocketTextChannels assigned to receive log messages.
@@ -62,6 +61,7 @@ public class ConsoleDirector
 		#pragma warning disable CS8602
 		String Output = $"{TimeNow} {Source.GetFrame(3).GetMethod().Name}() >> {Text}";
 		#pragma warning restore CS8602
+		TimeNow = null;
 
 		Console.WriteLine($"{Output}\n");
 		if (AddToPendingLog) PendingLog.AppendLine(Output);
@@ -85,6 +85,7 @@ public class ConsoleDirector
 		#pragma warning disable CS8602
 		String Output = $"{TimeNow} {Src.GetFrame(2).GetMethod().Name}() >> {Text}";
 		#pragma warning restore CS8602
+		TimeNow = null;
 
 		//Prints to console.
 		Console.WriteLine($"{Output}\n");
@@ -123,7 +124,6 @@ public class ConsoleDirector
 		if (PendingLog.Length == 0) return;
 
 		WaitingForQueue = true;
-		TimeNow = $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}";
 
 		SocketTextChannel Channel;
 		foreach (ulong id in LogChannelIdList)
