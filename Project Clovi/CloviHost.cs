@@ -44,10 +44,8 @@ public class CloviHost
 	internal static String Token = "secret";
 
 	/// <summary>
-	/// A Dictionary of guilds containing all guild-specific data about the bot.
 	/// Determines whether the bot is currently activated and (but not always) online.
 	/// </summary>
-	internal static Dictionary<ulong, Object> GuildsData = new();
 	internal static bool IsBotActive = true;
 
 	public static Task Main() => new CloviHost().MainAsync();
