@@ -12,14 +12,6 @@ public abstract class DatabaseDirector
 
 	public abstract Object GetRecord(String Key, String ColumnName, String TableName, String DatabaseName);
 
-	public Dictionary<String, Object> GetRow(String PrimaryKey, String TableName)
-	{
-		Dictionary<String, Object> Row = new();
-		//<-- select * from TableName where id = PrimaryKey
-		//foreach item in row, add item into dict.
-		return Row;
-	}
-
 	public abstract Object GetDatabase(String DatabaseName);
 
 	public abstract Object Execute(String DatabaseName, String SQLCommand);
