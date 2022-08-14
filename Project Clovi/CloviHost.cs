@@ -45,8 +45,10 @@ public class CloviHost
 
 	/// <summary>
 	/// A Dictionary of guilds containing all guild-specific data about the bot.
+	/// Determines whether the bot is currently activated and (but not always) online.
 	/// </summary>
 	internal static Dictionary<ulong, Object> GuildsData = new();
+	internal static bool IsBotActive = true;
 
 	public static Task Main() => new CloviHost().MainAsync();
 	#endregion
@@ -73,8 +75,23 @@ public class CloviHost
 		CD.W("Attempting to start...");
 		await CloviCore.LoginAsync(TokenType.Bot, Token);
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
+		//Creates a new thread to run an interruptible infinite loop.
+		new System.Threading.Thread(() =>
+		{
+			while (IsBotActive)
+			{
+				System.Threading.Thread.Sleep(20000);
+				CD.SendLog();
 
-		while (true);
+				CloviCore.PurgeChannelCache();
+				CloviCore.PurgeDMChannelCache();
+				CloviCore.PurgeUserCache();
+			}
+
+			CD.W("Bot marked for shutdown. Logging out & shutting down...", true);
+			CloviCore.LogoutAsync();
+			Environment.Exit(0);
+		}).Start();
 	}
 	#endregion
 
