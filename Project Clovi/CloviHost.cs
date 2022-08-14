@@ -8,6 +8,11 @@ public class CloviHost
 {
 	#region Initialization
 	/// <summary>
+	/// This current build's version. Change after each version release.
+	/// </summary>
+	public const String BOT_VERSION = $"ALPHA v1.0.0";
+
+	/// <summary>
 	/// The core socket client responsible for handling all interactions between the front-end and back-end.
 	/// </summary>
 	public static readonly DiscordSocketClient CloviCore = new();
