@@ -20,7 +20,8 @@ public class _RequestTemplate : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleDirector CD = CloviHost.ConDirector; //Use CD.W(_) for logging.
+		ConsoleDirector CD = CloviHost.ConDirector; //Use CD.W(...) for logging.
+		//IMPORTANT: Do not use CD.W("...", true) in this method unless absolutely necessary.
 
 		//Code goes here.
 
