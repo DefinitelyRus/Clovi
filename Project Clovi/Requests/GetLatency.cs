@@ -30,7 +30,7 @@ public class GetLatency : Request
 		//---------------
 
 		//Optional post-fixed instructions. Delete or modify only if necessary.
-		CD.W($"SUCCESS: \"{this.Id}\" request by {Command.User.Username}: {Ping}ms");
+		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}: {Ping}ms");
 
 		//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 		//CloviHost.SQLDirector.ResetDatabase();

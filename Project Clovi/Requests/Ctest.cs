@@ -38,7 +38,7 @@ public class Ctest : Request
 		//---------------
 
 		//Optional post-fixed instructions. Delete or modify only if necessary.
-		CD.W($"SUCCESS: \"{this.Id}\" request by {Command.User.Username}", true);
+		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}", true);
 		return this;
 	}
 }

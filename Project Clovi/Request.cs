@@ -15,10 +15,6 @@ public abstract class Request
 
 	public SlashCommandProperties DiscordCommand { get; internal set; }
 
-	/// <summary>
-	/// The unique identifier for this command.
-	/// </summary>
-	public String Id { get; set; }
 
 	/// <summary>
 	/// Constructs a Request object along with a SlashCommandProperties object.
@@ -39,7 +35,7 @@ public abstract class Request
 			GuildPermission? Perms = null
 		)
 	{
-		Id = IdArg;
+		Name = IdArg;
 
 		//Builds the slash command with the given attributes and assigns it to DiscordCommand.
 		SlashCommandBuilder CommandBuilder = new();
@@ -61,9 +57,13 @@ public abstract class Request
 	/// <param name="CommandArg">A premade Discord command.</param>
 	public Request(SlashCommandProperties CommandArg)
 	{
-		Id = (String) CommandArg.Name;
+		Name = (String) CommandArg.Name;
 		DiscordCommand = CommandArg;
 	}
+	/// <summary>
+	/// The unique identifier for this command.
+	/// </summary>
+	public String Name { get; set; }
 
 	/// <summary>
 	/// Executes the custom request command.

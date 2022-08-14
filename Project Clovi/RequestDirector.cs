@@ -24,7 +24,7 @@ public class RequestDirector
 	public Request? GetRequest(String RequestId)
 	{
 		foreach (Request Req in RequestList)
-			if (Req.Id.Equals(RequestId)) return Req;
+			if (Req.Name.Equals(RequestId)) return Req;
 
 
 		//TODO: Add no-match-found error message.
