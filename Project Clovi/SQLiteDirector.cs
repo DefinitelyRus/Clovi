@@ -117,7 +117,7 @@ public class SQLiteDirector : DatabaseDirector
 					#region SQL Entries
 					//Get all setting_name and guild_id 
 					SQLQuery = $"SELECT guild_id, setting_name, setting_value FROM guilds_settings WHERE guild_id = \"{DiscordGuildId}\" AND setting_name = \"{pair.Key}\"";
-					SQLCommand = $"INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES (\"{g.Id.ToString()}\", \"{pair.Key}\", \"{pair.Value}\")";
+					SQLCommand = $"INSERT INTO guilds_settings (guild_id, setting_name, setting_value) VALUES (\"{g.Id}\", \"{pair.Key}\", \"{pair.Value}\")";
 					#endregion
 
 					SqliteDataReader Result = Query("GuildsData", SQLQuery);
