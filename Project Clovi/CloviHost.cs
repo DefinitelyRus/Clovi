@@ -119,6 +119,7 @@ public class CloviHost
 				Reader = SQLDirector.Query("GuildsData", "SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\"");
 				if (Reader.Read()) IsBotEnabled = bool.Parse(Reader.GetFieldValue<String>(0));
 
+				CD.W($"IsBotEnabled? {IsBotEnabled}");
 
 				if (IsBotEnabled)
 				{
@@ -153,14 +154,15 @@ public class CloviHost
 			#region Logging on guilds.
 			SQLiteDatabase GuildsData = SQLDirector.GetDatabase("GuildsData");
 			GuildsData.Connection.Open();
+			Reader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
 			ulong ChannelId;
 
 			CD.W("Adding channels for logging...");
 			while (Reader.Read())
 			{
 				ChannelId = Reader.GetFieldValue<ulong>(0);
-				CD.ChannelIdList.Add(ChannelId);
-				CD.W($"Logs now directs to {CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
+				CD.LogChannelIdList.Add(ChannelId);
+				CD.W($"Logs now directs to #{CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
 			}
 
 			GuildsData.Connection.Close();
@@ -195,6 +197,7 @@ public class CloviHost
 	{
 		CD.W($"Executing request \"{cmd.CommandName}\"...");
 		ReqDirector.ExecuteRequest(cmd, CloviCore);
+		CD.SendLog();
 
 		return Task.CompletedTask;
 	}
