@@ -74,9 +74,6 @@ public class CloviHost
 		await CloviCore.LoginAsync(TokenType.Bot, Token);
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
 
-		//Temporarily edits the bot's token which will remain as is if the bot fails to login.
-		FIODirector.UpdateInstanceData("BotToken", "secret");
-
 		while (true);
 	}
 	#endregion
@@ -91,7 +88,6 @@ public class CloviHost
 		{
 			#region Initialization
 			CD.W("Client started. Preparing...");
-			FIODirector.UpdateInstanceData("BotToken", Token);
 			Token = "secret";
 			File.Delete(FIODirector.Directory[0] + @"\BotToken.txt");
 			LinkedList<Request> RequestList = new();
@@ -157,14 +153,12 @@ public class CloviHost
 			#region Logging on guilds.
 			SQLiteDatabase GuildsData = SQLDirector.GetDatabase("GuildsData");
 			GuildsData.Connection.Open();
-			SqliteDataReader Reader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
 			ulong ChannelId;
 
 			CD.W("Adding channels for logging...");
 			while (Reader.Read())
 			{
 				ChannelId = Reader.GetFieldValue<ulong>(0);
-				CD.W($"ID: {ChannelId}");
 				CD.ChannelIdList.Add(ChannelId);
 				CD.W($"Logs now directs to {CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
 			}
