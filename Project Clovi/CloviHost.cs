@@ -76,6 +76,7 @@ public class CloviHost
 		CD.W("Attempting to start...");
 		await CloviCore.LoginAsync(TokenType.Bot, Token);
 		await CloviCore.StartAsync(); //Returns immediately after finishing.
+		await CloviCore.SetActivityAsync(new Game("you wank.", ActivityType.Watching, ActivityProperties.Join));
 		//Creates a new thread to run an interruptible infinite loop.
 		new System.Threading.Thread(() =>
 		{
