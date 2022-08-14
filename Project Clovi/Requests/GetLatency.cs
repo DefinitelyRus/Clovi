@@ -18,22 +18,11 @@ public class GetLatency : Request
 		: base(IdArg, DescriptionArg, ParamsArg, HasDefaultPermission, HasDMPermission, Perms) { }
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
-	{
-		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleDirector CD = CloviHost.ConDirector;
-
-		//Code goes here.
-
+	{	
 		int Ping = Core.Latency;
 		Command.RespondAsync($"Latency: {Ping}ms");
 
-		//---------------
-
-		//Optional post-fixed instructions. Delete or modify only if necessary.
 		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}: {Ping}ms");
-
-		//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
-		//CloviHost.SQLDirector.ResetDatabase();
 		return this;
 	}
 }

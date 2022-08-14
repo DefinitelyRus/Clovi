@@ -67,7 +67,7 @@ public class SQLiteDirector : DatabaseDirector
 	}
 
 	//Consults CheckDatabase() if a reset is necessary.
-	public void ResetDatabase()
+	public void DatabaseCheckup()
 	{
 		GetDatabase("GuildsData").Connection.Open();
 
@@ -133,12 +133,11 @@ public class SQLiteDirector : DatabaseDirector
 					}
 					else
 					{
-						CD.W("Resetting database...", true);
+						CD.W("Resetting database...");
 						Execute("GuildsData", SQLCommand);
 					}
 				}
 			}
-			CD.SendLog();
 		}
 		catch (Exception e)
 		{
