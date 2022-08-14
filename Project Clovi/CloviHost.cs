@@ -64,6 +64,9 @@ public class CloviHost
 		CD.W("Adding all core databases...");
 		SQLDirector.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
 
+		CD.W("Checking for databases...");
+		SQLDirector.DatabaseCheckup();
+
 		CD.W("Initalizing logger...");
 		CloviCore.Log += LoggerTask;
 
