@@ -45,7 +45,7 @@ public class ConsoleDirector
 	/// <summary>
 	/// A collection of log messages combined into one string.
 	/// </summary>
-	private StringBuilder PendingLog { get; }
+	internal StringBuilder PendingLog { get; }
 	#endregion
 
 	#region Methods
@@ -76,10 +76,6 @@ public class ConsoleDirector
 	[Obsolete("This method is for clarity only. Use ConsoleDirector.W() instead.", false)]
 	public void Log(String Text, bool IsFinal = false)
 	{
-		if (Text.Length + PendingLog.Length > 2000)
-		{
-			//TODO: Cut off the message and send separate subsequent messages per 2000 characters accumulated.
-		}
 		if (!IsOnline) { Print(Text, true); return; }
 
 		if (IsFinal) WaitingForQueue = false;
@@ -96,19 +92,24 @@ public class ConsoleDirector
 
 		try
 		{
+			PendingLog.AppendLine(Output);
+			if (IsFinal) SendLog();
+
+			/*
 			//If WaitingForQueue, add to PendingLog.
 			//Else, send the whole PendingLog and the current Output to the target channel(s).
 			if (WaitingForQueue) PendingLog.AppendLine(Output);
 			else
 			{
+				SocketTextChannel Channel;
 				foreach (ulong id in LogChannelIdList)
 				{
 					if (id == 0) continue;
 
-					SocketTextChannel Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
+					Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
 
-					if (PendingLog.Length == 0) Channel.SendMessageAsync($"```{Output}```");
-					else
+					if (PendingLog.Length == 0 && Output.Length > 0) Channel.SendMessageAsync($"```{Output}```");
+					else if (Output.Length > 0)
 					{
 						Channel.SendMessageAsync($"```{PendingLog}{Output}```");
 						PendingLog.Clear();
@@ -116,8 +117,9 @@ public class ConsoleDirector
 				}
 				WaitingForQueue = true;
 			}
+			*/
 		}
-		catch (Exception e) { Console.WriteLine(e.ToString()); }
+		catch (Exception e) { Print(e.ToString(), true); }
 	}
 
 	/// <summary>

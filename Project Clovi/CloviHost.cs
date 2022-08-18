@@ -65,7 +65,7 @@ public class CloviHost
 		SQLDirector.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
 
 		CD.W("Checking for databases...");
-		SQLDirector.DatabaseCheckup();
+		SQLDirector.DatabaseCheckup(0);
 
 		CD.W("Initalizing logger...");
 		CloviCore.Log += LoggerTask;
@@ -79,16 +79,12 @@ public class CloviHost
 		await CloviCore.SetActivityAsync(new Game("you wank.", ActivityType.Watching, ActivityProperties.Join));
 
 		//Creates a new thread to run an interruptible infinite loop.
-		new System.Threading.Thread(() =>
+		new Thread(() =>
 		{
 			while (IsBotActive)
 			{
-				System.Threading.Thread.Sleep(20000);
-				CD.SendLog();
-
-				CloviCore.PurgeChannelCache();
-				CloviCore.PurgeDMChannelCache();
-				CloviCore.PurgeUserCache();
+				Thread.Sleep(20000);
+				if (CD.PendingLog.Length > 0) CD.SendLog();
 			}
 
 			CD.W("Bot marked for shutdown. Logging out & shutting down...", true);
@@ -181,6 +177,7 @@ public class CloviHost
 			while (Reader.Read())
 			{
 				ChannelId = Reader.GetFieldValue<ulong>(0);
+				if (ChannelId == 0) continue;
 				CD.LogChannelIdList.Add(ChannelId);
 				CD.W($"Directing logs to #{CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
 			}
@@ -209,6 +206,7 @@ public class CloviHost
 	private Task LoggerTask(LogMessage msg)
 	{
 		CD.W(msg.Message, CD.IsOnline);
+
 		return Task.CompletedTask;
 	}
 	#endregion
