@@ -127,15 +127,45 @@ public class ConsoleDirector
 	/// </summary>
 	public void SendLog()
 	{
-		if (PendingLog.Length == 0) return;
-
 		WaitingForQueue = true;
-
 		SocketTextChannel Channel;
+
 		foreach (ulong id in LogChannelIdList)
 		{
-			Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
-			Channel.SendMessageAsync($"```{PendingLog}```");
+			Channel = (SocketTextChannel)CloviHost.CloviCore.GetChannel(id);
+			P($"Sending log to \"{Channel.Name}\"...");
+			P($"Log Length: {PendingLog.Length}");
+			if (PendingLog.Length < 1900)
+			{
+				Channel.SendMessageAsync($"```{PendingLog}```");
+			}
+			else
+			{
+				P("Log may be too long. Slicing into chunks...");
+				StringBuilder PendingLogCopy = new(PendingLog.ToString()); //I need a copy. This creates a reference, not a copy.
+				String Chunk;
+				int UpperLimit;
+				
+				while (PendingLogCopy.Length > 0)
+				{
+					if (PendingLogCopy.Length > 1899)
+					{
+						PendingLogCopy.Insert(1899, "...\n--- (CUT TO NEXT LINE) ---");
+						UpperLimit = 1929;
+					}
+					else
+					{
+						UpperLimit = PendingLogCopy.Length;
+					}
+
+					Chunk = PendingLogCopy.ToString()[..UpperLimit];
+					PendingLogCopy.Remove(0, UpperLimit);
+					P($"Sending chunk of length {Chunk.Length} to {Channel.Name}...");
+
+					Channel.SendMessageAsync($"```{Chunk}```");
+				}
+				PendingLogCopy.Clear();
+			}
 		}
 
 		PendingLog.Clear();
