@@ -111,6 +111,9 @@ public class CloviHost
 			bool IsBotEnabled = true;
 			#endregion
 
+			CD.W("Checking guilds_settings table...");
+			SQLDirector.DatabaseCheckup(1);
+
 			#region Standard Request Library
 			//Retrieves all standard Request library Requests. (i.e. The premade requests.)
 			CD.W("Initializing standard requests...");
@@ -188,6 +191,9 @@ public class CloviHost
 			CD.W("Enabling commands handler...");
 			CloviCore.SlashCommandExecuted += SlashCommandHandler;
 
+			CD.W("Enabling messages handler...");
+			CloviCore.MessageReceived += MessageHandler;
+
 			CD.W("Ready"); //MAX 2000 CHARS.
 
 			CD.WaitingForQueue = false;
@@ -220,6 +226,25 @@ public class CloviHost
 		CD.W($"Executing request \"{cmd.CommandName}\"...");
 		ReqDirector.ExecuteRequest(cmd, CloviCore);
 		CD.SendLog();
+
+		return Task.CompletedTask;
+	}
+	#endregion
+
+	#region Message Handler Task
+	private Task MessageHandler(SocketMessage msg)
+	{
+		if (msg.Author.IsBot) return Task.CompletedTask;
+		CD.W($"Receiving message from \"{msg.Channel.Name} by {msg.Author.Username}\" with the following content...\n\"{msg.Content}\"", true);
+
+		bool isUnclean = false;
+		int cCount = 0;
+		foreach (char c in msg.CleanContent.ToLower())
+		{
+			if (c == 'c') { isUnclean = true; cCount++; }
+		}
+
+		if (isUnclean) msg.Channel.SendMessageAsync($"You dirty bastard. You used {cCount} ||c||'s in that message.");
 
 		return Task.CompletedTask;
 	}
