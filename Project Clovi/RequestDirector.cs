@@ -43,7 +43,7 @@ public class RequestDirector
 		foreach (Request Req in RequestList)
 			if (Req.Name.Equals(RequestId)) return Req;
 
-
+		CD.W($"No request \"{RequestId}\" found.");
 		//TODO: Add no-match-found error message.
 		return null;
 	}
@@ -87,11 +87,7 @@ public class RequestDirector
 		Request? RequestItem = GetRequest(Command.CommandName);
 
 		//Cancels execution if Request is null.
-		if (RequestItem is null)
-		{
-			CD.W($"No Request \"{Command.CommandName}\" found.");
-			return;
-		}
+		if (RequestItem is null) return;
 
 		//Finally executes the request.
 		RequestItem.Execute(Command, Core);

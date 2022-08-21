@@ -106,9 +106,10 @@ public class CloviHost
 			CD.W("Client started. Preparing...");
 			Token = "secret";
 			File.Delete(FIODirector.Directory[0] + @"\BotToken.txt");
-			LinkedList<Request> RequestList = new();
+			List<Request> RequestList = new();
 			SqliteDataReader Reader;
 			bool IsBotEnabled = true;
+			string IsBotEnabledString = "I dont know";
 			#endregion
 
 			CD.W("Checking guilds_settings table...");
@@ -118,8 +119,8 @@ public class CloviHost
 			//Retrieves all standard Request library Requests. (i.e. The premade requests.)
 			CD.W("Initializing standard requests...");
 
-			RequestList.AddLast(new Requests.GetLatency());
-			RequestList.AddLast(new Requests.Ctest());
+			RequestList.Add(new Requests.GetLatency());
+			RequestList.Add(new Requests.Ctest());
 			RequestList.Add(new Requests.SetLoggerChannel(
 				OptionDictionaryList: new List<Dictionary<string, object?>>()
 				{
@@ -156,11 +157,13 @@ public class CloviHost
 				CD.W($"Setting up guild \"{Guild.Name}\" ({Guild.Id})...");
 
 				SQLDirector.GetDatabase("GuildsData").Connection.Open();
-				Reader = SQLDirector.Query("GuildsData", "SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\"");
-				if (Reader.Read()) IsBotEnabled = bool.Parse(Reader.GetFieldValue<String>(0));
+				Reader = SQLDirector.Query("GuildsData", $"SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\" AND guild_id = \"{Guild.Id}\"");
+				if (Reader.Read()) IsBotEnabledString = Reader.GetFieldValue<String>(0);
+				IsBotEnabled = bool.Parse(IsBotEnabledString);
 
-				CD.W($"IsBotEnabled for \"{Guild.Name}\"? {IsBotEnabled}");
+				CD.W($"IsBotEnabled for \"{Guild.Name}\"? Parsed: {IsBotEnabled}, String: {IsBotEnabledString}");
 
+				//If the bot is enabled for this server...
 				if (IsBotEnabled)
 				{
 					//Removes all commands made by this bot in the past.
