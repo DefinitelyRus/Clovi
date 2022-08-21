@@ -14,19 +14,19 @@ public abstract class Request
 	/// </summary>
 	/// <param name="IdArg">The unique identifier for this command.</param>
 	/// <param name="DescriptionArg">A description of what this command does.</param>
-	/// <param name="OptionsArray">Any parameters needed to run this command.</param>
+	/// <param name="OptionDictionaryList">Any parameters needed to run this command.</param>
 	/// <param name="HasDefaultPermission">Sets the default permission of this command.</param>
 	/// <param name="HasDMPermission">Whether this command can be used in DMs.</param>
 	/// <param name="Perms">Sets the default member permissions to allow use of this command.</param>
 	public Request
-		(
-			String IdArg,
-			String DescriptionArg = "Placeholder description; please replace me.",
-			SlashCommandOptionBuilder[]? OptionsArray = null,
-			Boolean HasDefaultPermission = true,
-			Boolean HasDMPermission = true,
-			GuildPermission? Perms = null
-		)
+	(
+		String IdArg,
+		String DescriptionArg = "Placeholder description; please replace me.",
+		List<Dictionary<string, object?>>? OptionDictionaryList = null,
+		Boolean HasDefaultPermission = true,
+		Boolean HasDMPermission = true,
+		GuildPermission? Perms = null
+	)
 	{
 		Name = IdArg;
 
@@ -39,7 +39,49 @@ public abstract class Request
 			.WithDMPermission(HasDMPermission)
 			.WithDefaultMemberPermissions(Perms);
 
-		if (OptionsArray is not null) CommandBuilder.AddOptions(OptionsArray);
+		if (OptionDictionaryList is not null)
+		{
+			String name, description;
+			bool isRequired, isDefault, isAutoComplete;
+			double? minValue, maxValue;
+			List<SlashCommandOptionBuilder> options;
+			List<ChannelType> channelTypes;
+			ApplicationCommandOptionChoiceProperties[] choices;
+
+			foreach (Dictionary<string, object?> dict in OptionDictionaryList)
+			{
+				#pragma warning disable CS8600
+				#pragma warning disable CS8605
+				name = (string) dict["name"];
+				ApplicationCommandOptionType optionType = (ApplicationCommandOptionType) dict["optionType"];
+				description = (string) dict["description"];
+				isRequired = (bool) dict["isRequired"];
+				isDefault = (bool) dict["isDefault"];
+				isAutoComplete = (bool) dict["isAutoComplete"];
+				minValue = (double?) dict["minValue"];
+				maxValue = (double?) dict["maxValue"];
+				options = (List<SlashCommandOptionBuilder>) dict["options"];
+				channelTypes = (List<ChannelType>) dict["channelTypes"];
+				choices = (ApplicationCommandOptionChoiceProperties[]) dict["choices"];
+				#pragma warning restore CS8600
+				#pragma warning restore CS8605
+
+				CommandBuilder.AddOption
+				(
+					name,
+					optionType,
+					description,
+					isRequired,
+					isDefault,
+					isAutoComplete,
+					minValue,
+					maxValue,
+					options,
+					channelTypes,
+					choices
+				);
+			}
+		}
 
 		DiscordCommand = CommandBuilder.Build();
 	}
@@ -70,6 +112,72 @@ public abstract class Request
 	/// The unique identifier for this command.
 	/// </summary>
 	public String Name { get; set; }
+
+	/// <summary>
+	/// Returns a dictionary for use in constructing a new Request.
+	/// </summary>
+	/// <param name="name">The name of this parameter.</param>
+	/// <param name="optionType">The type of input this parameter will allow.</param>
+	/// <param name="description">The description of this parameter.</param>
+	/// <param name="isRequired">Whether this parameter is required.</param>
+	/// <param name="isDefault">Whether this option is the default option.</param>
+	/// <param name="isAutoComplete">Whether this option supports auto-complete.</param>
+	/// <param name="minValue">The minimum value the user is allowed to input.</param>
+	/// <param name="maxValue">The maximum value the user is allowed to input.</param>
+	/// <param name="options">The options for this option; a 2nd layer of options.</param>
+	/// <param name="channelTypes">The types of channels allowed for this option.</param>
+	/// <param name="choices">The choices this option allows.</param>
+	/// <returns></returns>
+	public static Dictionary<string, object?> GetNewOptionProperties
+	(
+		string? name = null,
+		ApplicationCommandOptionType? optionType = null,
+		string? description = null,
+		bool? isRequired = null,
+		bool? isDefault = null,
+		bool? isAutoComplete = null,
+		double? minValue = null,
+		double? maxValue = null,
+		List<SlashCommandOptionBuilder>? options = null,
+		List<ChannelType>? channelTypes = null,
+		ApplicationCommandOptionChoiceProperties[]? choices = null
+	)
+	{
+		Dictionary<string, object?> dict = new()
+		{
+			{ "name", (name is null) ? "default-name" : name },
+			{ "optionType", (optionType is null) ? ApplicationCommandOptionType.String : optionType},
+			{ "description", (description is null) ? "No description set." : description},
+			{ "isRequired", (isRequired is null) ? false : isRequired},
+			{ "isDefault", (isDefault is null) ? false : isDefault },
+			{ "isAutoComplete", (isAutoComplete is null) ? false : isAutoComplete },
+			{ "minValue", minValue },
+			{ "maxValue", maxValue },
+			{ "options" , options },
+			{ "channelTypes", channelTypes },
+			{ "choices", choices }
+		};
+
+		return dict;
+	}
+
+	/// <summary>
+	/// The default set of arguments for using SlashCommandOptionBuilder.
+	/// 
+	/// <para>string name = "default-name"</para>
+	/// <para>ApplicationCommandOptionType optionType = ApplicationCommandOptionType.String</para>
+	/// <para>string description = "No description set."</para>
+	/// <para>bool? isRequired = false</para>
+	/// <para>bool isDefault = false</para>
+	/// <para>bool isAutoComplete = false</para>
+	/// <para>double? minValue = null</para>
+	/// <para>double? maxValue = null</para>
+	/// <para>List(SlashCommandOptionBuilder)? options = null</para>
+	/// <para>List(ChannelType)? channelTypes = null</para>
+	/// <para>ApplicationCommandOptionChoiceProperties[] choices = { }</para>
+	/// </summary>
+	//[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
+	//public static 
 
 	public SlashCommandProperties DiscordCommand { get; internal set; }
 	#endregion

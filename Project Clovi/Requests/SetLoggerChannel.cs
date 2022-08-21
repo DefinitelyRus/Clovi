@@ -10,22 +10,22 @@ public class SetLoggerChannel : Request
 		(
 		String IdArg = "setloggerchannel",
 		String DescriptionArg = "Assigns a text channel as a destination for all console log messages. For developers only.",
-		SlashCommandOptionBuilder[]? ParamsArg = null, //Initialized in CloviHost.cs.
+		List<Dictionary<string, object?>>? OptionDictionaryList = null, //Initialized in CloviHost.cs.
 		Boolean HasDefaultPermission = true,
 		Boolean HasDMPermission = false,
 		GuildPermission? Perms = null
 		)
 
-		: base(IdArg, DescriptionArg, ParamsArg, HasDefaultPermission, HasDMPermission, Perms) { }
+		: base(IdArg, DescriptionArg, OptionDictionaryList, HasDefaultPermission, HasDMPermission, Perms) { }
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		ConsoleDirector CD = CloviHost.ConDirector;
-		SocketChannel? Channel = null;
+		SocketTextChannel? Channel = null;
 		string? InputPassword = null;
 		foreach (SocketSlashCommandDataOption option in Command.Data.Options)
 		{
-			if (option.Name.Equals("channel")) Channel = (SocketChannel) option.Value;
+			if (option.Name.Equals("channel")) Channel = (SocketTextChannel) option.Value;
 			else if (option.Name.Equals("dev-password")) InputPassword = (string) option.Value;
 		}
 
@@ -50,10 +50,10 @@ public class SetLoggerChannel : Request
 
 			SQLiteDatabase Database = Director.GetDatabase("GuildsData");
 			Database.Connection.Open();
-			Database.Execute($"UPDATE guilds_settings SET setting_value = \"{Channel.Id}\" WHERE guild_id = \"{Command.ChannelId}\" && setting_name = \"LoggerChannelId\"");
+			Database.Execute($"UPDATE guilds_settings SET setting_value = \"{Channel.Id}\" WHERE guild_id = \"{Command.GuildId}\" AND setting_name = \"LoggerChannelId\"");
 			Database.Connection.Close();
 
-			Command.RespondAsync("Saved log destination. The changes will be applied on next restart.");
+			Command.RespondAsync($"Set log destination to {Channel.Mention}. The changes will be applied on next restart.");
 		}
 
 		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}");

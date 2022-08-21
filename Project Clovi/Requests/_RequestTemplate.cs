@@ -9,13 +9,13 @@ public class _RequestTemplate : Request
 		(
 		String IdArg = "req-template",
 		String DescriptionArg = "temp description",
-		SlashCommandOptionBuilder[]? ParamsArg = null,
+		List<Dictionary<string, object?>>? OptionDictionaryList = null,
 		Boolean HasDefaultPermission = true,
 		Boolean HasDMPermission = true,
 		GuildPermission? Perms = null
 		)
 
-		: base(IdArg, DescriptionArg, ParamsArg, HasDefaultPermission, HasDMPermission, Perms) { }
+		: base(IdArg, DescriptionArg, OptionDictionaryList, HasDefaultPermission, HasDMPermission, Perms) { }
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{

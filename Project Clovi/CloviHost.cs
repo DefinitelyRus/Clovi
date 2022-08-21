@@ -120,11 +120,25 @@ public class CloviHost
 
 			RequestList.AddLast(new Requests.GetLatency());
 			RequestList.AddLast(new Requests.Ctest());
-			RequestList.AddLast(new Requests.SetLoggerChannel( //idfk why its throwing: System.ArgumentNullException: Value cannot be null. (Parameter 'name')
-				ParamsArg: new SlashCommandOptionBuilder[2]
+			RequestList.Add(new Requests.SetLoggerChannel(
+				OptionDictionaryList: new List<Dictionary<string, object?>>()
 				{
-					new SlashCommandOptionBuilder().AddOption(name: "channel", ApplicationCommandOptionType.Channel, "The channel to send logs to.", isRequired: true),
-					new SlashCommandOptionBuilder().AddOption(name: "devpassword", ApplicationCommandOptionType.String, "The password only found in the source code.", isRequired: true)
+					Request.GetNewOptionProperties
+					(
+						"channel",
+						ApplicationCommandOptionType.Channel,
+						"The channel to send logs to.",
+						true,
+						channelTypes: new List<ChannelType>() {ChannelType.Text}
+					),
+
+					Request.GetNewOptionProperties
+					(
+						"dev-password",
+						ApplicationCommandOptionType.String,
+						"The password found in the source code.",
+						true
+					)
 				}
 			));
 			#endregion
