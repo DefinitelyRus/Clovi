@@ -142,6 +142,58 @@ public class CloviHost
 					)
 				}
 			));
+			RequestList.Add(new Requests.AddSchedule(
+				OptionDictionaryList: new List<Dictionary<string, object?>>()
+				{
+					Request.GetNewOptionProperties
+					(
+						"name",
+						ApplicationCommandOptionType.String,
+						"The name of the reminder. (Max: 160)",
+						true
+					),
+
+					Request.GetNewOptionProperties
+					(
+						"start-date",
+						ApplicationCommandOptionType.String,
+						"When to remind. Format: MM/DD or MM/DD/YY",
+						true
+					),
+
+					Request.GetNewOptionProperties
+					(
+						"start-time",
+						ApplicationCommandOptionType.String,
+						"Time to remind. Format: 23:59 or 11:59PM",
+						false
+					),
+
+					Request.GetNewOptionProperties
+					(
+						"description",
+						ApplicationCommandOptionType.String,
+						"More info about the reminder. (Max: 1000)",
+						false
+					),
+
+					Request.GetNewOptionProperties
+					(
+						"end-date",
+						ApplicationCommandOptionType.String,
+						"When schedule ends. Format: MM/DD or MM/DD/YY",
+						false
+					),
+
+					Request.GetNewOptionProperties
+					(
+						"end-time",
+						ApplicationCommandOptionType.String,
+						"When schedule ends. Format: 23:59 or 11:59PM",
+						false
+					)
+				}
+			));
 			#endregion
 
 			#region Addon Requests
