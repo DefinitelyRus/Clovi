@@ -21,6 +21,7 @@ public class SetLoggerChannel : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		ConsoleDirector CD = CloviHost.ConDirector;
+		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		SocketTextChannel? Channel = null;
 		string? InputPassword = null;
 		foreach (SocketSlashCommandDataOption option in Command.Data.Options)

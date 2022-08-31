@@ -21,6 +21,7 @@ public class _RequestTemplate : Request
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
 		ConsoleDirector CD = CloviHost.ConDirector; //Use CD.W(...) for logging.
+		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		//IMPORTANT: Do not use CD.W("...", true) in this method unless absolutely necessary.
 
 		//Code goes here.
