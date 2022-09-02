@@ -121,6 +121,7 @@ public class CloviHost
 
 			RequestList.Add(new Requests.GetLatency());
 			RequestList.Add(new Requests.Ctest());
+			#region SetLoggerChannel
 			RequestList.Add(new Requests.SetLoggerChannel(
 				OptionDictionaryList: new List<Dictionary<string, object?>>()
 				{
@@ -142,6 +143,8 @@ public class CloviHost
 					)
 				}
 			));
+			#endregion
+			#region AddSchedule
 			RequestList.Add(new Requests.AddSchedule(
 				OptionDictionaryList: new List<Dictionary<string, object?>>()
 				{
@@ -194,6 +197,7 @@ public class CloviHost
 					)
 				}
 			));
+			#endregion
 			#endregion
 
 			#region Addon Requests
