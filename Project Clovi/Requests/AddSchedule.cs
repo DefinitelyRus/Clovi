@@ -137,10 +137,30 @@ public class AddSchedule : Request
 		short[]? EndDate;
 		StringBuilder[] StartTimeHolder = new StringBuilder[2] { new(), new() };
 		StringBuilder[] EndTimeHolder = new StringBuilder[2] { new(), new() };
+		DateTime RightNow = DateTime.Now;
 		#endregion
 
 		StartDate = DateFormatter(StartDateString);
 		EndDate = (EndDateString == null) ? null : DateFormatter(EndDateString);
+
+		//Cancels if DateFormatter() returns a failed product.
+		if (StartDate[0] == 999 || (EndDate != null && EndDate[0] == 999))
+		{
+			CD.W("An error has caused DateFormatter() to return a fail.");
+			Command.RespondAsync("Invalid input. Please use format `MM/DD/YYYY` (year is optional).");
+			return this;
+		}
+
+		//Cancel if the start month or year has already passed, or if the exact date has already passed.
+		if (StartDate[0] < RightNow.Month ||
+			StartDate[2] < RightNow.Year ||
+			(StartDate[0] <= RightNow.Month && StartDate[1] < RightNow.Day && StartDate[2] <= RightNow.Year))
+		{
+			string output = $"The start date {StartDate[0]}-{StartDate[1]}-{StartDate[2]} has already passed.";
+			CD.W(output);
+			Command.RespondAsync(output);
+			return this;
+		}
 
 		#region Filtering Time Input
 		if (StartTimeString.Length == 0)
@@ -285,9 +305,21 @@ public class AddSchedule : Request
 			DateSliced[2].Append(DateToday.Year);
 		}
 
-		int MM = int.Parse(DateSliced[0].ToString());
-		int DD = int.Parse(DateSliced[1].ToString());
-		int YY = int.Parse(DateSliced[2].ToString());
+		int MM, DD, YY;
+
+		//Tries to parse the date strings into integers.
+		try
+		{
+			MM = int.Parse(DateSliced[0].ToString());
+			DD = int.Parse(DateSliced[1].ToString());
+			YY = int.Parse(DateSliced[2].ToString());
+		}
+		catch (NullReferenceException)
+		{
+			//Triggers when inputting non-numerical characters.
+			CD.W("Invalid input.");
+			return FailReturn;
+		} 
 
 		//If MM is more than 12, set it to 12.
 		if (MM > 12)
