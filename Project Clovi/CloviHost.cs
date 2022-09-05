@@ -314,6 +314,7 @@ public class CloviHost
 	#region Message Handler Task
 	private Task MessageHandler(SocketMessage msg)
 	{
+		/*
 		if (msg.Author.IsBot) return Task.CompletedTask;
 		CD.W($"Receiving message from \"{msg.Channel.Name} by {msg.Author.Username}\" with the following content...\n\"{msg.Content}\"", true);
 
@@ -325,7 +326,7 @@ public class CloviHost
 		}
 
 		if (isUnclean) msg.Channel.SendMessageAsync($"You dirty bastard. You used {cCount} ||c||'s in that message.");
-
+		*/
 		return Task.CompletedTask;
 	}
 	#endregion
