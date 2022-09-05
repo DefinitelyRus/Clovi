@@ -47,6 +47,7 @@ public class AddSchedule : Request
 		DB.Connection.Open();
 		try
 		{
+			CD.W("Checking database validity...");
 			Reader = DB.Query("SELECT sched_name FROM schedule_reminder WHERE sched_name = \"test_sched\"");
 			if (Reader.Read()) CD.W($"Found \"{Reader.GetFieldValue<String>(1)}\".");
 		}
@@ -91,9 +92,10 @@ public class AddSchedule : Request
 		}
 		#endregion
 
+		#region Assigning values to variables.
 		String SchedName = "Untitled Schedule", SchedDesc = "",
-			StartDate = "01/01/01", StartTime = "00:00", ParsedStartDateTime = "BAD TIME";
-		String? EndDate = null, EndTime = null, ParsedEndDateTime = null;
+			StartDate = "01/01/01", StartTime = "00:00", ParsedStartDateTime;
+		String? EndDate = null, EndTime = "00:00", ParsedEndDateTime;
 
 		foreach (SocketSlashCommandDataOption option in Command.Data.Options)
 		{
@@ -120,6 +122,15 @@ public class AddSchedule : Request
 			}
 
 		}
+		CD.W(	
+			$"SchedName: {SchedName}\n" +
+			$"SchedDesc: {SchedDesc}\n" +
+			$"StartDate: {StartDate}\n" +
+			$"StartTime: {StartTime}\n" +
+			$"EndDate: {EndDate}\n" +
+			$"EndTime: {EndTime}"
+		);
+
 		bool AllGood = true;
 		byte Division = 0;
 		short[] StartDateHolder = new short[3];
@@ -132,7 +143,7 @@ public class AddSchedule : Request
 		EndDateHolder = (EndDate == null) ? null : DateFormatter(EndDate);
 
 		#region Filtering Time Input
-		if (StartTime == null || StartTime.Length == 0)
+		if (StartTime.Length == 0)
 		{
 			StartTimeHolder[0].Append("00");
 			StartTimeHolder[1].Append("00");
@@ -177,10 +188,14 @@ public class AddSchedule : Request
 		}
 		#endregion
 		ParsedStartDateTime = $"{StartDateHolder[0]}-{StartDateHolder[1]}-{StartDateHolder[2]} {StartTimeHolder[0]}:{StartTimeHolder[1]}";
-		if (EndDate == null) ParsedEndDateTime = null;
+		if (EndDateHolder == null) ParsedEndDateTime = null;
 		else
 		{
-			if (EndTime == null) { EndTimeHolder[0].Append("00"); EndTimeHolder[1].Append("00"); }
+			if (EndTime.Length == 0)
+			{
+				EndTimeHolder[0].Append("00");
+				EndTimeHolder[1].Append("00");
+			}
 			ParsedEndDateTime = $"{EndDateHolder[0]}-{EndDateHolder[1]}-{EndDateHolder[2]} {EndTimeHolder[0]}:{EndTimeHolder[1]}";
 		}
 		#region Condensing to DateTime
@@ -191,10 +206,10 @@ public class AddSchedule : Request
 			DB.Execute("INSERT INTO schedule_reminder" +
 				"( sched_name, sched_desc, sched_start, sched_end, sched_creation )" +
 				"VALUES (" +
-					$"\"{SchedName}\"," +
-					$"\"{SchedDesc}\"," +
-					$"\"{ParsedStartDateTime}\"," +
-					$"\"{ParsedEndDateTime}\"," +
+					$"datetime(\"{SchedName}\")," +
+					$"datetime(\"{SchedDesc}\")," +
+					$"datetime(\"{ParsedStartDateTime}\")," +
+					$"datetime(\"{ParsedEndDateTime}\")," +
 					$"datetime(\"now\"))");
 			CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}");
 		}
