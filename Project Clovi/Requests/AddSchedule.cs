@@ -207,8 +207,10 @@ public class AddSchedule : Request
 			if (Byte.Parse(StartTimeHolder[1].ToString()) > 59) { AllGood = false; }
 		}
 		#endregion
-		ParsedStartDateTime = $"{StartDateHolder[0]}-{StartDateHolder[1]}-{StartDateHolder[2]} {StartTimeHolder[0]}:{StartTimeHolder[1]}";
-		if (EndDateHolder == null) ParsedEndDateTime = null;
+
+		#region Condensing to DateTime
+		ParsedStartDateTime = $"{StartDate[0]}-{StartDate[1]}-{StartDate[2]} {StartTimeHolder[0]}:{StartTimeHolder[1]}";
+		if (EndDate == null) ParsedEndDateTime = null;
 		else
 		{
 			if (EndTimeString.Length == 0)
@@ -218,9 +220,8 @@ public class AddSchedule : Request
 			}
 			ParsedEndDateTime = $"{EndDate[0]}-{EndDate[1]}-{EndDate[2]} {EndTimeHolder[0]}:{EndTimeHolder[1]}";
 		}
-		#region Condensing to DateTime
+		#endregion
 
-			#endregion
 		if (AllGood)
 		{
 			DB.Execute("INSERT INTO schedule_reminder" +
@@ -326,13 +327,14 @@ public class AddSchedule : Request
 		{
 			DateSliced[0].Remove(0, 2);
 			DateSliced[0].Append("12");
+			MM = 12; //Necessary for the next IF block.
 		}
 
 		//If DD exceeds the number of days in its respective month, set it to the maximum.
 		if (DD > DateTime.DaysInMonth(YY, MM))
 		{
-			DateSliced[2].Remove(0, 2);
-			DateSliced[2].Append(DateTime.DaysInMonth(YY, MM));
+			DateSliced[1].Remove(0, 2);
+			DateSliced[1].Append(DateTime.DaysInMonth(YY, MM));
 		}
 
 		//If the set year is less than 4 chars, make it 4 chars.
