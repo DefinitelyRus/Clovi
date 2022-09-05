@@ -122,83 +122,14 @@ public class AddSchedule : Request
 		}
 		bool AllGood = true;
 		byte Division = 0;
-		StringBuilder[] StartDateHolder = new StringBuilder[3];
-		StringBuilder[] StartTimeHolder = new StringBuilder[2];
-		StringBuilder[]? EndDateHolder = new StringBuilder[3];
-		StringBuilder[]? EndTimeHolder = new StringBuilder[2];
-
-		#region Filtering Date Inputs
-		CD.W($"Reading StartDate. Value: \"{StartDate}\"");
-		foreach (char c in StartDate)
-		{
-			// "MM-DD-YY-??" <-- 4th division doesn't exist and causes OutOfBounds Index
-			if (Division > 3) { AllGood = false; break; }
-
-			// Moves to the next division when these chars are detected.
-			// "MM" -> "DD" -> "YY"
-			if (c.Equals('/') || c.Equals('-')) Division++;
-
-			else if (Char.IsNumber(c))
-			{
-				if (StartDateHolder[Division] == null) StartDateHolder[Division] = new StringBuilder();
-				//If MM or DD is already 2+ chars long OR if YY is already 4+ characters long, cancel operation.
-				if (StartDateHolder[Division].Length >= 2 || (StartDateHolder[Division].Length >= 4 && Division == 3))
-				{
-					AllGood = false;
-					break;
-				}
-
-				//Else, add character to current division.
-				StartDateHolder[Division].Append(c);
-			}
-		}
-		for (int div = 0; div < StartDateHolder.Length; div++)
-		{
-			//If YY is of length 0, set it to 2022 by default.
-			if (div == 2 && StartDateHolder[2].Length == 0) StartDateHolder[2].Append("2022");
-			//TODO: Check current date and compare to target date.
-			//		If current date has already passed in the current year, move to next year.
-			//		Else, set to the same year.
-
-
-			//Cancel if any division's length is 0 OR if there aren't exactly 3 divisions.
-			if (StartDateHolder[div].Length == 0 && StartDateHolder.Length != 3)
-			{
-				AllGood = false;
-				break;
-			}
-		}
-		Division = 0;
-
-		if (EndDate != null) 
-		{
-			CD.W($"Reading EndDate. Value: \"{EndDate}\"");
-			foreach (char c in EndDate)
-			{
-				// "MM-DD-YY-??" <-- 4th division doesn't exist and causes OutOfIndex
-				if (Division > 3) { AllGood = false; break; }
-
-				// Moves to the next division when these chars are detected.
-				// "MM" -> "DD" -> "YY"
-				if (c.Equals('/') || c.Equals('-')) Division++;
-				else if (char.IsNumber(c))
-				{
-					//If MM or DD is already 2+ chars long OR if YY is already 4+ characters long, cancel operation.
-					if (EndDateHolder[Division].Length >= 2 || (EndDateHolder[Division].Length >= 4 && Division == 3))
-					{
-						AllGood = false;
-						break;
-					}
-
-					//Else, add character to current division.
-					EndDateHolder[Division].Append(c);
-				}
-				else if (char.IsLetter(c)) { AllGood = false; break; }
-			}
-			for (int div = 0; div < EndDateHolder.Length; div++) { if (EndDateHolder.Length == 0 && div != 3) { AllGood = false; break; } }
-			Division = 0;
-		}
+		short[] StartDateHolder = new short[3];
+		short[]? EndDateHolder = new short[3];
+		StringBuilder[] StartTimeHolder = new StringBuilder[2] { new(), new() };
+		StringBuilder[] EndTimeHolder = new StringBuilder[2] { new(), new() };
 		#endregion
+
+		StartDateHolder = DateFormatter(StartDate);
+		EndDateHolder = (EndDate == null) ? null : DateFormatter(EndDate);
 
 		#region Filtering Time Input
 		if (StartTime == null || StartTime.Length == 0)
@@ -275,5 +206,102 @@ public class AddSchedule : Request
 
 		DB.Connection.Close();
 		return this;
+	}
+
+	static private short[] DateFormatter(string? DateInput)
+	{
+		short[] FailReturn = new short[] { 999, 999, 999 };
+		StringBuilder[] DateSliced = new StringBuilder[3];
+		byte Division = 0;
+
+		CD.W($"Reading DateInput. Value: \"{DateInput}\"");
+
+		if (DateInput == null)
+		{
+			CD.W("DateInput is null. Returning a bad array...");
+			return FailReturn;
+		}
+		#region Division of date units
+		/*
+		 * The purpose of this loop is to separate the month, day, and year
+		 * units into their own individual StringBuilders.
+		 * This makes cleaning the inputs much simpler.
+		 */
+		foreach (char c in DateInput)
+		{
+			//Cancels if it detects a 4th division.
+			// "MM-DD-YY-??" <-- 4th division doesn't exist and causes OutOfBounds Index
+			if (Division > 3)
+			{
+				CD.W("There are more than 3 divisions in the input. Cancelling...");
+				return FailReturn;
+			}
+
+			// Moves to the next division when these chars are detected.
+			// "MM" -> "DD" -> "YY"
+			if (c.Equals('/') || c.Equals('-')) Division++;
+
+			else if (Char.IsNumber(c))
+			{
+				//Instantiates a new instance of StringBuilder if it's currently null.
+				//This is for when the division doesn't change but
+				//there are more characters to be added to the same division.
+				if (DateSliced[Division] == null) DateSliced[Division] = new StringBuilder();
+
+				//Cancels the operation if MM or DD is already 2+ chars long OR if YY is already 4+ characters long.
+				if (DateSliced[Division].Length >= 2 || DateSliced.Length >= 4)
+				{
+					CD.W("The month and/or date value(s) exceed 2 digits. Cancelling...");
+					return FailReturn;
+				}
+
+				//Else (if no issues are detected), add character to current division.
+				DateSliced[Division].Append(c);
+			}
+		}
+		#endregion
+
+		DateTime DateToday = DateTime.Today;
+
+		//If YY is null, set it to the current year.
+		if (DateSliced[2] == null)
+		{
+			DateSliced[2] = new();
+			DateSliced[2].Append(DateToday.Year);
+		}
+
+		int MM = int.Parse(DateSliced[0].ToString());
+		int DD = int.Parse(DateSliced[1].ToString());
+		int YY = int.Parse(DateSliced[2].ToString());
+
+		//If MM is more than 12, set it to 12.
+		if (MM > 12)
+		{
+			DateSliced[0].Remove(0, 2);
+			DateSliced[0].Append("12");
+		}
+
+		//If DD exceeds the number of days in its respective month, set it to the maximum.
+		if (DD > DateTime.DaysInMonth(YY, MM))
+		{
+			DateSliced[2].Remove(0, 2);
+			DateSliced[2].Append(DateTime.DaysInMonth(YY, MM));
+		}
+
+		//If the set year is less than 4 chars, make it 4 chars.
+		else if (DateSliced[2].Length < 4)
+		{
+			string yearHolder = DateSliced[2].ToString()[^2..]; //Last 2 chars of this string.
+			DateSliced[2] = new();
+			DateSliced[2].Append($"20{yearHolder}");
+		}
+
+		short[] Result = new short[]
+		{
+			short.Parse(DateSliced[0].ToString()),
+			short.Parse(DateSliced[1].ToString()),
+			short.Parse(DateSliced[2].ToString()),
+		};
+		return Result;
 	}
 }
