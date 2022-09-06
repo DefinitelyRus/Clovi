@@ -128,6 +128,7 @@ public class AddSchedule : Request
 			}
 
 		}
+
 		CD.W(	
 			$"SchedName: {SchedName}\n" +
 			$"SchedDesc: {SchedDesc}\n" +
@@ -145,6 +146,7 @@ public class AddSchedule : Request
 		DateTime RightNow = DateTime.Now;
 		#endregion
 
+		#region Date Formatting
 		StartDate = DateFormatter(StartDateString);
 		EndDate = (EndDateString == null) ? null : DateFormatter(EndDateString);
 
@@ -166,6 +168,7 @@ public class AddSchedule : Request
 			Command.RespondAsync(output);
 			return this;
 		}
+		#endregion
 
 		#region Filtering Time Input
 		StartTime = TimeFormatter(StartTimeString);
