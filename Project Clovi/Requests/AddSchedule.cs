@@ -163,49 +163,8 @@ public class AddSchedule : Request
 		}
 
 		#region Filtering Time Input
-		if (StartTimeString.Length == 0)
-		{
-			StartTimeHolder[0].Append("00");
-			StartTimeHolder[1].Append("00");
-		}
-		else
-		{
-			CD.W($"Reading StartTime. Value: \"{StartTimeString}\"");
-			int index = 0;
-			foreach (char c in StartTimeString)
-			{
-				if (Division > 2) { AllGood = false; break; }
-				index++;
-
-				if (StartTimeHolder[Division] == null) StartTimeHolder[Division] = new StringBuilder();
-
-				if (c.Equals(':') || c.Equals('-') || index == 3) Division++;
-				else if (char.IsNumber(c))
-				{
-					if (StartTimeHolder[Division].Length >= 4) { AllGood = false; break; }
-					else if (StartTimeHolder[Division].Length < 2)
-					{
-						StartTimeHolder[Division].Append(c);
-					}
-				}
-				else if (char.ToLower(c).Equals('p'))
-				{
-					byte Time;
-					Time = byte.Parse(StartTimeHolder[0].ToString());
-
-					//12:00PM is simply 12:00, not 24:00.
-					if (Time != 12) Time += 12;
-
-					//Cancel if Time adds up to 24+. 13PM is not a thing.
-					if (Time > 23) { AllGood = false; break; }
-
-					StartTimeHolder[0].Clear();
-					StartTimeHolder[0].Append(Time);
-				}
-			}
-			//Cancel if MM is over 59. There can't be 69 minutes in an hour, unfortunately.
-			if (Byte.Parse(StartTimeHolder[1].ToString()) > 59) { AllGood = false; }
-		}
+		StartTime = TimeFormatter(StartTimeString);
+		EndDate = TimeFormatter(EndDateString);
 		#endregion
 
 		#region Condensing to DateTime
@@ -350,6 +309,95 @@ public class AddSchedule : Request
 			short.Parse(DateSliced[0].ToString()),
 			short.Parse(DateSliced[1].ToString()),
 			short.Parse(DateSliced[2].ToString()),
+		};
+		return Result;
+	}
+
+	static private short[] TimeFormatter(string? TimeInput)
+	{
+		CD.W($"Reading StartTime... Value: \"{TimeInput}\"");
+
+		//To be returned if an error was encountered.
+		short[] FailReturn = new short[] { 999, 999 };
+
+		//A temporary container where to put the formatted time units.
+		StringBuilder[] TimeSliced = new StringBuilder[2];
+
+		//The index that divides the HH and MM units. Cancel if there are more than 2 divisions.
+		byte Division = 0;
+
+		if (TimeInput == null || TimeInput.Length == 0)
+		{
+			TimeSliced[0] = new StringBuilder("00");
+			TimeSliced[1] = new StringBuilder("00");
+			TimeInput = "";
+		}
+
+		foreach (char c in TimeInput)
+		{
+			if (Division > 2) { return FailReturn; }
+
+			if (c.Equals(':') || c.Equals('-')) Division++;
+
+			else if (char.IsNumber(c))
+			{
+				//Create a new instance if not already created.
+				if (TimeSliced[Division] == null) TimeSliced[Division] = new StringBuilder();
+
+				//Cancels if the length is already 2+ chars long.
+				if (TimeSliced[Division].Length >= 2)
+				{
+					CD.W("TimeFormatter does not support seconds and cannot format more than 2 divisions.");
+					return FailReturn;
+				}
+
+				//Else (if no issues are detected), add character to current division.
+				else TimeSliced[Division].Append(c);
+			}
+
+			//"09:00PM" -> "21:00".
+			else if (char.ToLower(c).Equals('p'))
+			{
+				byte Time;
+				try { Time = byte.Parse(TimeSliced[0].ToString()); }
+				catch { Time = 0; }
+
+				//12:00PM is simply 12:00, not 24:00.
+				if (Time != 12) Time += 12;
+
+				if (Time > 23)
+				{
+					CD.W("Cannot set to more than 23 hours.");
+					return FailReturn;
+				}
+
+				TimeSliced[0].Clear();
+				TimeSliced[0].Append(Time);
+			}
+		}
+
+		//In case these somehow end up remaining null...
+		if (TimeSliced[0] == null) { TimeSliced[0] = new StringBuilder("00"); }
+		if (TimeSliced[1] == null) { TimeSliced[1] = new StringBuilder("00"); }
+
+		//Cancel if HH is over 23.
+		if (Byte.Parse(TimeSliced[0].ToString()) > 23)
+		{
+			CD.W("Hour unit cannot be over 23.");
+			return FailReturn;
+		}
+
+		//Cancel if MM is over 59.
+		if (Byte.Parse(TimeSliced[1].ToString()) > 59)
+		{
+			CD.W("Minute unit cannot be over 59.");
+			return FailReturn;
+		}
+
+		short[] Result = new short[]
+		{
+			short.Parse(TimeSliced[0].ToString()),
+			short.Parse(TimeSliced[1].ToString())
 		};
 		return Result;
 	}
