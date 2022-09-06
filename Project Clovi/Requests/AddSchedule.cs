@@ -9,8 +9,8 @@ public class AddSchedule : Request
 {
 	public AddSchedule
 		(
-		String IdArg = "remind",
-		String DescriptionArg = "Adds a new schedule to the reminder calendar.",
+		string IdArg = "remind",
+		string DescriptionArg = "Adds a new schedule to the reminder calendar.",
 		List<Dictionary<string, object?>>? OptionDictionaryList = null,
 		Boolean HasDefaultPermission = true,
 		Boolean HasDMPermission = false,
@@ -93,31 +93,37 @@ public class AddSchedule : Request
 		#endregion
 
 		#region Assigning values to variables.
-		String SchedName = "Untitled Schedule", SchedDesc = "",
-			StartDateString = "01/01/01", StartTimeString = "00:00", ParsedStartDateTime;
-		String? EndDateString = null, EndTimeString = "00:00", ParsedEndDateTime;
+		string?
+			SchedName = "Untitled Schedule",
+			SchedDesc = "",
+			StartDateString,
+			StartTimeString = "00:00",
+			EndDateString,
+			EndTimeString,
+			ParsedStartDateTime,
+			ParsedEndDateTime;
 
 		foreach (SocketSlashCommandDataOption option in Command.Data.Options)
 		{
 			switch (option.Name)
 			{
 				case "name":
-					SchedName = (String)option.Value;
+					SchedName = (string)option.Value;
 					break;
 				case "description":
-					SchedDesc = (String)option.Value;
+					SchedDesc = (string)option.Value;
 					break;
 				case "start-date":
-					StartDateString = (String)option.Value;
+					StartDateString = (string)option.Value;
 					break;
 				case "start-time":
-					StartTimeString = (String)option.Value;
+					StartTimeString = (string)option.Value;
 					break;
 				case "end-date":
-					EndDateString = (String)option.Value;
+					EndDateString = (string)option.Value;
 					break;
 				case "end-time":
-					EndTimeString = (String)option.Value;
+					EndTimeString = (string)option.Value;
 					break;
 			}
 
@@ -132,11 +138,10 @@ public class AddSchedule : Request
 		);
 
 		bool AllGood = true;
-		byte Division = 0;
 		short[] StartDate;
 		short[]? EndDate;
-		StringBuilder[] StartTimeHolder = new StringBuilder[2] { new(), new() };
-		StringBuilder[] EndTimeHolder = new StringBuilder[2] { new(), new() };
+		short[] StartTime;
+		short[] EndTime;
 		DateTime RightNow = DateTime.Now;
 		#endregion
 
@@ -168,16 +173,16 @@ public class AddSchedule : Request
 		#endregion
 
 		#region Condensing to DateTime
-		ParsedStartDateTime = $"{StartDate[0]}-{StartDate[1]}-{StartDate[2]} {StartTimeHolder[0]}:{StartTimeHolder[1]}";
+		ParsedStartDateTime = $"{StartDate[0]}-{StartDate[1]}-{StartDate[2]} {StartTime[0]}:{StartTime[1]}";
 		if (EndDate == null) ParsedEndDateTime = null;
 		else
 		{
 			if (EndTimeString.Length == 0)
 			{
-				EndTimeHolder[0].Append("00");
-				EndTimeHolder[1].Append("00");
+				StartTime[0].Append("00");
+				StartTime[1].Append("00");
 			}
-			ParsedEndDateTime = $"{EndDate[0]}-{EndDate[1]}-{EndDate[2]} {EndTimeHolder[0]}:{EndTimeHolder[1]}";
+			ParsedEndDateTime = $"{EndDate[0]}-{EndDate[1]}-{EndDate[2]} {StartTime[0]}:{StartTime[1]}";
 		}
 		#endregion
 
