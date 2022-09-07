@@ -152,7 +152,7 @@ public class CloviHost
 					(
 						"name",
 						ApplicationCommandOptionType.String,
-						"The name of the reminder. (Max: 160)",
+						"The name of the reminder. (Max: 80)",
 						true
 					),
 
