@@ -81,10 +81,10 @@ public class AddSchedule : Request
 		string?
 			SchedName = "Untitled Schedule",
 			SchedDesc = "",
-			StartDateString,
+			StartDateString = null,
 			StartTimeString = "00:00",
-			EndDateString,
-			EndTimeString,
+			EndDateString = null,
+			EndTimeString = null,
 			ParsedStartDateTime,
 			ParsedEndDateTime;
 
@@ -123,11 +123,8 @@ public class AddSchedule : Request
 			$"EndTime: {EndTimeString}"
 		);
 
-		bool AllGood = true;
-		short[] StartDate;
-		short[]? EndDate;
-		short[] StartTime;
-		short[] EndTime;
+		short[] StartDate, StartTime;
+		short[]? EndDate, EndTime;
 		DateTime RightNow = DateTime.Now;
 		#endregion
 
