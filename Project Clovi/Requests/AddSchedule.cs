@@ -128,6 +128,22 @@ public class AddSchedule : Request
 		DateTime RightNow = DateTime.Now;
 		#endregion
 
+		#region String Limiting
+		if (SchedName.Length > 80)
+		{
+			CD.W("Name length over 80. Cancelling...");
+			Command.RespondAsync("Name cannot be longer than 80 characters.");
+			return this;
+		}
+
+		if (SchedDesc.Length > 1000)
+		{
+			CD.W("Description length over 1000. Cancelling...");
+			Command.RespondAsync("Description cannot be longer than 1000 characters.");
+			return this;
+		}
+		#endregion
+
 		#region Date Formatting
 		StartDate = DateFormatter(StartDateString);
 		EndDate = (EndDateString == null) ? null : DateFormatter(EndDateString);
