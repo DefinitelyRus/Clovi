@@ -114,7 +114,7 @@ public class AddSchedule : Request
 
 		}
 
-		CD.W(	
+		CD.W(
 			$"SchedName: {SchedName}\n" +
 			$"SchedDesc: {SchedDesc}\n" +
 			$"StartDate: {StartDateString}\n" +
@@ -161,7 +161,7 @@ public class AddSchedule : Request
 			StartDate[2] < RightNow.Year ||
 			(StartDate[0] <= RightNow.Month && StartDate[1] < RightNow.Day && StartDate[2] <= RightNow.Year))
 		{
-			string output = $"The start date {StartDate[0]}-{StartDate[1]}-{StartDate[2]} has already passed.";
+			string output = $"The start date {StartDate[0].ToString().PadLeft(2, '0')}-{StartDate[1].ToString().PadLeft(2, '0')}-{StartDate[2]} has already passed.";
 			CD.W(output);
 			Command.RespondAsync(output);
 			return this;
@@ -170,41 +170,48 @@ public class AddSchedule : Request
 
 		#region Filtering Time Input
 		StartTime = TimeFormatter(StartTimeString);
-		EndDate = TimeFormatter(EndDateString);
+		EndTime = (EndTimeString == null) ? null : TimeFormatter(EndTimeString);
+
+		//Cancels if TimeFormatter() returns a failed product.
+		if (StartTime[0] == 999 || (EndTime != null && EndTime[0] == 999))
+		{
+			CD.W("An error has caused TimeFormatter() to return a fail.");
+			Command.RespondAsync("Invalid input. Please use format `23:59` or `11:59PM` (minutes are optional).");
+		}
+
+		//Cancels if the start time has already passed.
+		if (StartDate[0] == RightNow.Month && StartDate[1] == RightNow.Day && StartDate[2] == RightNow.Year &&
+			StartTime[0] <= RightNow.Hour && StartTime[1] < RightNow.Minute)
+		{
+			string output = $"The start time {StartTime[0].ToString().PadLeft(2, '0')}:{StartTime[1].ToString().PadLeft(2, '0')} has already passed.";
+			CD.W(output);
+			Command.RespondAsync(output);
+		}
 		#endregion
 
 		#region Condensing to DateTime
-		ParsedStartDateTime = $"{StartDate[0]}-{StartDate[1]}-{StartDate[2]} {StartTime[0]}:{StartTime[1]}";
+		ParsedStartDateTime = $"{StartDate[0].ToString().PadLeft(2, '0')}-{StartDate[1].ToString().PadLeft(2, '0')}-{StartDate[2]} " +
+							  $"{StartTime[0].ToString().PadLeft(2, '0')}:{StartTime[1].ToString().PadLeft(2, '0')}";
 		if (EndDate == null) ParsedEndDateTime = null;
 		else
 		{
-			if (EndTimeString.Length == 0)
-			{
-				StartTime[0].Append("00");
-				StartTime[1].Append("00");
-			}
-			ParsedEndDateTime = $"{EndDate[0]}-{EndDate[1]}-{EndDate[2]} {StartTime[0]}:{StartTime[1]}";
+			EndTime ??= (new short[2] { 0, 0 });
+			ParsedEndDateTime = $"{EndDate[0].ToString().PadLeft(2,'0')}-{EndDate[1].ToString().PadLeft(2, '0')}-{EndDate[2]} " +
+								$"{EndTime[0].ToString().PadLeft(2, '0')}:{EndTime[1].ToString().PadLeft(2, '0')}";
 		}
 		#endregion
 
-		if (AllGood)
-		{
-			DB.Execute("INSERT INTO schedule_reminder" +
-				"( sched_name, sched_desc, sched_start, sched_end, sched_creation )" +
-				"VALUES (" +
-					$"\"{SchedName}\"," +
-					$"\"{SchedDesc}\"," +
-					$"\"{ParsedStartDateTime}\"," +
-					$"\"{ParsedEndDateTime}\"," +
-					$"datetime(\"now\"))");
-			CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}");
-		}
-		else
-		{
-			CD.W($"FAIL: \"{this.Name}\" request by {Command.User.Username}");
-			Command.RespondAsync("An error has been encounted. Please inform the developer.");
-		}
+		DB.Execute("INSERT INTO schedule_reminder" +
+			"( sched_name, sched_desc, sched_start, sched_end, sched_creation )" +
+			"VALUES (" +
+				$"\"{SchedName}\"," +
+				$"\"{SchedDesc}\"," +
+				$"\"{ParsedStartDateTime}\"," +
+				$"\"{ParsedEndDateTime}\"," +
+				$"datetime(\"now\"))");
+		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}");
 
+		Command.RespondAsync($"Everyone will be now @mentioned on **{ParsedStartDateTime}** for **{SchedName}**.");
 		DB.Connection.Close();
 		return this;
 	}
@@ -250,7 +257,7 @@ public class AddSchedule : Request
 				if (DateSliced[Division] == null) DateSliced[Division] = new StringBuilder();
 
 				//Cancels the operation if MM or DD is already 2+ chars long OR if YY is already 4+ characters long.
-				if (DateSliced[Division].Length >= 2 || DateSliced.Length >= 4)
+				if (DateSliced[Division].Length >= 2 || (Division == 3 && DateSliced[Division].Length >= 4))
 				{
 					CD.W("The month and/or date value(s) exceed 2 digits. Cancelling...");
 					return FailReturn;
@@ -305,6 +312,9 @@ public class AddSchedule : Request
 		//If the set year is less than 4 chars, make it 4 chars.
 		else if (DateSliced[2].Length < 4)
 		{
+			//Add leading 0 if year is of length less than 2.
+			DateSliced[2] = (DateSliced[2].Length < 2) ? new StringBuilder(DateSliced[2].ToString().PadLeft(2, '0')) : DateSliced[2];
+
 			string yearHolder = DateSliced[2].ToString()[^2..]; //Last 2 chars of this string.
 			DateSliced[2] = new();
 			DateSliced[2].Append($"20{yearHolder}");
