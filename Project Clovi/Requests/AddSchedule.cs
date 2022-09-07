@@ -21,21 +21,6 @@ public class AddSchedule : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		/*
-		 * Parameters:
-		 * - Title (Max 160 chars)
-		 * - Desc (Optional; Max 1000 chars)
-		 * - Start On Date (Optional; String; Parse to TimeUnit):
-		 *		Format: 12/31/99 or 12/31 
-		 * - End On Date (Optional; String; Parse to TimeUnit):
-		 *		Format: MM/DD/YY or MM/DD
-		 * - Start On Time (Optional; String; Parse to TimeUnit):
-		 *		Format: 23:59 or 11:59PM
-		 *		Default: 00:00
-		 * - End On Time (Optional; String; Parse to TimeUnit):
-		 *		Format: 23:59 or 11:59PM
-		 *		Default: 00:00
-		 */
 		ConsoleDirector CD = CloviHost.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		SQLiteDirector DBDir = CloviHost.SQLDirector;
