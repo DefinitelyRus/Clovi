@@ -15,13 +15,7 @@ public class FileIODirector
 	/// </summary>
 	public FileIODirector()
 	{
-		String app = @"\Project Clovi";
-		Directory = new string[]
-		{
-			Environment.GetFolderPath(Environment.SpecialFolder.Desktop),				//Desktop
-			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + app,		//My Documents
-			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + app	//Program Files
-		};
+
 	}
 	#endregion
 
@@ -32,9 +26,19 @@ public class FileIODirector
 	private readonly ConsoleDirector CD = CloviHost.ConDirector;
 
 	/// <summary>
-	/// An array of pre-set Directory Strings.
+	/// A pre-set directory to the current OS User's Desktop folder.
 	/// </summary>
-	public String[] Directory { get; internal set; }
+	readonly String DESKTOP_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Yuuka";
+
+	/// <summary>
+	/// A pre-set directory to the current OS User's Documents folder.
+	/// </summary>
+	readonly String DOCUMENTS_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Yuuka";
+
+	/// <summary>
+	/// A pre-set directory to the current OS User's Application Data folder.
+	/// </summary>
+	readonly String APPDATA_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Yuuka";
 	#endregion
 
 	#region Methods
@@ -45,9 +49,9 @@ public class FileIODirector
 	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
 	/// <param name="Index">A preset directory where local files are stored.</param>
 	/// <returns>The target file.</returns>
-	public StreamReader GetFile(String FileName, byte Index)
+	public StreamReader GetFile(String FileName, String Directory)
 	{
-		return File.OpenText(Directory[Index] + @$"\{FileName}");
+		return File.OpenText(Directory + @$"\{FileName}");
 	}
 
 	/// <summary>
@@ -57,9 +61,9 @@ public class FileIODirector
 	/// <param name="Index">A preset directory where local files are stored.</param>
 	/// <param name="Text">The String to be written on the file.</param>
 	/// <returns>This FileIODirector object.</returns>
-	public FileIODirector WriteFile(String FileName, byte Index, String Text)
+	public FileIODirector WriteFile(String FileName, String Directory, String Text)
 	{
-		File.WriteAllText(Directory[Index] + $@"\{FileName}", Text);
+		File.WriteAllText(Directory + $@"\{FileName}", Text);
 		return this;
 	}
 
@@ -69,11 +73,11 @@ public class FileIODirector
 	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
 	/// <param name="Index">A preset directory where local files are stored.</param>
 	/// <returns>This FileIODirector object.</returns>
-	public FileIODirector CreateFile(String FileName, byte Index)
+	public FileIODirector CreateFile(String FileName, String Directory)
 	{
-		CD.W(Directory[Index] + $@"\{FileName}");
-		System.IO.Directory.CreateDirectory(Directory[Index]);
-		File.CreateText(Directory[Index] + $@"\{FileName}");
+		CD.W(Directory + $@"\{FileName}");
+		System.IO.Directory.CreateDirectory(Directory);
+		File.CreateText(Directory + $@"\{FileName}");
 		return this;
 	}
 
@@ -83,9 +87,9 @@ public class FileIODirector
 	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
 	/// <param name="Index">A preset directory where local files are stored.</param>
 	/// <returns>This FileIODirector object.</returns>
-	public FileIODirector DeleteFile(String FileName, byte Index)
+	public FileIODirector DeleteFile(String FileName, String Directory)
 	{
-		File.Delete(Directory[Index] + $@"{FileName}");
+		File.Delete(Directory + $@"{FileName}");
 		return this;
 	}
 	#endregion
@@ -101,7 +105,7 @@ public class FileIODirector
 	{
 		//Gets the JSON file then parses into a JSON String.
 		CD.W("Attempting to retrieve instance data...");
-		StreamReader InstanceDataFile = GetFile("instancedata.json", 2);
+		StreamReader InstanceDataFile = GetFile("instancedata.json", APPDATA_DIRECTORY);
 		String InstanceDataString = InstanceDataFile.ReadToEnd();
 		InstanceDataFile.Close();
 
@@ -122,7 +126,7 @@ public class FileIODirector
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewDictionary);
 
 		//Writes the JSON String into a file.
-		WriteFile("instancedata.json", 2, NewJsonString);
+		WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
 
 		return this;
 	}
@@ -151,7 +155,7 @@ public class FileIODirector
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, JsonElement>>(InstanceData);
 
 		//Writes the JSON Sting into a file.
-		WriteFile("instancedata.json", 2, NewJsonString);
+		WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
 
 		return this;
 	}
@@ -164,13 +168,15 @@ public class FileIODirector
 	public bool CheckRequiredFiles()
 	{
 		Dictionary<String, Object>? ParsedJson;
+
+		//The instance data file is a JSON file containing the bot's Discord API token.
 		StreamReader InstanceDataFile;
 
+		//Attempts to check for existing instance data.
 		try
 		{
-			//Attempts to check for existing instance data.
 			CD.W("Attempting to check for existing instance data...");
-			InstanceDataFile = GetFile("instancedata.json", 2);
+			InstanceDataFile = GetFile("instancedata.json", APPDATA_DIRECTORY);
 		}
 		catch (Exception e)
 		{
@@ -191,14 +197,14 @@ public class FileIODirector
 				String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewJson);
 
 				//Creates the default directory if it doesn't already exist.
-				System.IO.Directory.CreateDirectory(Directory[2]);
+				System.IO.Directory.CreateDirectory(APPDATA_DIRECTORY);
 
 				//Sets the default text for the bot token prompt.
 				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
 
 				//Creates the new files needed to start the bot upon next bootup.
-				WriteFile("instancedata.json", 2, NewJsonString);
-				WriteFile("BotToken.txt", 0, BotTokenFileString);
+				WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
+				WriteFile("BotToken.txt", APPDATA_DIRECTORY, BotTokenFileString);
 
 				CD.W("[ALERT] No bot token. Paste your bot token in \"BotToken.txt\" in your Desktop.");
 				return false;
@@ -242,7 +248,7 @@ public class FileIODirector
 			StreamReader BotTokenFile;
 
 			//Gets the bot token from BotToken.txt, this file is deleted upon successful login.
-			try { BotTokenFile = GetFile("BotToken.txt", 0); }
+			try { BotTokenFile = GetFile("BotToken.txt", APPDATA_DIRECTORY); }
 			catch (FileNotFoundException)
 			{
 				CD.W("[FATAL] BotToken.txt not found. Creating replacement...");
@@ -250,7 +256,7 @@ public class FileIODirector
 				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
 
 				//Creates a replacement BotToken.txt.
-				WriteFile("BotToken.txt", 0, BotTokenFileString);
+				WriteFile("BotToken.txt", APPDATA_DIRECTORY, BotTokenFileString);
 
 				CD.W("Replacement created. Exiting...");
 
@@ -271,7 +277,7 @@ public class FileIODirector
 
 			//Serializes back into a JSON String, then writes to instancedata.json.
 			String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(ParsedJson);
-			WriteFile("instancedata.json", 2, NewJsonString);
+			WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
 		}
 		#endregion
 
