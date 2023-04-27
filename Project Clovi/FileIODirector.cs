@@ -2,7 +2,6 @@
 
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 /// <summary>
 /// Handles all file reads and writes stored locally on the host device.
@@ -11,7 +10,7 @@ public class FileIODirector
 {
 	#region Constructor
 	/// <summary>
-	/// Constructor for FileIODirector.
+	/// Constructor for FileIODirector. It basically does nothing.
 	/// </summary>
 	public FileIODirector()
 	{
@@ -28,17 +27,17 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Desktop folder.
 	/// </summary>
-	readonly String DESKTOP_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Yuuka";
+	public readonly String DESKTOP_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Yuuka";
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Documents folder.
 	/// </summary>
-	readonly String DOCUMENTS_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Yuuka";
+	public readonly String DOCUMENTS_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Yuuka";
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Application Data folder.
 	/// </summary>
-	readonly String APPDATA_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Yuuka";
+	public readonly String APPDATA_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Yuuka";
 	#endregion
 
 	#region Methods
