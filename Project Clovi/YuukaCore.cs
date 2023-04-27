@@ -112,7 +112,7 @@ public class YuukaCore
 			Token = "secret";
 			File.Delete(FIODirector.DESKTOP_DIRECTORY + @"\BotToken.txt");
 			List<Request> RequestList = new();
-			SqliteDataReader Reader;
+			SqliteDataReader SQLReader;
 			bool IsBotEnabled = true;
 			string IsBotEnabledString = "I dont know"; //Just a default value for debugging.
 			#endregion
@@ -212,14 +212,18 @@ public class YuukaCore
 			#endregion
 
 			#region Removal & addition of requests.
+			/*
+			 * TODO: Set the removal and addition of requests only be done once on-prompt.
+			 * This process is exponentially slower the more servers the bot is invited in.
+			 */
 			//For each Guild the bot is in...
 			foreach (SocketGuild Guild in CloviCore.Guilds)
 			{
 				CD.W($"Setting up guild \"{Guild.Name}\" ({Guild.Id})...");
 
 				SQLDirector.GetDatabase("GuildsData").Connection.Open();
-				Reader = SQLDirector.Query("GuildsData", $"SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\" AND guild_id = \"{Guild.Id}\"");
-				if (Reader.Read()) IsBotEnabledString = Reader.GetFieldValue<String>(0);
+				SQLReader = SQLDirector.Query("GuildsData", $"SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\" AND guild_id = \"{Guild.Id}\"");
+				if (SQLReader.Read()) IsBotEnabledString = SQLReader.GetFieldValue<String>(0);
 				IsBotEnabled = bool.Parse(IsBotEnabledString);
 
 				CD.W($"IsBotEnabled for \"{Guild.Name}\"? Parsed: {IsBotEnabled}, String: {IsBotEnabledString}");
@@ -258,13 +262,13 @@ public class YuukaCore
 			#region Logging on guilds.
 			SQLiteDatabase GuildsData = SQLDirector.GetDatabase("GuildsData");
 			GuildsData.Connection.Open();
-			Reader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
+			SQLReader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
 			ulong ChannelId;
 
 			CD.W("Adding channels for logging...");
-			while (Reader.Read())
+			while (SQLReader.Read())
 			{
-				ChannelId = Reader.GetFieldValue<ulong>(0);
+				ChannelId = SQLReader.GetFieldValue<ulong>(0);
 				if (ChannelId == 0) continue;
 				CD.LogChannelIdList.Add(ChannelId);
 				CD.W($"Directing logs to #{CloviCore.GetChannel(ChannelId)} ({ChannelId}).");
