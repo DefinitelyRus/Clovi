@@ -20,7 +20,7 @@ public class SetLoggerChannel : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		ConsoleDirector CD = CloviHost.ConDirector;
+		ConsoleDirector CD = YuukaCore.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		SocketTextChannel? Channel = null;
 		string? InputPassword = null;
@@ -45,9 +45,9 @@ public class SetLoggerChannel : Request
 		}
 		#endregion
 
-		if (CloviHost.SQLDirector.GetType() == typeof(SQLiteDirector))
+		if (YuukaCore.SQLDirector.GetType() == typeof(SQLiteDirector))
 		{
-			SQLiteDirector Director = (SQLiteDirector) CloviHost.SQLDirector;
+			SQLiteDirector Director = (SQLiteDirector) YuukaCore.SQLDirector;
 
 			SQLiteDatabase Database = Director.GetDatabase("GuildsData");
 			Database.Connection.Open();

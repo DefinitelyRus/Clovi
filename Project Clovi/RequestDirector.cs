@@ -23,7 +23,7 @@ public class RequestDirector
 	/// <summary>
 	/// Shortcut to CloviHost.ConDirector;
 	/// </summary>
-	private static readonly ConsoleDirector CD = CloviHost.ConDirector;
+	private static readonly ConsoleDirector CD = YuukaCore.ConDirector;
 
 	/// <summary>
 	/// A list of available requests.

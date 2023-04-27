@@ -23,7 +23,7 @@ public class FileIODirector
 	/// <summary>
 	/// A lazy shortcut for lazy people... like me.
 	/// </summary>
-	private readonly ConsoleDirector CD = CloviHost.ConDirector;
+	private readonly ConsoleDirector CD = YuukaCore.ConDirector;
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Desktop folder.
@@ -281,7 +281,7 @@ public class FileIODirector
 		}
 		#endregion
 
-		CloviHost.Token = (String) ParsedJson["BotToken"];
+		YuukaCore.Token = (String) ParsedJson["BotToken"];
 
 		CD.W("Instance data retrieved.");
 		return true;

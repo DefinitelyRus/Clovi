@@ -4,13 +4,16 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 
-public class CloviHost
+/// <summary>
+/// The very core of this whole project and the very first file in the stack.
+/// </summary>
+public class YuukaCore
 {
 	#region Initialization
 	/// <summary>
 	/// This current build's version. Change after each version release.
 	/// </summary>
-	public const String BOT_VERSION = $"ALPHA v1.0.0";
+	public const String BOT_VERSION = $"ALPHA v1.1.0";
 
 	/// <summary>
 	/// The core socket client responsible for handling all interactions between the front-end and back-end.
@@ -40,6 +43,8 @@ public class CloviHost
 
 	/// <summary>
 	/// The bot's secret token. Its default value is "secret".
+	/// This is modified in FileIODirector.CheckRequiredFiles().
+	/// It will return to "secret" once the bot successfully readies.
 	/// </summary>
 	internal static String Token = "secret";
 
@@ -48,7 +53,7 @@ public class CloviHost
 	/// </summary>
 	internal static bool IsBotActive = true;
 
-	public static Task Main() => new CloviHost().MainAsync();
+	public static Task Main() => new YuukaCore().MainAsync();
 	#endregion
 
 	#region Main Async Task
@@ -105,11 +110,11 @@ public class CloviHost
 			#region Initialization
 			CD.W("Client started. Preparing...");
 			Token = "secret";
-			File.Delete(FIODirector.Directory[0] + @"\BotToken.txt");
+			File.Delete(FIODirector.DESKTOP_DIRECTORY + @"\BotToken.txt");
 			List<Request> RequestList = new();
 			SqliteDataReader Reader;
 			bool IsBotEnabled = true;
-			string IsBotEnabledString = "I dont know";
+			string IsBotEnabledString = "I dont know"; //Just a default value for debugging.
 			#endregion
 
 			CD.W("Checking guilds_settings table...");

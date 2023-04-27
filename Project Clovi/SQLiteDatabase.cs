@@ -13,10 +13,10 @@ public class SQLiteDatabase : Database
 	/// <param name="Name">The name of this database.</param>
 	public SQLiteDatabase(String Name) : base(Name)
 	{
-		Connection = new($@"Data Source={CloviHost.FIODirector.Directory[0]}\{Name}.db");
+		Connection = new($@"Data Source={YuukaCore.FIODirector.Directory[0]}\{Name}.db");
 		Connection.Open(); Connection.Close();
 
-		CD = CloviHost.ConDirector;
+		CD = YuukaCore.ConDirector;
 	}
 
 	/// <summary>
@@ -29,7 +29,7 @@ public class SQLiteDatabase : Database
 		Connection = new($@"Data Source ={Directory}\{Name}.s3db");
 		Connection.Open(); Connection.Close();
 
-		CD = CloviHost.ConDirector;
+		CD = YuukaCore.ConDirector;
 	}
 
 	/// <summary>

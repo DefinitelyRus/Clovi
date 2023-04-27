@@ -12,7 +12,7 @@ public class SQLiteDirector : DatabaseDirector
 	public SQLiteDirector() : base(SQLDialect: "SQLite")
 	{
 		DatabaseList = new();
-		CD = CloviHost.ConDirector;
+		CD = YuukaCore.ConDirector;
 	}
 
 	#region Attributes
@@ -172,7 +172,7 @@ public class SQLiteDirector : DatabaseDirector
 						#endregion
 
 						//For each guild the bot is in...
-						foreach (SocketGuild g in CloviHost.CloviCore.Guilds.ToList())
+						foreach (SocketGuild g in YuukaCore.CloviCore.Guilds.ToList())
 						{
 							CD.W($"Checking Guild \"{g.Name}\" ({g.Id})...");
 
@@ -219,7 +219,7 @@ public class SQLiteDirector : DatabaseDirector
 						CD.W(e.ToString());
 						//Drop all tables, then logout and self-exit.
 						GetDatabase("GuildsData").Connection.Close();
-						CloviHost.CloviCore.LogoutAsync();
+						YuukaCore.CloviCore.LogoutAsync();
 						Environment.Exit(0);
 						return false;
 					}

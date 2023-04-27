@@ -20,7 +20,7 @@ public class Ctest : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleDirector CD = CloviHost.ConDirector; //Use CD.W(_) for logging.
+		ConsoleDirector CD = YuukaCore.ConDirector; //Use CD.W(_) for logging.
 
 		//Code goes here.
 

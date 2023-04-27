@@ -106,7 +106,7 @@ public abstract class Request
 	/// <summary>
 	/// Shortcut to CloviHost.ConDirector;
 	/// </summary>
-	protected static readonly ConsoleDirector CD = CloviHost.ConDirector;
+	protected static readonly ConsoleDirector CD = YuukaCore.ConDirector;
 
 	/// <summary>
 	/// The unique identifier for this command.

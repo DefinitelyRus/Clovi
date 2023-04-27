@@ -132,7 +132,7 @@ public class ConsoleDirector
 
 		foreach (ulong id in LogChannelIdList)
 		{
-			Channel = (SocketTextChannel)CloviHost.CloviCore.GetChannel(id);
+			Channel = (SocketTextChannel)YuukaCore.CloviCore.GetChannel(id);
 			P($"Sending log to \"{Channel.Name}\"...");
 			P($"Log Length: {PendingLog.Length}");
 			if (PendingLog.Length < 1900)

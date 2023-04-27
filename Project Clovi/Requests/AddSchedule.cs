@@ -21,9 +21,9 @@ public class AddSchedule : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		ConsoleDirector CD = CloviHost.ConDirector;
+		ConsoleDirector CD = YuukaCore.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
-		SQLiteDirector DBDir = CloviHost.SQLDirector;
+		SQLiteDirector DBDir = YuukaCore.SQLDirector;
 		SQLiteDatabase DB = DBDir.GetDatabase("GuildsData");
 		SqliteDataReader Reader;
 
