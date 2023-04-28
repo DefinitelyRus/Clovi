@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 
 /// <summary>
+/// Yuuka Multi-Purpose Assistive Kiosk System (Yuuka MPAKS).
 /// The very core of this whole project and the very first file in the stack.
 /// </summary>
 public class YuukaCore
@@ -13,7 +14,22 @@ public class YuukaCore
 	/// <summary>
 	/// This current build's version. Change after each version release.
 	/// </summary>
-	public const String BOT_VERSION = $"ALPHA v1.1.0";
+	public const String BOT_VERSION = "ALPHA v1.1.0";
+
+	/// <summary>
+	/// Full name for when your mother is angry at you.
+	/// </summary>
+	public const String BOT_NAME_FULL = "Yuuka Multi-Purpose Assistive Kiosk System";
+
+	/// <summary>
+	/// The most commonly used name, I think.
+	/// </summary>
+	public const String BOT_NAME = "Yuuka MPAKS";
+
+	/// <summary>
+	/// Shortened name for short name needs.
+	/// </summary>
+	public const String BOT_NAME_SHORT = "YMPAKS";
 
 	/// <summary>
 	/// The core socket client responsible for handling all interactions between the front-end and back-end.
