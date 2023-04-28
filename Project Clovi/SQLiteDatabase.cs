@@ -13,7 +13,7 @@ public class SQLiteDatabase : Database
 	/// <param name="Name">The name of this database.</param>
 	public SQLiteDatabase(String Name) : base(Name)
 	{
-		Connection = new($@"Data Source={YuukaCore.FIODirector.Directory[0]}\{Name}.db");
+		Connection = new($@"Data Source={YuukaCore.FIODirector.DIRECTORY_APPDATA}\{Name}.db");
 		Connection.Open(); Connection.Close();
 
 		CD = YuukaCore.ConDirector;

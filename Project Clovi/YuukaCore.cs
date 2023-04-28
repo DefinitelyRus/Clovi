@@ -110,7 +110,7 @@ public class YuukaCore
 			#region Initialization
 			CD.W("Client started. Preparing...");
 			Token = "secret";
-			File.Delete(FIODirector.DESKTOP_DIRECTORY + @"\BotToken.txt");
+			File.Delete(FIODirector.DIRECTORY_DESKTOP + @"\BotToken.txt");
 			List<Request> RequestList = new();
 			SqliteDataReader SQLReader;
 			bool IsBotEnabled = true;

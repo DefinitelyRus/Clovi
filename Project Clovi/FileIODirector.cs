@@ -27,7 +27,7 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Desktop folder.
 	/// </summary>
-	public readonly String DESKTOP_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Yuuka";
+	public readonly String DIRECTORY_DESKTOP = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Yuuka";
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Documents folder.
@@ -37,7 +37,7 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Application Data folder.
 	/// </summary>
-	public readonly String APPDATA_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Yuuka";
+	public readonly String DIRECTORY_APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Yuuka";
 	#endregion
 
 	#region Methods
@@ -104,7 +104,7 @@ public class FileIODirector
 	{
 		//Gets the JSON file then parses into a JSON String.
 		CD.W("Attempting to retrieve instance data...");
-		StreamReader InstanceDataFile = GetFile("instancedata.json", APPDATA_DIRECTORY);
+		StreamReader InstanceDataFile = GetFile("instancedata.json", DIRECTORY_APPDATA);
 		String InstanceDataString = InstanceDataFile.ReadToEnd();
 		InstanceDataFile.Close();
 
@@ -125,7 +125,7 @@ public class FileIODirector
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewDictionary);
 
 		//Writes the JSON String into a file.
-		WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
+		WriteFile("instancedata.json", DIRECTORY_APPDATA, NewJsonString);
 
 		return this;
 	}
@@ -154,7 +154,7 @@ public class FileIODirector
 		String NewJsonString = JsonSerializer.Serialize<Dictionary<String, JsonElement>>(InstanceData);
 
 		//Writes the JSON Sting into a file.
-		WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
+		WriteFile("instancedata.json", DIRECTORY_APPDATA, NewJsonString);
 
 		return this;
 	}
