@@ -27,7 +27,7 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Desktop folder.
 	/// </summary>
-	public readonly String DIRECTORY_DESKTOP = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Yuuka";
+	public readonly String DIRECTORY_DESKTOP = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Documents folder.
@@ -88,7 +88,7 @@ public class FileIODirector
 	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector DeleteFile(String FileName, String Directory)
 	{
-		File.Delete(Directory + $@"{FileName}");
+		File.Delete(Directory + $@"\{FileName}");
 		return this;
 	}
 	#endregion
@@ -166,124 +166,96 @@ public class FileIODirector
 	/// </summary>
 	public bool CheckRequiredFiles()
 	{
-		Dictionary<String, Object>? ParsedJson;
+		#pragma warning disable CS8604
 
 		//The instance data file is a JSON file containing the bot's Discord API token.
-		StreamReader InstanceDataFile;
+		StreamReader TokenContainerFile;
+		bool IsTokenOverridden;
+		String OverrideTokenFileName = "_YuukaBotToken.txt";
+		String TokenFileName = "PersistentTokenContainer.dat";
+		String? Token = "secret";
 
-		//Attempts to check for existing instance data.
+		//Check if _YuukaBotToken.txt exists.
 		try
 		{
-			CD.W("Attempting to check for existing instance data...");
-			InstanceDataFile = GetFile("instancedata.json", APPDATA_DIRECTORY);
-		}
-		catch (Exception e)
-		{
-			#region Replacement of instancedata file.
-			//If File or Directory is missing...
-			if (e is FileNotFoundException || e is DirectoryNotFoundException)
-			{
-				CD.W("Instance data not found. Creating new files...");
+			CD.W($"Attempting to check for override token file \"{OverrideTokenFileName}\"...");
+			TokenContainerFile = GetFile(OverrideTokenFileName, DIRECTORY_DESKTOP);
+			Token = TokenContainerFile.ReadLine();
 
-				//Creates a new empty-ish Dictionary.
-				Dictionary<String, Object> NewJson = new()
+			//Throw a FileNotFoundException if the TokenContainerFile remains unmodified.
+			if (TokenContainerFile.ReadToEnd().Equals($"\n{new String('-', 70)}\nPlease paste your bot token above this line."))
+				throw new FileNotFoundException("");
+
+			IsTokenOverridden = true;
+		}
+
+		//If _YuukaBotToken.txt does not exist...
+		catch (Exception)
+		{
+			CD.W($"\"{OverrideTokenFileName}\" could not be found. Proceeding...");
+			IsTokenOverridden = false;
+
+			//Check if PersistentTokenContainer.dat exists.
+			try
+			{
+				CD.W($"Attempting to find \"{TokenFileName}\"...");
+				TokenContainerFile = GetFile(TokenFileName, DIRECTORY_APPDATA);
+			}
+			catch (Exception e)
+			{	
+				//If PersistentTokenContainer.dat does not exist...
+				if (e is FileNotFoundException || e is DirectoryNotFoundException)
 				{
-					{ "BotToken", "secret" },
-					{ "GuildsData", new Dictionary<ulong, Object>() }
-				};
+					CD.W($"Could not find \"{TokenFileName}\". Creating \"{OverrideTokenFileName}\"...");
+					System.IO.Directory.CreateDirectory(DIRECTORY_APPDATA); //TODO: Check if this is still necessary.
 
-				//Serializes into a JSON String.
-				String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(NewJson);
+					//Sets the default text for the bot token prompt.
+					String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
+					WriteFile(OverrideTokenFileName, DIRECTORY_DESKTOP, BotTokenFileString);
 
-				//Creates the default directory if it doesn't already exist.
-				System.IO.Directory.CreateDirectory(APPDATA_DIRECTORY);
+					CD.W("[ALERT] No tokens detected! Launch is cancelled.");
+					CD.W($"[ALERT] Paste your bot token in \"{OverrideTokenFileName}\" in your Desktop.");
+					return false;
+				}
 
-				//Sets the default text for the bot token prompt.
-				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
-
-				//Creates the new files needed to start the bot upon next bootup.
-				WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
-				WriteFile("BotToken.txt", APPDATA_DIRECTORY, BotTokenFileString);
-
-				CD.W("[ALERT] No bot token. Paste your bot token in \"BotToken.txt\" in your Desktop.");
-				return false;
+				//If something else caused the issue...
+				else
+				{
+					CD.W($"[FATAL] An unexpected error has occurred! Launch is cancelled.\n{e}");
+					return false;
+				}
 			}
-			#endregion
-
-			#region Other unexpected exceptions.
-			else
-			{
-				CD.W("[FATAL] An unexpected error has occured.");
-				CD.W(e.ToString());
-				return false;
-			}
-			#endregion
 		}
 
-		//Reads the instance data JSON file.
-		String InstanceDataString = InstanceDataFile.ReadToEnd();
-		InstanceDataFile.Close();
-
-		//Parses the file back into a Dictionary.
-		ParsedJson = JsonSerializer.Deserialize<Dictionary<String, Object>>(InstanceDataString);
-
-		//Cast BotToken into JsonElement, then into String.
-		#pragma warning disable CS8602
-		#pragma warning disable CS8601
-		JsonElement BotTokenJson = (JsonElement) ParsedJson["BotToken"];
-		ParsedJson["BotToken"] = BotTokenJson.GetString();
-		#pragma warning restore CS8601
-		#pragma warning restore CS8602
-
-		//If for some reason ParsedJson is null, this cancels the program.
-		if (ParsedJson is null) { CD.W("ParsedJson returned null."); return false; }
-
-		#region Retrieval of new bot token.
-		//If BotToken is "secret"... (default value)
-		if (ParsedJson["BotToken"].Equals("secret"))
+		//TODO: Add a 2-way encryption to this, so the token won't be stored as plain text.
+		if (IsTokenOverridden)
 		{
-			CD.W("Parsed BotToken returned \"secret\", reading BotToken.txt...");
+			System.IO.Directory.CreateDirectory(DIRECTORY_APPDATA);
+			WriteFile(TokenFileName, DIRECTORY_APPDATA, Token);
 
-			StreamReader BotTokenFile;
-
-			//Gets the bot token from BotToken.txt, this file is deleted upon successful login.
-			try { BotTokenFile = GetFile("BotToken.txt", APPDATA_DIRECTORY); }
-			catch (FileNotFoundException)
-			{
-				CD.W("[FATAL] BotToken.txt not found. Creating replacement...");
-				//Sets the default text for the bot token prompt.
-				String BotTokenFileString = $"\n{new String('-', 70)}\nPlease paste your bot token above this line.";
-
-				//Creates a replacement BotToken.txt.
-				WriteFile("BotToken.txt", APPDATA_DIRECTORY, BotTokenFileString);
-
-				CD.W("Replacement created. Exiting...");
-
-				return false;
-			}
-
-			String? BotTokenString = BotTokenFile.ReadLine();
-			BotTokenFile.Close();
-
-			//If for some reason, BotTokenString is null, this cancels the program.
-			if (BotTokenString is null) { CD.W("BotTokenString returned null."); return false; }
-			
-			//Assigns the new BotToken to the Dictionary.
-			CD.W(BotTokenString);
-			ParsedJson["BotToken"] = BotTokenString;
-
-			CD.W("Attempting to rewrite instance data...");
-
-			//Serializes back into a JSON String, then writes to instancedata.json.
-			String NewJsonString = JsonSerializer.Serialize<Dictionary<String, Object>>(ParsedJson);
-			WriteFile("instancedata.json", APPDATA_DIRECTORY, NewJsonString);
+			TokenContainerFile.Close();
+			TokenContainerFile = GetFile(TokenFileName, DIRECTORY_APPDATA);
+			DeleteFile(OverrideTokenFileName, DIRECTORY_DESKTOP);
+			CD.W("[NOTICE] Override token detected. Replacing existing token...");
 		}
-		#endregion
 
-		YuukaCore.Token = (String) ParsedJson["BotToken"];
+		Token = TokenContainerFile.ReadLine();
 
-		CD.W("Instance data retrieved.");
-		return true;
+		if (Token != null)
+		{
+			YuukaCore.Token = Token;
+			TokenContainerFile.Close();
+			CD.W("Bot token retrieved. Continuing launch...");
+			return true;
+		}
+		else
+		{
+			CD.W("Bot token is null. Launch is cancelled.");
+			return false;
+		}
+
+
+		#pragma warning restore CS8604
 	}
 	#endregion
 	#endregion
