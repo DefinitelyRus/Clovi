@@ -248,13 +248,15 @@ public class YuukaCore
 				if (IsBotEnabled)
 				{
 					//Removes all commands made by this bot in the past.
-					List<SocketApplicationCommand> CommandList = Guild.GetApplicationCommandsAsync().Result.ToList();
-					CD.W("Removing all commands...");
-					foreach (SocketApplicationCommand cmd in CommandList)
-					{
-						await cmd.DeleteAsync();
-						CD.W($"Removed Command \"{cmd.Name}\" from the list.");
-					}
+					//Only uncomment this when editing the parameters of an existing command.
+					//It may also be beneficial to only edit the specific command you wish to edit.
+					// List<SocketApplicationCommand> CommandList = Guild.GetApplicationCommandsAsync().Result.ToList();
+					// CD.W("Removing all commands...");
+					// foreach (SocketApplicationCommand cmd in CommandList)
+					// {
+					// 	await cmd.DeleteAsync();
+					// 	CD.W($"Removed Command \"{cmd.Name}\" from the list.");
+					// }
 
 					//Adds custom commands to RequestDirector.
 					CD.W("Adding Requests to the RequestList...");

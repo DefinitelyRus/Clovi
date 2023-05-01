@@ -1,5 +1,6 @@
 ﻿namespace Project_Clovi;
 
+using System;
 using System.IO;
 using System.Text.Json;
 
@@ -32,12 +33,12 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Documents folder.
 	/// </summary>
-	public readonly String DOCUMENTS_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Yuuka";
+	public readonly String DIRECTORY_DOCUMENTS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + $"{Path.DirectorySeparatorChar}Yuuka";
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Application Data folder.
 	/// </summary>
-	public readonly String DIRECTORY_APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Yuuka";
+	public readonly String DIRECTORY_APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"{Path.DirectorySeparatorChar}Yuuka";
 	#endregion
 
 	#region Methods
@@ -50,7 +51,7 @@ public class FileIODirector
 	/// <returns>The target file.</returns>
 	public StreamReader GetFile(String FileName, String Directory)
 	{
-		return File.OpenText(Directory + @$"\{FileName}");
+		return File.OpenText(Directory + @$"{Path.DirectorySeparatorChar}{FileName}");
 	}
 
 	/// <summary>
@@ -62,7 +63,7 @@ public class FileIODirector
 	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector WriteFile(String FileName, String Directory, String Text)
 	{
-		File.WriteAllText(Directory + $@"\{FileName}", Text);
+		File.WriteAllText(Directory + $@"{Path.DirectorySeparatorChar}{FileName}", Text);
 		return this;
 	}
 
@@ -74,9 +75,9 @@ public class FileIODirector
 	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector CreateFile(String FileName, String Directory)
 	{
-		CD.W(Directory + $@"\{FileName}");
+		CD.W(Directory + $@"{Path.DirectorySeparatorChar}{FileName}");
 		System.IO.Directory.CreateDirectory(Directory);
-		File.CreateText(Directory + $@"\{FileName}");
+		File.CreateText(Directory + $@"{Path.DirectorySeparatorChar}{FileName}");
 		return this;
 	}
 
@@ -88,7 +89,7 @@ public class FileIODirector
 	/// <returns>This FileIODirector object.</returns>
 	public FileIODirector DeleteFile(String FileName, String Directory)
 	{
-		File.Delete(Directory + $@"\{FileName}");
+		File.Delete(Directory + $@"{Path.DirectorySeparatorChar}{FileName}");
 		return this;
 	}
 	#endregion
@@ -174,6 +175,8 @@ public class FileIODirector
 		String OverrideTokenFileName = "_YuukaBotToken.txt";
 		String TokenFileName = "PersistentTokenContainer.dat";
 		String? Token = "secret";
+
+		CD.W($"Using the following directories for this host:\nDesktop: \"{DIRECTORY_DESKTOP}\"\nDocuments: \"{DIRECTORY_DOCUMENTS}\"\nAppData: \"{DIRECTORY_APPDATA}\"");
 
 		//Check if _YuukaBotToken.txt exists.
 		try
