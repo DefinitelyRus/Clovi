@@ -251,7 +251,8 @@ public class MisakaCore
 
 				//If the bot is enabled for this server...
 				if (IsBotEnabled)
-				{
+				{	
+					//TODO: Turn this into a standalone feature, either through an admin interface or as a Discord command.
 					//Removes all commands made by this bot in the past.
 					//Only uncomment this when editing the parameters of an existing command.
 					//It may also be beneficial to only edit the specific command you wish to edit.
@@ -306,7 +307,7 @@ public class MisakaCore
 			CD.W("Enabling messages handler...");
 			MisakaClient.MessageReceived += MessageHandler;
 
-			CD.W("Ready"); //MAX 2000 CHARS.
+			CD.W("Ready");
 
 			CD.WaitingForQueue = false;
 			CD.IsOnline = true;
@@ -331,7 +332,7 @@ public class MisakaCore
 
 	#region Command Handler Task
 	/// <summary>
-	/// Called when any command is executed.
+	/// Called when any command is executed by a user.
 	/// </summary>
 	private Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
