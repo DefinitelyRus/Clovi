@@ -31,6 +31,11 @@ public class MisakaCore
 	/// </summary>
 	public const String BOT_NAME_SHORT = "MMDBF";
 
+    /// <summary>
+	/// Basic name for basic purposes.
+	/// </summary>
+	public const String BOT_NICKNAME = "Misaka";
+
 	/// <summary>
 	/// The core socket client from the Discord.NET API wrapper.
 	/// All information to and from the Discord API will go through here.
@@ -79,7 +84,7 @@ public class MisakaCore
 	/// </summary>
 	public async Task MainAsync()
 	{
-		CD.W($"Starting Clovi {BOT_VERSION}...");
+		CD.W($"Starting {BOT_NAME} {BOT_VERSION}...");
 		CD.W("Checking for existing instance data...");
 		if (!FIODirector.CheckRequiredFiles()) return;
 

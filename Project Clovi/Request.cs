@@ -104,7 +104,7 @@ public abstract class Request
 	public RequestDirector? Director { get; internal set; }
 
 	/// <summary>
-	/// Shortcut to CloviHost.ConDirector;
+	/// Shortcut to MisakaCore.ConDirector;
 	/// </summary>
 	protected static readonly ConsoleDirector CD = MisakaCore.ConDirector;
 

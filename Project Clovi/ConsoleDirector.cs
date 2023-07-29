@@ -106,7 +106,7 @@ public class ConsoleDirector
 				{
 					if (id == 0) continue;
 
-					Channel = (SocketTextChannel) CloviHost.MisakaCore.GetChannel(id);
+					Channel = (SocketTextChannel) MisakaCore.MisakaClient.GetChannel(id);
 
 					if (PendingLog.Length == 0 && Output.Length > 0) Channel.SendMessageAsync($"```{Output}```");
 					else if (Output.Length > 0)

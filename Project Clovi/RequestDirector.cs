@@ -21,7 +21,7 @@ public class RequestDirector
 
 	#region Attributes
 	/// <summary>
-	/// Shortcut to CloviHost.ConDirector;
+	/// Shortcut to MisakaCore.ConDirector;
 	/// </summary>
 	private static readonly ConsoleDirector CD = MisakaCore.ConDirector;
 

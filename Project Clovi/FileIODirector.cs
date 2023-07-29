@@ -33,7 +33,7 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Documents folder.
 	/// </summary>
-	public readonly String DIRECTORY_DOCUMENTS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + $"{Path.DirectorySeparatorChar}Yuuka";
+	public readonly String DIRECTORY_DOCUMENTS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + $"{Path.DirectorySeparatorChar}{MisakaCore.BOT_NAME}";
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Application Data folder.
