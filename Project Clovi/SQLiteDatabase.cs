@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 using Microsoft.Data.Sqlite;
 
@@ -13,10 +13,10 @@ public class SQLiteDatabase : Database
 	/// <param name="Name">The name of this database.</param>
 	public SQLiteDatabase(String Name) : base(Name)
 	{
-		Connection = new($@"Data Source={YuukaCore.FIODirector.DIRECTORY_APPDATA}\{Name}.db");
+		Connection = new($@"Data Source={MisakaCore.FIODirector.DIRECTORY_APPDATA}\{Name}.db");
 		Connection.Open(); Connection.Close();
 
-		CD = YuukaCore.ConDirector;
+		CD = MisakaCore.ConDirector;
 	}
 
 	/// <summary>
@@ -29,7 +29,7 @@ public class SQLiteDatabase : Database
 		Connection = new($@"Data Source ={Directory}\{Name}.s3db");
 		Connection.Open(); Connection.Close();
 
-		CD = YuukaCore.ConDirector;
+		CD = MisakaCore.ConDirector;
 	}
 
 	/// <summary>

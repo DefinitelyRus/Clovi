@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 using System.Collections;
 using Discord.WebSocket;
@@ -23,7 +23,7 @@ public class RequestDirector
 	/// <summary>
 	/// Shortcut to CloviHost.ConDirector;
 	/// </summary>
-	private static readonly ConsoleDirector CD = YuukaCore.ConDirector;
+	private static readonly ConsoleDirector CD = MisakaCore.ConDirector;
 
 	/// <summary>
 	/// A list of available requests.

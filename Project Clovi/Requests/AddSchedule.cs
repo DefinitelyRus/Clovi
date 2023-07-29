@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi.Requests;
+﻿namespace MisakaFramework.Requests;
 
 using Discord;
 using Discord.WebSocket;
@@ -21,9 +21,9 @@ public class AddSchedule : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		ConsoleDirector CD = YuukaCore.ConDirector;
+		ConsoleDirector CD = MisakaCore.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
-		SQLiteDirector DBDir = YuukaCore.SQLDirector;
+		SQLiteDirector DBDir = MisakaCore.SQLDirector;
 		SQLiteDatabase DB = DBDir.GetDatabase("GuildsData");
 		SqliteDataReader Reader;
 

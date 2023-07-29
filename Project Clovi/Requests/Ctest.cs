@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi.Requests;
+﻿namespace MisakaFramework.Requests;
 
 using Discord;
 using Discord.WebSocket;
@@ -20,7 +20,7 @@ public class Ctest : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleDirector CD = YuukaCore.ConDirector; //Use CD.W(_) for logging.
+		ConsoleDirector CD = MisakaCore.ConDirector; //Use CD.W(_) for logging.
 
 		//Code goes here.
 

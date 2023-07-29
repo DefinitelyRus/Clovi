@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi.Requests;
+﻿namespace MisakaFramework.Requests;
 
 using Discord;
 using Discord.WebSocket;
@@ -20,7 +20,7 @@ public class SetLoggerChannel : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		ConsoleDirector CD = YuukaCore.ConDirector;
+		ConsoleDirector CD = MisakaCore.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		SocketTextChannel? Channel = null;
 		string? InputPassword = null;
@@ -45,9 +45,9 @@ public class SetLoggerChannel : Request
 		}
 		#endregion
 
-		if (YuukaCore.SQLDirector.GetType() == typeof(SQLiteDirector))
+		if (MisakaCore.SQLDirector.GetType() == typeof(SQLiteDirector))
 		{
-			SQLiteDirector Director = (SQLiteDirector) YuukaCore.SQLDirector;
+			SQLiteDirector Director = (SQLiteDirector) MisakaCore.SQLDirector;
 
 			SQLiteDatabase Database = Director.GetDatabase("GuildsData");
 			Database.Connection.Open();

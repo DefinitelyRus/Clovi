@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi.Requests;
+﻿namespace MisakaFramework.Requests;
 
 using Discord;
 using Discord.WebSocket;

@@ -1,4 +1,6 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
+
+// Refactor to only use SQLite.
 public abstract class DatabaseDirector
 {
 	public DatabaseDirector(string SQLDialect)

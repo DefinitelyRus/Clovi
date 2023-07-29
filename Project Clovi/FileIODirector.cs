@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 using System;
 using System.IO;
@@ -23,7 +23,7 @@ public class FileIODirector
 	/// <summary>
 	/// A lazy shortcut for lazy people... like me.
 	/// </summary>
-	private readonly ConsoleDirector CD = YuukaCore.ConDirector;
+	private readonly ConsoleDirector CD = MisakaCore.ConDirector;
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Desktop folder.
@@ -246,7 +246,7 @@ public class FileIODirector
 
 		if (Token != null)
 		{
-			YuukaCore.Token = Token;
+			MisakaCore.Token = Token;
 			TokenContainerFile.Close();
 			CD.W("Bot token retrieved. Continuing launch...");
 			return true;

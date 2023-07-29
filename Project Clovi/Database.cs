@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 public abstract class Database
 {

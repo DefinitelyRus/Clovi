@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 using Discord;
 using Discord.WebSocket;
@@ -106,7 +106,7 @@ public abstract class Request
 	/// <summary>
 	/// Shortcut to CloviHost.ConDirector;
 	/// </summary>
-	protected static readonly ConsoleDirector CD = YuukaCore.ConDirector;
+	protected static readonly ConsoleDirector CD = MisakaCore.ConDirector;
 
 	/// <summary>
 	/// The unique identifier for this command.

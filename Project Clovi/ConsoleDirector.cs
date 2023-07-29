@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 using Discord.WebSocket;
 using System.Text;
@@ -32,7 +32,7 @@ public class ConsoleDirector
 	internal List<ulong> LogChannelIdList = new();
 
 	/// <summary>
-	/// Whether CloviCore is online and can send messages on Discord.
+	/// Whether MisakaCore is online and can send messages on Discord.
 	/// </summary>
 	internal bool IsOnline { get; set; }
 
@@ -106,7 +106,7 @@ public class ConsoleDirector
 				{
 					if (id == 0) continue;
 
-					Channel = (SocketTextChannel) CloviHost.CloviCore.GetChannel(id);
+					Channel = (SocketTextChannel) CloviHost.MisakaCore.GetChannel(id);
 
 					if (PendingLog.Length == 0 && Output.Length > 0) Channel.SendMessageAsync($"```{Output}```");
 					else if (Output.Length > 0)
@@ -132,7 +132,7 @@ public class ConsoleDirector
 
 		foreach (ulong id in LogChannelIdList)
 		{
-			Channel = (SocketTextChannel)YuukaCore.CloviCore.GetChannel(id);
+			Channel = (SocketTextChannel)MisakaCore.MisakaClient.GetChannel(id);
 			P($"Sending log to \"{Channel.Name}\"...");
 			P($"Log Length: {PendingLog.Length}");
 			if (PendingLog.Length < 1900)

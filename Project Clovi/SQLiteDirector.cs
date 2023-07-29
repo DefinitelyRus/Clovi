@@ -1,4 +1,4 @@
-﻿namespace Project_Clovi;
+﻿namespace MisakaFramework;
 
 using Microsoft.Data.Sqlite;
 using Discord.WebSocket;
@@ -12,7 +12,7 @@ public class SQLiteDirector : DatabaseDirector
 	public SQLiteDirector() : base(SQLDialect: "SQLite")
 	{
 		DatabaseList = new();
-		CD = YuukaCore.ConDirector;
+		CD = MisakaCore.ConDirector;
 	}
 
 	#region Attributes
@@ -172,7 +172,7 @@ public class SQLiteDirector : DatabaseDirector
 						#endregion
 
 						//For each guild the bot is in...
-						foreach (SocketGuild g in YuukaCore.CloviCore.Guilds.ToList())
+						foreach (SocketGuild g in MisakaCore.MisakaClient.Guilds.ToList())
 						{
 							CD.W($"Checking Guild \"{g.Name}\" ({g.Id})...");
 
@@ -219,7 +219,7 @@ public class SQLiteDirector : DatabaseDirector
 						CD.W(e.ToString());
 						//Drop all tables, then logout and self-exit.
 						GetDatabase("GuildsData").Connection.Close();
-						YuukaCore.CloviCore.LogoutAsync();
+						MisakaCore.MisakaClient.LogoutAsync();
 						Environment.Exit(0);
 						return false;
 					}
