@@ -38,7 +38,7 @@ public class FileIODirector
 	/// <summary>
 	/// A pre-set directory to the current OS User's Application Data folder.
 	/// </summary>
-	public readonly String DIRECTORY_APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"{Path.DirectorySeparatorChar}Yuuka";
+	public readonly String DIRECTORY_APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"{Path.DirectorySeparatorChar}{MisakaCore.BOT_NAME}";
 	#endregion
 
 	#region Methods
@@ -172,13 +172,13 @@ public class FileIODirector
 		//The instance data file is a JSON file containing the bot's Discord API token.
 		StreamReader TokenContainerFile;
 		bool IsTokenOverridden;
-		String OverrideTokenFileName = "_YuukaBotToken.txt";
+		String OverrideTokenFileName = "_BotToken.txt";
 		String TokenFileName = "PersistentTokenContainer.dat";
 		String? Token = "secret";
 
 		CD.W($"Using the following directories for this host:\nDesktop: \"{DIRECTORY_DESKTOP}\"\nDocuments: \"{DIRECTORY_DOCUMENTS}\"\nAppData: \"{DIRECTORY_APPDATA}\"");
 
-		//Check if _YuukaBotToken.txt exists.
+		//Check if _BotToken.txt exists.
 		try
 		{
 			CD.W($"Attempting to check for override token file \"{OverrideTokenFileName}\"...");
@@ -192,7 +192,7 @@ public class FileIODirector
 			IsTokenOverridden = true;
 		}
 
-		//If _YuukaBotToken.txt does not exist...
+		//If _BotToken.txt does not exist...
 		catch (Exception)
 		{
 			CD.W($"\"{OverrideTokenFileName}\" could not be found. Proceeding...");
