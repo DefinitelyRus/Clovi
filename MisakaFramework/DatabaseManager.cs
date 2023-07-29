@@ -12,7 +12,7 @@ public class DatabaseManager
 	public DatabaseManager()
 	{
 		DatabaseList = new();
-		CD = MisakaCore.ConDirector;
+		CD = MisakaCore.ConManager;
 	}
 
 	#region Attributes
@@ -33,7 +33,7 @@ public class DatabaseManager
 		{
 			if (db.Name.Equals(DatabaseName)) return db;
 		}
-		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
+		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in DatabaseManager.DatabaseList.", 0);
 	}
 
 	/// <summary>
@@ -49,7 +49,7 @@ public class DatabaseManager
 		{
 			if (DatabaseName.Equals(db.Name)) return db.Execute(SQLCommand);
 		}
-		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
+		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in DatabaseManager.DatabaseList.", 0);
 	}
 
 	/// <summary>
@@ -65,7 +65,7 @@ public class DatabaseManager
 		{
 			if (DatabaseName.Equals(db.Name)) return db.Query(SQLCommand);
 		}
-		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in SQLiteDirector.DatabaseList.", 0);
+		throw new SqliteException($"Database \"{DatabaseName}\" cannot be found in DatabaseManager.DatabaseList.", 0);
 	}
 
 	//Consults CheckDatabase() if a reset is necessary.

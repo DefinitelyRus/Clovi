@@ -23,7 +23,7 @@ public class RequestManager
 	/// <summary>
 	/// Shortcut to MisakaCore.ConDirector;
 	/// </summary>
-	private static readonly ConsoleManager CD = MisakaCore.ConDirector;
+	private static readonly ConsoleManager CD = MisakaCore.ConManager;
 
 	/// <summary>
 	/// A list of available requests.
@@ -56,7 +56,7 @@ public class RequestManager
 	/// <returns></returns>
 	public RequestManager AddRequestItem(Request NewRequest)
 	{
-		NewRequest.Director = this;
+		NewRequest.Manager = this;
 		RequestList.Add(NewRequest);
 
 		//Sort alphabetically based on Request.Id attribute.

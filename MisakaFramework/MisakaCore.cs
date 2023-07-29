@@ -45,27 +45,27 @@ public class MisakaCore
 	/// <summary>
 	/// Handles the input and output of information to and from the console within this host.
 	/// </summary>
-	internal static ConsoleManager ConDirector = new();
-	private static readonly ConsoleManager CD = ConDirector;
+	internal static ConsoleManager ConManager = new();
+	private static readonly ConsoleManager CD = ConManager;
 
 	/// <summary>
 	/// Handles all Database reads and writes.
 	/// </summary>
-	internal static DatabaseManager SQLDirector = new();
+	internal static DatabaseManager SQLManager = new();
 
 	/// <summary>
 	/// Handles all file reads and writes stored locally on the host device.
 	/// </summary>
-	internal static FileIOManager FIODirector = new();
+	internal static FileIOManager FIOManager = new();
 
 	/// <summary>
 	/// Directs all Request reads and changes within this host.
 	/// </summary>
-	internal static RequestManager ReqDirector = new(new List<Request>());
+	internal static RequestManager ReqManager = new(new List<Request>());
 
 	/// <summary>
 	/// The bot's secret token. Its default value is "secret".
-	/// This is modified in FileIODirector.CheckRequiredFiles().
+	/// This is modified in FileIOManager.CheckRequiredFiles().
 	/// It will return to "secret" once the bot successfully readies.
 	/// </summary>
 	internal static String Token = "secret";
@@ -86,13 +86,13 @@ public class MisakaCore
 	{
 		CD.W($"Starting {BOT_NAME} {BOT_VERSION}...");
 		CD.W("Checking for existing instance data...");
-		if (!FIODirector.CheckRequiredFiles()) return;
+		if (!FIOManager.CheckRequiredFiles()) return;
 
 		CD.W("Adding all core databases...");
-		SQLDirector.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
+		SQLManager.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
 
 		CD.W("Checking for databases...");
-		SQLDirector.DatabaseCheckup(0);
+		SQLManager.DatabaseCheckup(0);
 
 		CD.W("Initalizing logger...");
 		MisakaClient.Log += LoggerTask;
@@ -132,7 +132,7 @@ public class MisakaCore
 			#region Initialization
 			CD.W("Client started. Preparing...");
 			Token = "secret";
-			File.Delete(FIODirector.DIRECTORY_DESKTOP + @"\BotToken.txt");
+			File.Delete(FIOManager.DIRECTORY_DESKTOP + @"\BotToken.txt");
 			List<Request> RequestList = new();
 			SqliteDataReader SQLReader;
 			bool IsBotEnabled = true;
@@ -140,7 +140,7 @@ public class MisakaCore
 			#endregion
 
 			CD.W("Checking guilds_settings table...");
-			SQLDirector.DatabaseCheckup(1);
+			SQLManager.DatabaseCheckup(1);
 
 			#region Standard Request Library
 			//Retrieves all standard Request library Requests. (i.e. The premade requests.)
@@ -242,8 +242,8 @@ public class MisakaCore
 			{
 				CD.W($"Setting up guild \"{Guild.Name}\" ({Guild.Id})...");
 
-				SQLDirector.GetDatabase("GuildsData").Connection.Open();
-				SQLReader = SQLDirector.Query("GuildsData", $"SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\" AND guild_id = \"{Guild.Id}\"");
+				SQLManager.GetDatabase("GuildsData").Connection.Open();
+				SQLReader = SQLManager.Query("GuildsData", $"SELECT setting_value FROM guilds_settings WHERE setting_name = \"IsBotEnabled\" AND guild_id = \"{Guild.Id}\"");
 				if (SQLReader.Read()) IsBotEnabledString = SQLReader.GetFieldValue<String>(0);
 				IsBotEnabled = bool.Parse(IsBotEnabledString);
 
@@ -268,13 +268,13 @@ public class MisakaCore
 					CD.W("Adding Requests to the RequestList...");
 					foreach (Request r in RequestList)
 					{
-						ReqDirector.AddRequestItem(r);
+						ReqManager.AddRequestItem(r);
 						CD.W($"Added Request \"{r.Name}\".");
 					}
 
 					//Adds all commands to Discord's listener.
 					CD.W("Adding Requests to the Listener...");
-					foreach (Request r in ReqDirector.RequestList)
+					foreach (Request r in ReqManager.RequestList)
 					{
 						await Guild.CreateApplicationCommandAsync(r.DiscordCommand);
 						CD.W($"Added Request \"{r.Name}\".");
@@ -284,7 +284,7 @@ public class MisakaCore
 			#endregion
 
 			#region Logging on guilds.
-			SQLiteDatabase GuildsData = SQLDirector.GetDatabase("GuildsData");
+			SQLiteDatabase GuildsData = SQLManager.GetDatabase("GuildsData");
 			GuildsData.Connection.Open();
 			SQLReader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
 			ulong ChannelId;
@@ -337,7 +337,7 @@ public class MisakaCore
 	private Task SlashCommandHandler(SocketSlashCommand cmd)
 	{
 		CD.W($"Executing request \"{cmd.CommandName}\"...");
-		ReqDirector.ExecuteRequest(cmd, MisakaClient);
+		ReqManager.ExecuteRequest(cmd, MisakaClient);
 		CD.SendLog();
 
 		return Task.CompletedTask;
