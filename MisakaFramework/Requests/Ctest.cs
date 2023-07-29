@@ -20,7 +20,7 @@ public class Ctest : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleManager CD = MisakaCore.ConDirector; //Use CD.W(_) for logging.
+		ConsoleManager CD = MisakaCore.ConManager; //Use CD.W(_) for logging.
 
 		//Code goes here.
 

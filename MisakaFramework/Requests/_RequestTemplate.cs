@@ -20,7 +20,7 @@ public class _RequestTemplate : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleManager CD = MisakaCore.ConDirector; //Use CD.W(...) for logging.
+		ConsoleManager CD = MisakaCore.ConManager; //Use CD.W(...) for logging.
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		//IMPORTANT: Do not use CD.W("...", true) in this method unless absolutely necessary.
 
