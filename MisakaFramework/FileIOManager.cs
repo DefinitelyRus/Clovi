@@ -11,7 +11,7 @@ public class FileIOManager
 {
 	#region Constructor
 	/// <summary>
-	/// Constructor for FileIOManager. It basically does nothing.
+	/// Constructor for FileIODirector. It basically does nothing.
 	/// </summary>
 	public FileIOManager()
 	{
@@ -23,7 +23,7 @@ public class FileIOManager
 	/// <summary>
 	/// A lazy shortcut for lazy people... like me.
 	/// </summary>
-	private readonly ConsoleManager CD = MisakaCore.ConManager;
+	private readonly ConsoleManager CD = MisakaCore.ConDirector;
 
 	/// <summary>
 	/// A pre-set directory to the current OS User's Desktop folder.
@@ -60,7 +60,7 @@ public class FileIOManager
 	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
 	/// <param name="Index">A preset directory where local files are stored.</param>
 	/// <param name="Text">The String to be written on the file.</param>
-	/// <returns>This FileIOManager object.</returns>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIOManager WriteFile(String FileName, String Directory, String Text)
 	{
 		File.WriteAllText(Directory + $@"{Path.DirectorySeparatorChar}{FileName}", Text);
@@ -72,7 +72,7 @@ public class FileIOManager
 	/// </summary>
 	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
 	/// <param name="Index">A preset directory where local files are stored.</param>
-	/// <returns>This FileIOManager object.</returns>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIOManager CreateFile(String FileName, String Directory)
 	{
 		CD.W(Directory + $@"{Path.DirectorySeparatorChar}{FileName}");
@@ -86,7 +86,7 @@ public class FileIOManager
 	/// </summary>
 	/// <param name="FileName">The name of the file, including the extension name. (e.g. "example.txt")</param>
 	/// <param name="Index">A preset directory where local files are stored.</param>
-	/// <returns>This FileIOManager object.</returns>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIOManager DeleteFile(String FileName, String Directory)
 	{
 		File.Delete(Directory + $@"{Path.DirectorySeparatorChar}{FileName}");
@@ -119,7 +119,7 @@ public class FileIOManager
 	/// Replaces the locally-saved instance data on the host device.
 	/// </summary>
 	/// <param name="NewDictionary">The replacement Dictionary object.</param>
-	/// <returns>This FileIOManager object.</returns>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIOManager UpdateInstanceData(Dictionary<String, Object> NewDictionary)
 	{
 		//Serializes a Dictionary into a JSON String.
@@ -136,7 +136,7 @@ public class FileIOManager
 	/// </summary>
 	/// <param name="Key">The key of the target element to be updated.</param>
 	/// <param name="Value">The value to be set.</param>
-	/// <returns>This FileIOManager object.</returns>
+	/// <returns>This FileIODirector object.</returns>
 	public FileIOManager UpdateInstanceData(String Key, Object Value)
 	{
 		Dictionary<String, JsonElement>? InstanceData = GetInstanceData();
@@ -144,7 +144,7 @@ public class FileIOManager
 		//Cancels if InstanceData is null.
 		if (InstanceData is null)
 		{
-			CD.W("InstanceData is null at FileIOManager.UpdateInstanceData().");
+			CD.W("InstanceData is null at FileIODirector.UpdateInstanceData().");
 			return this;
 		}
 
