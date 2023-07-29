@@ -11,7 +11,7 @@ public class ConsoleManager
 {
 	#region Constructor
 	/// <summary>
-	/// Creates a new instance of ConsoleDirector.
+	/// Creates a new instance of ConsoleManager.
 	/// </summary>
 	public ConsoleManager()
 	{
@@ -53,7 +53,7 @@ public class ConsoleManager
 	/// Prints the input string to the console along with a timestamp, then optionally adds the message to the PendingLog.
 	/// </summary>
 	/// <param name="Text"></param>
-	[Obsolete("This method is for clarity only. Use ConsoleDirector.P() instead.", false)]
+	[Obsolete("This method is for clarity only. Use ConsoleManager.P() instead.", false)]
 	public void Print(String Text, bool AddToPendingLog = false)
 	{
 		StackTrace Source = new();
@@ -69,11 +69,11 @@ public class ConsoleManager
 
 	/// <summary>
 	/// Logs the inserted text to the console, target Discord channel(s), and console log files.
-	/// If the bot is not online, the message will be forwarded to ConsoleDirector.Print().
+	/// If the bot is not online, the message will be forwarded to ConsoleManager.Print().
 	/// </summary>
 	/// <param name="Text">The text to be logged.</param>
 	/// <param name="IsFinal">Whether to also send the message to the destination(s).</param>
-	[Obsolete("This method is for clarity only. Use ConsoleDirector.W() instead.", false)]
+	[Obsolete("This method is for clarity only. Use ConsoleManager.W() instead.", false)]
 	public void Log(String Text, bool IsFinal = false)
 	{
 		if (!IsOnline) { Print(Text, true); return; }
@@ -184,7 +184,7 @@ public class ConsoleManager
 
 	#region Aliases
 	/// <summary>
-	/// An alias for ConsoleDirector.Log() and functions identically to Q().
+	/// An alias for ConsoleManager.Log() and functions identically to Q().
 	/// It simply logs the input string to the console, along with the timestamp and parent method.
 	/// </summary>
 	/// <param name="Text">The text you wish to log.</param>
@@ -193,14 +193,14 @@ public class ConsoleManager
 
 
 	/// <summary>
-	/// An alias for ConsoleDirector.Log() and functions identically to W().
+	/// An alias for ConsoleManager.Log() and functions identically to W().
 	/// It simply logs the input string to the console, along with the timestamp and parent method.
 	/// </summary>
 	/// <param name="Text">The text you wish to log.</param>
 	public void Q(String Text, bool IsFinal = false) => Log(Text, IsFinal);
 
 	/// <summary>
-	/// An alias for ConsoleDirector.Print().
+	/// An alias for ConsoleManager.Print().
 	/// It simply prints the text to console and optionally adds the text to the pending log.
 	/// </summary>
 	/// <param name="Text"></param>

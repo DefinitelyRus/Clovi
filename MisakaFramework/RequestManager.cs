@@ -10,7 +10,7 @@ public class RequestManager
 {
 	#region Constructor
 	/// <summary>
-	/// The function used to declare this RequestDirector.
+	/// The function used to declare this RequestManager.
 	/// </summary>
 	/// <param name="RequestListArg">An ArrayList of Requests.</param>
 	public RequestManager(List<Request> RequestListArg)
@@ -21,7 +21,7 @@ public class RequestManager
 
 	#region Attributes
 	/// <summary>
-	/// Shortcut to MisakaCore.ConDirector;
+	/// Shortcut to MisakaCore.ConManager;
 	/// </summary>
 	private static readonly ConsoleManager CD = MisakaCore.ConManager;
 
