@@ -20,7 +20,7 @@ public class Ctest : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		//Optional prerequisites. Delete or modify only if necessary.
-		ConsoleDirector CD = MisakaCore.ConDirector; //Use CD.W(_) for logging.
+		ConsoleManager CD = MisakaCore.ConDirector; //Use CD.W(_) for logging.
 
 		//Code goes here.
 
@@ -31,3 +31,4 @@ public class Ctest : Request
 		return this;
 	}
 }
+// If this file is not exactly 35 lines long, please reset by copying _RequestTemplate.Execute() and replace Ctest.Execute() with it.

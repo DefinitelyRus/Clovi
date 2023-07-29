@@ -101,12 +101,12 @@ public abstract class Request
 	/// <summary>
 	/// This is used to chain back to the parent RequestDirector. It is set automatically when added to a RequestList.
 	/// </summary>
-	public RequestDirector? Director { get; internal set; }
+	public RequestManager? Director { get; internal set; }
 
 	/// <summary>
 	/// Shortcut to MisakaCore.ConDirector;
 	/// </summary>
-	protected static readonly ConsoleDirector CD = MisakaCore.ConDirector;
+	protected static readonly ConsoleManager CD = MisakaCore.ConDirector;
 
 	/// <summary>
 	/// The unique identifier for this command.

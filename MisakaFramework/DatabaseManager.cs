@@ -7,9 +7,9 @@ using System.Data;
 /// <summary>
 /// Handles all transactions between the bot and the database.
 /// </summary>
-public class SQLiteDirector : DatabaseDirector
+public class DatabaseManager
 {
-	public SQLiteDirector() : base(SQLDialect: "SQLite")
+	public DatabaseManager()
 	{
 		DatabaseList = new();
 		CD = MisakaCore.ConDirector;
@@ -18,16 +18,16 @@ public class SQLiteDirector : DatabaseDirector
 	#region Attributes
 	public List<SQLiteDatabase> DatabaseList { get; internal set; }
 
-	private ConsoleDirector CD { get; }
+	private ConsoleManager CD { get; }
 	#endregion
 
 	#region Methods
-	public override Object GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)
+	public Object GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)
 	{
 		throw new NotImplementedException();
 	}
 
-	public override SQLiteDatabase GetDatabase(string DatabaseName)
+	public SQLiteDatabase GetDatabase(string DatabaseName)
 	{
 		foreach (SQLiteDatabase db in DatabaseList)
 		{
@@ -43,7 +43,7 @@ public class SQLiteDirector : DatabaseDirector
 	/// <param name="SQLCommand">The SQL command to be executed.</param>
 	/// <returns>(Integer) The number of rows affected.</returns>
 	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
-	public override Object Execute(String DatabaseName, String SQLCommand)
+	public Object Execute(String DatabaseName, String SQLCommand)
 	{
 		foreach (SQLiteDatabase db in DatabaseList)
 		{
@@ -59,7 +59,7 @@ public class SQLiteDirector : DatabaseDirector
 	/// <param name="SQLCommand">The SQL query (typically a SELECT command).</param>
 	/// <returns>The results of this query.</returns>
 	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
-	public override SqliteDataReader Query(string DatabaseName, string SQLCommand)
+	public SqliteDataReader Query(string DatabaseName, string SQLCommand)
 	{
 		foreach (SQLiteDatabase db in DatabaseList)
 		{

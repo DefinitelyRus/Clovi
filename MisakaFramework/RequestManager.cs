@@ -6,14 +6,14 @@ using Discord.WebSocket;
 /// <summary>
 /// Directs all Request reads and changes.
 /// </summary>
-public class RequestDirector
+public class RequestManager
 {
 	#region Constructor
 	/// <summary>
 	/// The function used to declare this RequestDirector.
 	/// </summary>
 	/// <param name="RequestListArg">An ArrayList of Requests.</param>
-	public RequestDirector(List<Request> RequestListArg)
+	public RequestManager(List<Request> RequestListArg)
 	{
 		RequestList = RequestListArg; //Sort alphabetically.
 	}
@@ -23,7 +23,7 @@ public class RequestDirector
 	/// <summary>
 	/// Shortcut to MisakaCore.ConDirector;
 	/// </summary>
-	private static readonly ConsoleDirector CD = MisakaCore.ConDirector;
+	private static readonly ConsoleManager CD = MisakaCore.ConDirector;
 
 	/// <summary>
 	/// A list of available requests.
@@ -54,7 +54,7 @@ public class RequestDirector
 	/// </summary>
 	/// <param name="NewRequest">The new Request to be added.</param>
 	/// <returns></returns>
-	public RequestDirector AddRequestItem(Request NewRequest)
+	public RequestManager AddRequestItem(Request NewRequest)
 	{
 		NewRequest.Director = this;
 		RequestList.Add(NewRequest);

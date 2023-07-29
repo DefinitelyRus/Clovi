@@ -20,7 +20,7 @@ public class SetLoggerChannel : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		ConsoleDirector CD = MisakaCore.ConDirector;
+		ConsoleManager CD = MisakaCore.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		SocketTextChannel? Channel = null;
 		string? InputPassword = null;
@@ -45,9 +45,9 @@ public class SetLoggerChannel : Request
 		}
 		#endregion
 
-		if (MisakaCore.SQLDirector.GetType() == typeof(SQLiteDirector))
+		if (MisakaCore.SQLDirector.GetType() == typeof(DatabaseManager))
 		{
-			SQLiteDirector Director = (SQLiteDirector) MisakaCore.SQLDirector;
+			DatabaseManager Director = (DatabaseManager) MisakaCore.SQLDirector;
 
 			SQLiteDatabase Database = Director.GetDatabase("GuildsData");
 			Database.Connection.Open();

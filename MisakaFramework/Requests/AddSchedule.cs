@@ -21,9 +21,9 @@ public class AddSchedule : Request
 
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
-		ConsoleDirector CD = MisakaCore.ConDirector;
+		ConsoleManager CD = MisakaCore.ConDirector;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
-		SQLiteDirector DBDir = MisakaCore.SQLDirector;
+		DatabaseManager DBDir = MisakaCore.SQLDirector;
 		SQLiteDatabase DB = DBDir.GetDatabase("GuildsData");
 		SqliteDataReader Reader;
 

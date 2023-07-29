@@ -45,23 +45,23 @@ public class MisakaCore
 	/// <summary>
 	/// Handles the input and output of information to and from the console within this host.
 	/// </summary>
-	internal static ConsoleDirector ConDirector = new();
-	private static readonly ConsoleDirector CD = ConDirector;
+	internal static ConsoleManager ConDirector = new();
+	private static readonly ConsoleManager CD = ConDirector;
 
 	/// <summary>
 	/// Handles all Database reads and writes.
 	/// </summary>
-	internal static SQLiteDirector SQLDirector = new();
+	internal static DatabaseManager SQLDirector = new();
 
 	/// <summary>
 	/// Handles all file reads and writes stored locally on the host device.
 	/// </summary>
-	internal static FileIODirector FIODirector = new();
+	internal static FileIOManager FIODirector = new();
 
 	/// <summary>
 	/// Directs all Request reads and changes within this host.
 	/// </summary>
-	internal static RequestDirector ReqDirector = new(new List<Request>());
+	internal static RequestManager ReqDirector = new(new List<Request>());
 
 	/// <summary>
 	/// The bot's secret token. Its default value is "secret".

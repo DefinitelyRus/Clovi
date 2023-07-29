@@ -7,13 +7,13 @@ using System.Diagnostics;
 /// <summary>
 /// Handles the input and output of information to and from the console.
 /// </summary>
-public class ConsoleDirector
+public class ConsoleManager
 {
 	#region Constructor
 	/// <summary>
 	/// Creates a new instance of ConsoleDirector.
 	/// </summary>
-	public ConsoleDirector()
+	public ConsoleManager()
 	{
 		IsOnline = false;
 		PendingLog = new();

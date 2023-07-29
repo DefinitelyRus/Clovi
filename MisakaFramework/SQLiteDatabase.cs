@@ -37,7 +37,7 @@ public class SQLiteDatabase : Database
 	/// </summary>
 	public SqliteConnection Connection { get; private set; }
 
-	private ConsoleDirector CD { get; }
+	private ConsoleManager CD { get; }
 
 	/// <summary>
 	/// Sends the command to the database and applies any changes. Connection must be opened before using this method.
