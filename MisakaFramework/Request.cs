@@ -99,12 +99,12 @@ public abstract class Request
 
 	#region Attributes
 	/// <summary>
-	/// This is used to chain back to the parent RequestDirector. It is set automatically when added to a RequestList.
+	/// This is used to chain back to the parent RequestManager. It is set automatically when added to a RequestList.
 	/// </summary>
 	public RequestManager? Manager { get; internal set; }
 
 	/// <summary>
-	/// Shortcut to MisakaCore.ConDirector;
+	/// Shortcut to MisakaCore.ConManager;
 	/// </summary>
 	protected static readonly ConsoleManager CD = MisakaCore.ConManager;
 
