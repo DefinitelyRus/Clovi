@@ -1,12 +1,9 @@
 ﻿namespace MisakaFramework;
 
 // Refactor to only use SQLite.
-public abstract class DatabaseDirector
+public abstract class _DatabaseDirector
 {
-	public DatabaseDirector(string SQLDialect)
-	{
-		Dialect = SQLDialect;
-	}
+	public _DatabaseDirector() { }
 
 	public String Dialect { get; private set; }
 
