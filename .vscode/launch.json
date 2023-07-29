@@ -33,7 +33,7 @@
             "stopAtEntry": false
         },
         {
-            "name": "MyApp",
+            "name": "MisakaCore",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
