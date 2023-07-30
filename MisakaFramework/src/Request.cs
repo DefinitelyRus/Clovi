@@ -97,6 +97,7 @@ public abstract class Request
 	}
 	#endregion
 
+
 	#region Attributes
 	/// <summary>
 	/// This is used to chain back to the parent RequestManager. It is set automatically when added to a RequestList.
@@ -161,26 +162,9 @@ public abstract class Request
 		return dict;
 	}
 
-	/// <summary>
-	/// The default set of arguments for using SlashCommandOptionBuilder.
-	/// 
-	/// <para>string name = "default-name"</para>
-	/// <para>ApplicationCommandOptionType optionType = ApplicationCommandOptionType.String</para>
-	/// <para>string description = "No description set."</para>
-	/// <para>bool? isRequired = false</para>
-	/// <para>bool isDefault = false</para>
-	/// <para>bool isAutoComplete = false</para>
-	/// <para>double? minValue = null</para>
-	/// <para>double? maxValue = null</para>
-	/// <para>List(SlashCommandOptionBuilder)? options = null</para>
-	/// <para>List(ChannelType)? channelTypes = null</para>
-	/// <para>ApplicationCommandOptionChoiceProperties[] choices = { }</para>
-	/// </summary>
-	//[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
-	//public static 
-
 	public SlashCommandProperties DiscordCommand { get; internal set; }
 	#endregion
+
 
 	#region Methods
 	/// <summary>

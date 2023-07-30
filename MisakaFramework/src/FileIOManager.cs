@@ -19,6 +19,7 @@ public class FileIOManager
 	}
 	#endregion
 
+
 	#region Attributes
 	/// <summary>
 	/// A lazy shortcut for lazy people... like me.
@@ -40,6 +41,7 @@ public class FileIOManager
 	/// </summary>
 	public readonly String DIRECTORY_APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"{Path.DirectorySeparatorChar}{MisakaCore.BOT_NAME}";
 	#endregion
+
 
 	#region Methods
 	#region File Management

@@ -9,17 +9,21 @@ using System.Data;
 /// </summary>
 public class DatabaseManager
 {
+	#region Constructors
 	public DatabaseManager()
 	{
 		DatabaseList = new();
 		CD = MisakaCore.ConManager;
 	}
+	#endregion
+
 
 	#region Attributes
 	public List<Database> DatabaseList { get; internal set; }
 
 	private ConsoleManager CD { get; }
 	#endregion
+
 
 	#region Methods
 	public Object GetRecord(String Key, String ColumnName, String TableName, String DatabaseName)

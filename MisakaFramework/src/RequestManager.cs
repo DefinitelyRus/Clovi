@@ -19,6 +19,7 @@ public class RequestManager
 	}
 	#endregion
 
+
 	#region Attributes
 	/// <summary>
 	/// Shortcut to MisakaCore.ConManager;
@@ -31,6 +32,7 @@ public class RequestManager
 	/// </summary>
 	public List<Request> RequestList { get; internal set; }
 	#endregion
+
 
 	#region Methods
 	/// <summary>

@@ -20,6 +20,7 @@ public class ConsoleManager
 	}
 	#endregion
 
+
 	#region Attributes
 	/// <summary>
 	/// Holds a string with the time format HH:MM:SS
@@ -47,6 +48,7 @@ public class ConsoleManager
 	/// </summary>
 	internal StringBuilder PendingLog { get; }
 	#endregion
+
 
 	#region Methods
 	/// <summary>

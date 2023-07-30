@@ -21,9 +21,12 @@ public class SetLoggerChannel : Request
 	public override Request Execute(SocketSlashCommand Command, DiscordSocketClient Core)
 	{
 		ConsoleManager CD = MisakaCore.ConManager;
+
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
+
 		SocketTextChannel? Channel = null;
 		string? InputPassword = null;
+
 		foreach (SocketSlashCommandDataOption option in Command.Data.Options)
 		{
 			if (option.Name.Equals("channel")) Channel = (SocketTextChannel) option.Value;
@@ -45,17 +48,14 @@ public class SetLoggerChannel : Request
 		}
 		#endregion
 
-		if (MisakaCore.SQLManager.GetType() == typeof(DatabaseManager))
-		{
-			DatabaseManager Manager = (DatabaseManager) MisakaCore.SQLManager;
+		DatabaseManager Manager = MisakaCore.SQLManager;
 
-			Database Database = Manager.GetDatabase("GuildsData");
-			Database.Connection.Open();
-			Database.Execute($"UPDATE guilds_settings SET setting_value = \"{Channel.Id}\" WHERE guild_id = \"{Command.GuildId}\" AND setting_name = \"LoggerChannelId\"");
-			Database.Connection.Close();
+		Database Database = Manager.GetDatabase("GuildsData");
+		Database.Connection.Open();
+		Database.Execute($"UPDATE guilds_settings SET setting_value = \"{Channel.Id}\" WHERE guild_id = \"{Command.GuildId}\" AND setting_name = \"LoggerChannelId\"");
+		Database.Connection.Close();
 
-			Command.RespondAsync($"Set log destination to {Channel.Mention}. The changes will be applied on next restart.");
-		}
+		Command.RespondAsync($"Set log destination to {Channel.Mention}. The changes will be applied on next restart.");
 
 		CD.W($"SUCCESS: \"{this.Name}\" request by {Command.User.Username}");
 		return this;
