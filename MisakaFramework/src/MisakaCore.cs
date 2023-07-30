@@ -146,6 +146,8 @@ public class MisakaCore
 			//Retrieves all standard Request library Requests. (i.e. The premade requests.)
 			CD.W("Initializing standard requests...");
 
+			//TODO: These should be done in the Request file itself.
+
 			RequestList.Add(new Requests.GetLatency());
 			RequestList.Add(new Requests.Ctest());
 			#region SetLoggerChannel
@@ -167,6 +169,13 @@ public class MisakaCore
 						ApplicationCommandOptionType.String,
 						"The password found in the source code.",
 						true
+					),
+					Request.GetNewOptionProperties
+					(
+						"to-remove",
+						ApplicationCommandOptionType.Boolean,
+						"TRUE - Disables and removes channel logging.",
+						false
 					)
 				}
 			));
