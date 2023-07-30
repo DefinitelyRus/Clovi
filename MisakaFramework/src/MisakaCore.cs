@@ -89,7 +89,7 @@ public class MisakaCore
 		if (!FIOManager.CheckRequiredFiles()) return;
 
 		CD.W("Adding all core databases...");
-		SQLManager.DatabaseList.Add(new SQLiteDatabase("GuildsData"));
+		SQLManager.DatabaseList.Add(new Database("GuildsData"));
 
 		CD.W("Checking for databases...");
 		SQLManager.DatabaseCheckup(0);
@@ -284,7 +284,7 @@ public class MisakaCore
 			#endregion
 
 			#region Logging on guilds.
-			SQLiteDatabase GuildsData = SQLManager.GetDatabase("GuildsData");
+			Database GuildsData = SQLManager.GetDatabase("GuildsData");
 			GuildsData.Connection.Open();
 			SQLReader = GuildsData.Query("SELECT setting_value FROM guilds_settings WHERE setting_name = \"LoggerChannelId\"");
 			ulong ChannelId;

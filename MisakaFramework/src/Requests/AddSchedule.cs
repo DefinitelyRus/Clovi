@@ -24,7 +24,7 @@ public class AddSchedule : Request
 		ConsoleManager CD = MisakaCore.ConManager;
 		CD.W($"User {Command.User.Username} used command {this.Name}...");
 		DatabaseManager DBDir = MisakaCore.SQLManager;
-		SQLiteDatabase DB = DBDir.GetDatabase("GuildsData");
+		Database DB = DBDir.GetDatabase("GuildsData");
 		SqliteDataReader Reader;
 
 		#region Database Check

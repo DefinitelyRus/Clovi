@@ -49,7 +49,7 @@ public class SetLoggerChannel : Request
 		{
 			DatabaseManager Manager = (DatabaseManager) MisakaCore.SQLManager;
 
-			SQLiteDatabase Database = Manager.GetDatabase("GuildsData");
+			Database Database = Manager.GetDatabase("GuildsData");
 			Database.Connection.Open();
 			Database.Execute($"UPDATE guilds_settings SET setting_value = \"{Channel.Id}\" WHERE guild_id = \"{Command.GuildId}\" AND setting_name = \"LoggerChannelId\"");
 			Database.Connection.Close();

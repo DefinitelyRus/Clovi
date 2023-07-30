@@ -16,7 +16,7 @@ public class DatabaseManager
 	}
 
 	#region Attributes
-	public List<SQLiteDatabase> DatabaseList { get; internal set; }
+	public List<Database> DatabaseList { get; internal set; }
 
 	private ConsoleManager CD { get; }
 	#endregion
@@ -27,9 +27,9 @@ public class DatabaseManager
 		throw new NotImplementedException();
 	}
 
-	public SQLiteDatabase GetDatabase(string DatabaseName)
+	public Database GetDatabase(string DatabaseName)
 	{
-		foreach (SQLiteDatabase db in DatabaseList)
+		foreach (Database db in DatabaseList)
 		{
 			if (db.Name.Equals(DatabaseName)) return db;
 		}
@@ -45,7 +45,7 @@ public class DatabaseManager
 	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
 	public Object Execute(String DatabaseName, String SQLCommand)
 	{
-		foreach (SQLiteDatabase db in DatabaseList)
+		foreach (Database db in DatabaseList)
 		{
 			if (DatabaseName.Equals(db.Name)) return db.Execute(SQLCommand);
 		}
@@ -61,7 +61,7 @@ public class DatabaseManager
 	/// <exception cref="FileNotFoundException">Thrown if the database does not exist.</exception>
 	public SqliteDataReader Query(string DatabaseName, string SQLCommand)
 	{
-		foreach (SQLiteDatabase db in DatabaseList)
+		foreach (Database db in DatabaseList)
 		{
 			if (DatabaseName.Equals(db.Name)) return db.Query(SQLCommand);
 		}
