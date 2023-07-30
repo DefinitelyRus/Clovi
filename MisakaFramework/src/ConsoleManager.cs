@@ -36,7 +36,7 @@ public class ConsoleManager
 	/// </summary>
 	internal bool IsOnline { get; set; }
 
-	//NOTE: Might not be necessary at all. Consider for removal.
+	//TODO: Might not be necessary at all. Consider for removal.
 	/// <summary>
 	/// Decides if the PendingLog should be sent (false) or not (true).
 	/// </summary>

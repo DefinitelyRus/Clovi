@@ -264,7 +264,7 @@ public class MisakaCore
 					// 	CD.W($"Removed Command \"{cmd.Name}\" from the list.");
 					// }
 
-					//Adds custom commands to RequestDirector.
+					//Adds custom commands to RequestManager.
 					CD.W("Adding Requests to the RequestList...");
 					foreach (Request r in RequestList)
 					{
@@ -320,7 +320,7 @@ public class MisakaCore
 	#region Logger Task
 	/// <summary>
 	/// A logging task that's executed by the API everytime it needs to log something to the console.
-	/// It forwards any logging task to a ConsoleDirector.
+	/// It forwards any logging task to a ConsoleManager.
 	/// </summary>
 	private Task LoggerTask(LogMessage msg)
 	{
